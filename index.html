@@ -10,6 +10,7 @@
 body {font-family:"Helvetica Neue",Helvetica,sans-serif; font-size:16px; line-height:1.5;}
 a {color:inherit;}
 a:not(:hover) {text-decoration:none;}
+a[href^="javascript:"]:before {content:"▶";}
 
 h1 {font-weight:300; font-size:400%; margin-bottom:0;}
 
@@ -33,6 +34,7 @@ aside {font-size:80%;}
   <h1>Blocks</h1>
   
   <p>
+    <a href="javascript:(function () {alert('Im a bookmarlet!');}());">bookmarklet</a>, 
     <a href="http://bl.ocks.org/3411189">Box2D</a>, 
     <a href="https://gist.github.com/3227047">Clone gist in Mac</a>, 
     <a href="https://gist.github.com/3225993">loop.coffee</a>, 
