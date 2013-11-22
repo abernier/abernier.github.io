@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8>
+  <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1">
+  <title>Antoine Bernier resume</title>
+  <style>
+  a {color:inherit;}
+  /* layout */
+  body {margin:0;}
+  .c {
+    padding-left:5.55555%;padding-right:5.55555%; margin:0 auto;
+  }
+  @media (min-width:850px) {
+    .c {
+      max-width:850px;
+    }
+    .skills {
+      float:left; width:62%;
+      padding-right:2em;
+    }
+    .skills + * {
+      margin-left:62%;
+      padding-left:2em;
+    }
+    .skills h2 {margin-top:0;}
+  }
+
+  body {
+    font:300 100%/1.5 "Roboto", Helvetica, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {font-weight:inherit;}
+  h1, .h1 {font-size:270%; line-height:1.25;}
+  h1 span {display:block; font-size:47%;}
+  h2, .h2 {font-size:162%;}
+  /*h3, .h3 {font-size:117%;}*/
+
+  h2, h3 {line-height:1.2; white-space:nowrap; overflow:hidden; font-weight:200;}
+  h2:after, h3:after {line-height:1; font-size:10px; content:". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .";}
+
+  strong {font-weight:400;}
+  
+
+  .experiences ol {list-style:none; padding-left:0;}
+  .experiences .h3 +p {margin-top:0;}
+  .experiences .range {
+    display:inline-block; border:1px solid;padding:0 .25em;
+  }
+
+  .skills {counter-reset: rank;}
+  .skills h3:before {
+    content:counter(rank, upper-latin) ". ";
+    counter-increment:rank;
+  }
+
+  .education ol {list-style-position:inside; padding-left:0;}
+
+  footer {clear:both; text-align:center; margin-top:2em; border-top:1px solid;}
+  </style>
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900">
+</head>
+<body><div class="c">
+  <h1>
+    <span>Antoine BERNIER</span>
+    Intégrateur HTML5
+  </h1>
+  <section class="skills">
+    <h2>Compétences</h2>
+    <p>Mes deux mots d'ordre : <em>keep it simple</em> et <em>amélioration progressive</em></p>
+
+    <h3>Design</h3>
+    <p>Je conçois et dessine des interfaces simples, <strong>orientées utilisateur</strong>, <strong>responsive</strong> et si possible <strong>mobile-first</strong>.</p>
+    <p>Je livre des <strong>mockups</strong>/<strong>wireframe</strong> pour communiquer rapidement et concrètement autour du produit.</p>
+
+    <h3>HTML/CSS/JS</h3>
+    <p>Je produis un markup simple, clair et sémantique (balises HTML5) favorisant un référencement naturel.</p>
+    <p>J’intègre de manière cross-browser et <strong>multi-devices</strong>, avec la stratégie d’amélioration progressive. J’utilise si besoin un préprocesseur CSS (stylus).</p>
+    <p>Je connais le langage <strong>javascript</strong>, la librairie de normalisation du DOM jQuery et son éco-système de plugins/widgets que j’intègre et/ou adapte afin d’enrichir l’UI.</p>
+  </section>
+  <div>
+    <section class="experiences">
+      <h2>Expériences</h2>
+      <ol>
+        <li>
+          <span class="h3"><span class="range"><time>présent</time> — <time>12</time></span> :  Entrepreneur</span>
+          <p>Création d’un service web mobile sur le thème de la restauration</p>
+        </li>
+        <li>
+          <span class="h3"><span class="range"><time>12</time> — <time>10</time></span> : Iscool Ent.</span>
+          <p>Développenent de jeux HTML5 exploitant la plateforme Facebook</p>
+        </li>
+        <li>
+          <span class="h3"><span class="range"><time>10</time> — <time>08</time></span> : Mosets</span>
+          <p>Développement d’un composant web tiers (type CCK)</p>
+        </li>
+        <li>
+          <span class="h3"><span class="range"><time>08</time> — <time>05</time></span> : Freelance</span>
+          <p>Conception graphique, intégration HTML/CSS, développements spécifiques...</p>
+        </li>
+      </ol>
+    </section>
+    <section class="education">
+      <h2>Cursus</h2>
+      <ol>
+        <li>
+          DEUG MIAS (niveau) — Paris 8
+        </li>
+        <li>
+          Maths SUP — Lycée Alain Fournier
+        </li>
+      </ol>
+    </section>
+  </div>
+  <footer>
+    <address><p>
+      <a href="http://abernier.name">abernier.name</a>
+       — 
+      9, passage Saint Sébastien - 75011 Paris
+       — 
+      <a href="javascript:void 0;" style="display:inline-block; unicode-bidi:bidi-override; direction: rtl;" onmouseover="this.innerText=this.innerText.split('').reverse().join(''); this.style.unicodeBidi=''; this.removeAttribute('onmouseover'); this.href='tel:'+this.innerText;">9144048060</a> - <a href="javascript:void 0;" style="display:inline-block; unicode-bidi:bidi-override; direction: rtl;" onmouseover="this.innerText=this.innerText.split('').reverse().join(''); this.style.unicodeBidi=''; this.removeAttribute('onmouseover'); this.href='mailto:'+this.innerText;">moc.liamg@reinreb.eniotna</a>
+    </p></address>
+  </footer>
+</div></body>
+</html>
