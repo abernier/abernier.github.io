@@ -2,6 +2,8 @@ body {
   font:300 100%/1.5 "Roboto", Helvetica, sans-serif;
 }
 
+h1 span {display:block; font-size:47%;}
+
 h1, h2, h3, h4, h5, h6 {font-weight:inherit;}
 h1, .h1 {font-size:270%; line-height:1.25;}
 h2, .h2 {font-size:162%;}
