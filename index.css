@@ -1,3 +1,27 @@
+/*
+column = 100% / 18 = 5.55555%
+gutter = 1.5em
+
+16-column grid
+----------------------------------------------------------------------------------------------------------------------
+Margin   | #  1     2     3     4     5     6     7     8     9     10    11    12    13    14    15    16  |   Margin
+5.55555% | %  6.25  12.5  18.75 25.0  31.25 37.5  43.75 50.0  56.25 62.5  68.75 75.0  81.25 87.5  93.75 100 | 5.55555%
+
+8-column grid
+----------------------------------------------------------------------
+Margin   | #  1     2     3     4     5     6     7     8   |   Margin
+5.55555% | %  12.5  25.0  37.5  50.0  62.5  75.0  87.5  100 | 5.55555%
+
+4-column grid
+----------------------------------------
+Margin   | #  1   2   3   4   |   Margin
+5.55555% | %  25  50  75  100 | 5.55555%
+*/
+
+*,
+:before,
+:after {box-sizing:border-box;}
+
 body {
   font:300 100%/1.5 "Roboto", Helvetica, sans-serif;
 }
@@ -15,10 +39,5 @@ a:not(:hover) {text-decoration:none;}
 
 body {margin:0;}
 .c {
-	padding-left:5.55555%;padding-right:5.55555%; margin:0 auto;
-}
-@media (min-width:850px) {
-	.c {
-	  max-width:850px;
-	}
+	padding-left:.75em;/*gutter/2*/padding-right:.75em;/*gutter/2*/ margin:0 5.55555%;/*column*/
 }
