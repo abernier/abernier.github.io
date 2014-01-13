@@ -29,7 +29,7 @@ body {
   font:300 100%/1.5 "Roboto", Helvetica, sans-serif;
 }
 
-h1 span {display:block; font-size:47%;}
+h1 .fn-and-photo {display:block; font-size:47%;}
 
 img.avatar {display:inline-block; vertical-align:middle; width:1.5em; border-radius:99em; margin-right:.35em;}
 
@@ -37,12 +37,20 @@ h1, h2, h3, h4, h5, h6 {font-weight:inherit;}
 h1, .h1 {font-size:270%; line-height:1.25;}
 h2, .h2 {font-size:162%;}
 /*h3, .h3 {font-size:117%;}*/
+/* lead dots */
+h2, h3 {line-height:1.2; white-space:nowrap; overflow:hidden;}
+h2:after, h3:after {line-height:1; font-size:10px; content:". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .";}
 
 a {color:inherit;}
 a:not(:hover) {text-decoration:none;}
 /*a[href^="javascript:"]:before {content:"▶";}*/
 
-body {margin:0;}
+body {margin:0 5.55555%;}
 .c {
-	padding-left:.75em;/*gutter/2*/padding-right:.75em;/*gutter/2*/ margin:0 5.55555%;/*column*/
+	margin:0 5.55555%;/*column*/
+}
+.no-c {
+	width:112.49998593750175%; /* λ = 1 / (1 - 2*5.55555%) */
+	margin-left:-6.249992968750878%; /* λ * 5.55555% */
+	padding-left:6.249992968750878%;padding-right:6.249992968750878%;
 }
