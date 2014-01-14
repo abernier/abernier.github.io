@@ -18,9 +18,14 @@ blockquote {margin-left:0; margin-right:0; font-style:italic;}
 blockquote p:before {content:"\201C";}
 blockquote p:after {content:"\201D";}
 
+.gallery {white-space:nowrap; overflow:auto; font-size:0;}
+.gallery a {display:inline-block; height:6em; border:2px solid;border-radius:2px; font-size:1rem; margin-right:.5em;}
+.gallery a:last-child {margin-right:0;}
+.gallery img {display:inline-block;vertical-align:bottom; height:100%;}
+
 /* justify grid */
-.grid {text-align:justify;}
-.grid > * {display:inline-block;}
+.grid {text-align:justify; font-size:0;}
+.grid > * {display:inline-block; font-size:1rem;font-size:initial;}
 .grid:after {content: ''; display:inline-block; width:100%;}
 
 /* rwd */
@@ -56,7 +61,7 @@ blockquote p:after {content:"\201D";}
 .rwd .device.desktop .article2 {margin-left:30%; height:100%;}
 .rwd .device.desktop .footer {clear:both; height:13%;}
 
-.rwd {transition:all 1s;}
+.rwd {transition:all .3s;}
 @media (min-width:480px) {
   .rwd {font-size:156%;}
 }
@@ -67,7 +72,7 @@ blockquote p:after {content:"\201D";}
 </style>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900">
 </head>
-<body><div class="cc">
+<body>
 <header>
   <aside>
     <p>
@@ -106,6 +111,10 @@ blockquote p:after {content:"\201D";}
   </span>
 </header>
 
+<blockquote>
+  <p>I design and develop user interface</p>
+</blockquote>
+
 <section id="recent">
   <h2>Recent work</h2>
   
@@ -128,29 +137,45 @@ blockquote p:after {content:"\201D";}
         </cite>
     </blockquote>-->
 
+    <p class="gallery no-c">
+      <a href="images/likebook-homepage.png"><img src="images/likebook-homepage.png" alt></a>
+      <a href="images/likebook-3d-parametric-cover.png"><img src="images/likebook-3d-parametric-cover.png" alt></a>
+      <a href="images/likebook-app1.png"><img src="images/likebook-app1.png" alt></a>
+      <a href="images/likebook-app2.png"><img src="images/likebook-app2.png" alt></a>
+      <a href="images/likebook-library.png"><img src="images/likebook-library.png" alt></a>
+      <a href="images/likebook-gp-mockup.png"><img src="images/likebook-gp-mockup.png" alt></a>
+      <a href="images/likebook-gp-web.png"><img src="images/likebook-gp-web.png" alt></a>
+    </p>
+
     <p>
-        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/index.html">homepage</a>, 
-        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/cover.html">3d parametric cover</a>, 
-        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/checkout.html">checkout</a>, 
-        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/app.html">application</a>, 
-        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/profile.html">profile</a><!-- 
-        <a href="https://docs.google.com/file/d/0BwQNm5fx5y30Q2Z4Zm1JM2tvRGM/preview">Gerard Pique's page mockup</a> 
-        <a href="https://googledrive.com/host/0BwQNm5fx5y30NFNKWVJfMmhsdTQ/gerardpique.html">Gerard Piqué's page</a>-->
+      <strong>Live demos</strong>:
+      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/index.html">homepage</a>, 
+      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/cover.html">3d parametric cover</a>, 
+      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/checkout.html">checkout</a>, 
+      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/app.html">application</a>, 
+      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/profile.html">profile</a><!-- 
+      <a href="https://docs.google.com/file/d/0BwQNm5fx5y30Q2Z4Zm1JM2tvRGM/preview">Gerard Pique's page mockup</a> 
+      <a href="https://googledrive.com/host/0BwQNm5fx5y30NFNKWVJfMmhsdTQ/gerardpique.html">Gerard Piqué's page</a>-->
     </p>
   </article>
   
   <article>
     <h3>ZAPtélé</h3>
 
+    <p class="gallery no-c">
+      <a href="images/zaptele-logo.png"><img src="images/zaptele-logo.png" alt></a>
+    </p>
+
     <p>
-        <a href="http://dabblet.com/gist/5319853/">parametric logo</a>, <a href="http://www.zap-tele.com">responsive website</a>
+      <strong>Live demos</strong>:
+      <a href="http://dabblet.com/gist/5319853/">parametric logo</a>, <a href="http://www.zap-tele.com">responsive website</a>
     </p>
   </article>
 
 </section>
 
 <section>
-  <h2>Blocks</h2>
+  <h2>Experiments</h2>
   
   <p>
     <a href="http://bl.ocks.org/abernier/raw/afdea084a7bf48fbddfc/">Pictocool</a>, 
@@ -196,5 +221,5 @@ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www')
 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 </script>
-</div></body>
+</body>
 </html>

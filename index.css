@@ -29,6 +29,10 @@ body {
   font:300 100%/1.5 "Roboto", Helvetica, sans-serif;
 }
 
+/*img {max-width:100%;}
+img[width] {width:auto;}
+img[height] {height:auto;}*/
+
 h1 .fn-and-photo {display:block; font-size:47%;}
 
 img.avatar {display:inline-block; vertical-align:middle; width:1.5em; border-radius:99em; margin-right:.35em;}
@@ -45,10 +49,8 @@ a {color:inherit;}
 a:not(:hover) {text-decoration:none;}
 /*a[href^="javascript:"]:before {content:"▶";}*/
 
-body {margin:0 5.55555%;}
-.c {
-	margin:0 5.55555%;/*column*/
-}
+body,
+.c {margin:0 5.55555%;/*column*/}
 .no-c {
 	width:112.49998593750175%; /* λ = 1 / (1 - 2*5.55555%) */
 	margin-left:-6.249992968750878%; /* λ * 5.55555% */
