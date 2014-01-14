@@ -61,29 +61,42 @@ blockquote p:after {content:"\201D";}
 .rwd .device.desktop .footer {clear:both; height:13%;}
 
 .rwd {transition:all .3s;}
-@media (min-width:480px) {
-  .rwd {font-size:156%;}
+@media (min-width:555px) {
+  .rwd {font-size:180%; margin-top:-5rem;}
 }
-@media (min-width:670px) {
-  .rwd {font-size:175%; margin-top:-5rem;}
+@media (min-width:769px) {
+  .rwd {font-size:100%; margin-top:0;}
+  
+  header {float:left;}
+  header ~* {margin-left:20em;}
+  header +* {margin-top:5.2em;}
+}
+@media (max-width:768px) {
+  p.gallery {
+    width:112.49998593750175%; /* λ = 1 / (1 - 2*5.55555%) */
+    margin-left:-6.249992968750878%; /* λ * 5.55555% */
+    padding-left:6.249992968750878%;padding-right:6.249992968750878%;
+  }
 }
 
 </style>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900">
 </head>
 <body>
+
+<aside>
+  <p>
+    <a rel="me" href="http://github.com/abernier">github</a>
+    <a rel="me" href="http://twitter.com/abernier_">Twitter</a>
+    <a rel="me" href="https://plus.google.com/112312460559484712912">G+</a></body>
+    <a rel="me" href="http://stackoverflow.com/users/133327/abernier">Stackoverflow</a>
+    <a rel="me" href="http://dribbble.com/abernier">dribbble</a>
+    <a rel="me" href="http://pinterest.com/aaabernier/">Pinterest</a>
+    <a rel="me" href="http://www.colourlovers.com/lover/abernier">COLOURlovers</a>
+  </p>
+</aside>
+
 <header>
-  <aside>
-    <p>
-      <a rel="me" href="http://github.com/abernier">github</a>
-      <a rel="me" href="http://twitter.com/abernier_">Twitter</a>
-      <a rel="me" href="https://plus.google.com/112312460559484712912">G+</a></body>
-      <a rel="me" href="http://stackoverflow.com/users/133327/abernier">Stackoverflow</a>
-      <a rel="me" href="http://dribbble.com/abernier">dribbble</a>
-      <a rel="me" href="http://pinterest.com/aaabernier/">Pinterest</a>
-      <a rel="me" href="http://www.colourlovers.com/lover/abernier">COLOURlovers</a>
-    </p>
-  </aside>
   <h1>
     <span class="fn-and-photo"><img class="avatar" src="http://i.imgur.com/fGcHrJy.jpg">Antoine BERNIER</span>
     <abbr title="World Wide Web">www</abbr><span>ebsite</span>

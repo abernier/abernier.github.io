@@ -51,7 +51,7 @@ a:not(:hover) {text-decoration:none;}
 
 body,
 .c {margin:0 5.55555%;/*column*/}
-.no-c {
+.no-cc {
 	width:112.49998593750175%; /* λ = 1 / (1 - 2*5.55555%) */
 	margin-left:-6.249992968750878%; /* λ * 5.55555% */
 	padding-left:6.249992968750878%;padding-right:6.249992968750878%;
