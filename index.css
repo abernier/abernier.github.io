@@ -23,7 +23,7 @@ Margin   | #  1   2   3   4   |   Margin
 
 *,
 :before,
-:after {box-sizing:border-box;}
+:after {-moz-box-sizing:border-box;-webkit-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box;}
 
 body {
   font:300 100%/1.5 "Roboto", Helvetica, sans-serif;
