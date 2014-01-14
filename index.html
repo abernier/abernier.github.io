@@ -68,8 +68,7 @@ blockquote p:after {content:"\201D";}
   .rwd {font-size:100%; margin-top:0;}
   
   header {float:left;}
-  header ~* {margin-left:20em;}
-  header +* {margin-top:5.2em;}
+  header ~ .main {margin-left:20em; margin-top:9.4em;}
 }
 @media (max-width:768px) {
   p.gallery {
@@ -127,114 +126,116 @@ blockquote p:after {content:"\201D";}
   <p>I design and develop user interface for the web.</p>
 </blockquote>-->
 
-<section id="recent">
-  <h2>Recent work</h2>
-  
-  <!--<article  id="pnensba">
-    <h3><abbr title="Pôle numérique de l'École Nationale des Beaux-Arts">pnENSBA</h3>
+<div class="main">
+  <section id="recent">
+    <h2>Recent work</h2>
+    
+    <!--<article  id="pnensba">
+      <h3><abbr title="Pôle numérique de l'École Nationale des Beaux-Arts">pnENSBA</h3>
 
-    <p class="gallery no-c">
-      <a href="images/pnensba-mockup.png"><img src="images/pnensba-mockup-h200.jpg" alt></a>
-    </p>
-  </article>-->
+      <p class="gallery no-c">
+        <a href="images/pnensba-mockup.png"><img src="images/pnensba-mockup-h200.jpg" alt></a>
+      </p>
+    </article>-->
 
-  <article  id="likebook">
-    <h3>My Social Book <small>(previously Likebook)</small></h3>
+    <article  id="likebook">
+      <h3>My Social Book <small>(previously Likebook)</small></h3>
 
-    <!--<blockquote>
-        <p>Turning Facebook into books.</p>
-        — <cite class="vcard">
-            <span class="fn">My little paris</span> - <a href="http://google.com/">Lire l'article</a>
-        </cite>
-    </blockquote>-->
+      <!--<blockquote>
+          <p>Turning Facebook into books.</p>
+          — <cite class="vcard">
+              <span class="fn">My little paris</span> - <a href="http://google.com/">Lire l'article</a>
+          </cite>
+      </blockquote>-->
 
-    <p class="gallery no-c">
-      <a href="images/likebook-homepage.png"><img src="images/likebook-homepage-h200.jpg" alt></a>
-      <a href="images/likebook-3d-parametric-cover.png"><img src="images/likebook-3d-parametric-cover-h200.jpg" alt></a>
-      <a href="images/likebook-app1.png"><img src="images/likebook-app1-h200.jpg" alt></a>
-      <a href="images/likebook-app2.png"><img src="images/likebook-app2-h200.jpg" alt></a>
-      <a href="images/likebook-library.png"><img src="images/likebook-library-h200.jpg" alt></a>
-      <a href="images/likebook-gp-mockup.png"><img src="images/likebook-gp-mockup-h200.jpg" alt></a>
-      <a href="images/likebook-gp-web.png"><img src="images/likebook-gp-web-h200.jpg" alt></a>
-    </p>
+      <p class="gallery no-c">
+        <a href="images/likebook-homepage.png"><img src="images/likebook-homepage-h200.jpg" alt></a>
+        <a href="images/likebook-3d-parametric-cover.png"><img src="images/likebook-3d-parametric-cover-h200.jpg" alt></a>
+        <a href="images/likebook-app1.png"><img src="images/likebook-app1-h200.jpg" alt></a>
+        <a href="images/likebook-app2.png"><img src="images/likebook-app2-h200.jpg" alt></a>
+        <a href="images/likebook-library.png"><img src="images/likebook-library-h200.jpg" alt></a>
+        <a href="images/likebook-gp-mockup.png"><img src="images/likebook-gp-mockup-h200.jpg" alt></a>
+        <a href="images/likebook-gp-web.png"><img src="images/likebook-gp-web-h200.jpg" alt></a>
+      </p>
 
+      <p>
+        <strong>Live demos</strong>:
+        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/index.html">homepage</a>, 
+        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/cover.html">3d parametric cover</a>, 
+        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/checkout.html">checkout</a>, 
+        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/app.html">application</a>, 
+        <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/profile.html">profile</a>, 
+        <a href="https://docs.google.com/file/d/0BwQNm5fx5y30Q2Z4Zm1JM2tvRGM/preview">Gerard Pique's page mockup</a>, 
+        <a href="https://googledrive.com/host/0BwQNm5fx5y30NFNKWVJfMmhsdTQ/gerardpique.html">Gerard Piqué's page</a>
+      </p>
+    </article>
+    
+    <article>
+      <h3>ZAPtélé</h3>
+
+      <p class="gallery no-c">
+        <a href="images/zaptele-logo.png"><img src="images/zaptele-logo-h200.jpg" alt></a>
+      </p>
+
+      <p>
+        <strong>Live demos</strong>:
+        <a href="http://dabblet.com/gist/5319853/">parametric logo</a>, <a href="http://www.zap-tele.com">responsive website</a>
+      </p>
+    </article>
+
+    <article>
+      <h3>Is Cool</h3>
+
+      <p class="gallery no-c">
+        <a href="images/iscool-pelican.png"><img src="images/iscool-pelican-h200.jpg" alt></a>
+        <a href="images/iscool-mammoth.png"><img src="images/iscool-mammoth-h200.jpg" alt></a>
+        <a href="images/iscool-mammoth2.png"><img src="images/iscool-mammoth2-h200.jpg" alt></a>
+        <a href="images/iscool-tickets.png"><img src="images/iscool-tickets-h200.jpg" alt></a>
+        <a href="images/iscool-album.png"><img src="images/iscool-album-h200.jpg" alt></a>
+        <a href="images/iscool-yeti-bathroom.png"><img src="images/iscool-yeti-bathroom-h200.jpg" alt></a>
+        <a href="images/iscool-yeti-village.png"><img src="images/iscool-yeti-village-h200.jpg" alt></a>
+      </p>
+    </article>
+
+  </section>
+
+  <section>
+    <h2>Experiments</h2>
+    
     <p>
-      <strong>Live demos</strong>:
-      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/index.html">homepage</a>, 
-      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/cover.html">3d parametric cover</a>, 
-      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/checkout.html">checkout</a>, 
-      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/app.html">application</a>, 
-      <a href="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/profile.html">profile</a>, 
-      <a href="https://docs.google.com/file/d/0BwQNm5fx5y30Q2Z4Zm1JM2tvRGM/preview">Gerard Pique's page mockup</a>, 
-      <a href="https://googledrive.com/host/0BwQNm5fx5y30NFNKWVJfMmhsdTQ/gerardpique.html">Gerard Piqué's page</a>
+      <a href="http://bl.ocks.org/abernier/raw/afdea084a7bf48fbddfc/">Pictocool</a>, 
+      <a href="http://bl.ocks.org/abernier/raw/3306964/">Inertia</a>, 
+      <a href="http://bl.ocks.org/abernier/raw/8275645/">Responsive flyout menu</a>, 
+      <a href="https://gist.github.com/abernier/7296362">UNIX tips</a>, 
+      <a href="https://gist.github.com/abernier/6461914">JavaScript tips</a>, 
+      <a href="http://jsfiddle.net/abernier/GzAxS/">CSS counter increment</a>, 
+      <a href="https://gist.github.com/abernier/6008348">cURL tips</a>, 
+      <a href="javascript:(function (src) {var s;s=document.createElement('script');s.src=src;document.body.appendChild(s);}('https://gist.github.com/abernier/cb2cf45a75225f96eff1/raw/bookmarklet.js'));">bookmarklet</a>, 
+      <a href="http://bl.ocks.org/3411189">Box2D</a>, 
+      <a href="https://gist.github.com/3227047">Clone gist in Mac</a>, 
+      <a href="https://gist.github.com/3225993">loop.coffee</a>, 
+      <a href="http://bl.ocks.org/3193698">$.inside</a>, 
+      <a href="https://gist.github.com/3191472">$.fn.offsetRelative</a>, 
+      <a href="http://bl.ocks.org/3156626">#Renard's</a>, 
+      <a href="http://bl.ocks.org/3157389">$.fn.baseline</a>, 
+      <a href="http://stackoverflow.com/questions/1034881/what-is-the-best-practice-for-parsing-remote-content-with-jquery/11379717#11379717">fetchDoc</a>, 
+      <a href="http://bl.ocks.org/abernier/1653407">$.fn.segment</a>, 
+      <a href="http://bl.ocks.org/3111167">CSS 3D Gauge</a>, 
+      <a href="http://bl.ocks.org/1512474">2D camera</a>, 
+      <a href="http://bl.ocks.org/1515911">Google camera</a>, 
+      <a href="http://bl.ocks.org/3136589">flipbook</a>, 
+      <a href="http://bl.ocks.org/3070589">Link anatomy</a>, 
+      <a href="https://gist.github.com/2890490">µdatas memo</a>, 
+      <a href="http://bl.ocks.org/2867324">CSS vertical centering technique</a>, 
+      <a href="http://lea.verou.me/css3patterns/#houndstooth">Houndstooth CSS3 pattern</a>, 
+      <a href="http://bl.ocks.org/1788900">$.fn.firework</a>, 
+      <a href="https://gist.github.com/raw/1368637/acegist.user.js">ACEgist (userscript)</a>, 
+      <a href="http://search.npmjs.org/#/nq">nq</a>, 
+      <a href="http://bl.ocks.org/3136666">animationframe</a>, 
+      <a href="http://bl.ocks.org/abernier/1101653">method/function invocation pattern</a>
     </p>
-  </article>
-  
-  <article>
-    <h3>ZAPtélé</h3>
-
-    <p class="gallery no-c">
-      <a href="images/zaptele-logo.png"><img src="images/zaptele-logo-h200.jpg" alt></a>
-    </p>
-
-    <p>
-      <strong>Live demos</strong>:
-      <a href="http://dabblet.com/gist/5319853/">parametric logo</a>, <a href="http://www.zap-tele.com">responsive website</a>
-    </p>
-  </article>
-
-  <article>
-    <h3>Is Cool</h3>
-
-    <p class="gallery no-c">
-      <a href="images/iscool-pelican.png"><img src="images/iscool-pelican-h200.jpg" alt></a>
-      <a href="images/iscool-mammoth.png"><img src="images/iscool-mammoth-h200.jpg" alt></a>
-      <a href="images/iscool-mammoth2.png"><img src="images/iscool-mammoth2-h200.jpg" alt></a>
-      <a href="images/iscool-tickets.png"><img src="images/iscool-tickets-h200.jpg" alt></a>
-      <a href="images/iscool-album.png"><img src="images/iscool-album-h200.jpg" alt></a>
-      <a href="images/iscool-yeti-bathroom.png"><img src="images/iscool-yeti-bathroom-h200.jpg" alt></a>
-      <a href="images/iscool-yeti-village.png"><img src="images/iscool-yeti-village-h200.jpg" alt></a>
-    </p>
-  </article>
-
-</section>
-
-<section>
-  <h2>Experiments</h2>
-  
-  <p>
-    <a href="http://bl.ocks.org/abernier/raw/afdea084a7bf48fbddfc/">Pictocool</a>, 
-    <a href="http://bl.ocks.org/abernier/raw/3306964/">Inertia</a>, 
-    <a href="http://bl.ocks.org/abernier/raw/8275645/">Responsive flyout menu</a>, 
-    <a href="https://gist.github.com/abernier/7296362">UNIX tips</a>, 
-    <a href="https://gist.github.com/abernier/6461914">JavaScript tips</a>, 
-    <a href="http://jsfiddle.net/abernier/GzAxS/">CSS counter increment</a>, 
-    <a href="https://gist.github.com/abernier/6008348">cURL tips</a>, 
-    <a href="javascript:(function (src) {var s;s=document.createElement('script');s.src=src;document.body.appendChild(s);}('https://gist.github.com/abernier/cb2cf45a75225f96eff1/raw/bookmarklet.js'));">bookmarklet</a>, 
-    <a href="http://bl.ocks.org/3411189">Box2D</a>, 
-    <a href="https://gist.github.com/3227047">Clone gist in Mac</a>, 
-    <a href="https://gist.github.com/3225993">loop.coffee</a>, 
-    <a href="http://bl.ocks.org/3193698">$.inside</a>, 
-    <a href="https://gist.github.com/3191472">$.fn.offsetRelative</a>, 
-    <a href="http://bl.ocks.org/3156626">#Renard's</a>, 
-    <a href="http://bl.ocks.org/3157389">$.fn.baseline</a>, 
-    <a href="http://stackoverflow.com/questions/1034881/what-is-the-best-practice-for-parsing-remote-content-with-jquery/11379717#11379717">fetchDoc</a>, 
-    <a href="http://bl.ocks.org/abernier/1653407">$.fn.segment</a>, 
-    <a href="http://bl.ocks.org/3111167">CSS 3D Gauge</a>, 
-    <a href="http://bl.ocks.org/1512474">2D camera</a>, 
-    <a href="http://bl.ocks.org/1515911">Google camera</a>, 
-    <a href="http://bl.ocks.org/3136589">flipbook</a>, 
-    <a href="http://bl.ocks.org/3070589">Link anatomy</a>, 
-    <a href="https://gist.github.com/2890490">µdatas memo</a>, 
-    <a href="http://bl.ocks.org/2867324">CSS vertical centering technique</a>, 
-    <a href="http://lea.verou.me/css3patterns/#houndstooth">Houndstooth CSS3 pattern</a>, 
-    <a href="http://bl.ocks.org/1788900">$.fn.firework</a>, 
-    <a href="https://gist.github.com/raw/1368637/acegist.user.js">ACEgist (userscript)</a>, 
-    <a href="http://search.npmjs.org/#/nq">nq</a>, 
-    <a href="http://bl.ocks.org/3136666">animationframe</a>, 
-    <a href="http://bl.ocks.org/abernier/1101653">method/function invocation pattern</a>
-  </p>
-</section>
+  </section>
+</div>
 
 <script type="text/javascript">
 var _gaq = _gaq || [];
