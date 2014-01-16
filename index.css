@@ -56,3 +56,5 @@ body,
 	margin-left:-6.249992968750878%; /* λ * 5.55555% */
 	padding-left:6.249992968750878%;padding-right:6.249992968750878%;
 }
+
+.foot {clear:both; text-align:center; margin-top:2em;margin-bottom:2em; border-top:1px solid;}
