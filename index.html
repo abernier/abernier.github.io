@@ -279,7 +279,10 @@ blockquote p:after {content:"\201D";}
   display:block; width:100%; height:100%; background-repeat:no-repeat; background-position:center; background-size:contain;
 }
 .lightbox nav {position:absolute; bottom:0;right:0; margin:.5em;}
-.lightbox kbd {font-family:inherit; display:inline-block; background:black; color:white; padding:.5em; border-radius:3px;}
+.lightbox .kbd {display:inline-block; background:black; color:white; padding:.5em; border-radius:3px;}
+.lightbox kbd {font-family:inherit; font-size:50%;}
+.lightbox kbd:before {content:"(";}
+.lightbox kbd:after {content:")";}
 .lightbox a {opacity:.5;}
 .lightbox a:hover,
 .lightbox a:active,
@@ -308,9 +311,9 @@ blockquote p:after {content:"\201D";}
     var nth = $items.index(this) + 1;
 
     // render markup
-    var $el = $('<div class="lightbox"><a class="close" href="javascript:void 0;"><kbd>ESC</kbd></a></div>').appendTo(document.body);
+    var $el = $('<div class="lightbox"><a class="kbd close" href="javascript:void 0;">Close <kbd>ESC</kbd></a></div>').appendTo(document.body);
     var $img = $('<div class="img">').appendTo($el);
-    var $nav = $('<nav><a rel="prev" href="javascript:void 0;"><kbd>LEFT</kbd></a> <a rel="next" href="javascript:void 0;"><kbd>RIGHT</kbd></a></nav>').appendTo($el);
+    var $nav = $('<nav><a class="kbd" rel="prev" href="javascript:void 0;"><kbd>LEFT</kbd> Previous</a> <a class="kbd" rel="next" href="javascript:void 0;">Next <kbd>RIGHT</kbd></a></nav>').appendTo($el);
     if (l < 2) {
       $nav.hide(); // hide nav if items <2
     }
