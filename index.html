@@ -298,18 +298,23 @@ blockquote p:after {content:"\201D";}
 
     e.preventDefault();
 
+    // backup html's initial overflow and make it hidden
+    var htmlOverflowOrig = $('html').css('overflow');
+    $('html').css('overflow', 'hidden');
+
+    // compute nth
     var $items = $(this).closest('.gallery').find('a');
     var l = $items.length;
     var nth = $items.index(this) + 1;
 
+    // render markup
     var $el = $('<div class="lightbox"><a class="close" href="javascript:void 0;"><kbd>ESC</kbd></a></div>').appendTo(document.body);
     var $img = $('<div class="img">').appendTo($el);
-
     var $nav = $('<nav><a rel="prev" href="javascript:void 0;"><kbd>LEFT</kbd></a> <a rel="next" href="javascript:void 0;"><kbd>RIGHT</kbd></a></nav>').appendTo($el);
     if (l < 2) {
       $nav.hide(); // hide nav if items <2
     }
-
+    // cache elements
     var $esc = $('.close', $el);
     var $prev = $('[rel="prev"]', $nav);
     var $next = $('[rel="next"]', $nav);
@@ -360,8 +365,12 @@ blockquote p:after {content:"\201D";}
     }
     function remove() {
       $el.remove();
+
+      // restore initial html's overflow
+      $('html').css('overflow', htmlOverflowOrig);
     }
     
+    // On click => go next
     $el.click(function () {next(true);});
 
     //
@@ -396,9 +405,14 @@ blockquote p:after {content:"\201D";}
       
     });
 
+    //
+    // Buttons
+    //
+
     $esc.click(function () {remove(); return false;});
     $prev.click(function () {prev(); return false;});
     $next.click(function () {next(); return false;});
+    
   });
 
   // Read more: http://bradfrostweb.com/blog/post/conditional-lightbox/
