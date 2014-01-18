@@ -298,9 +298,36 @@ blockquote p:after {content:"\201D";}
 .lightbox .demo {position:absolute; right:0; top:0; margin:.5em; background:white; color:black; opacity:.8; text-align:left;}
 .lightbox .demo:after {content:attr(href); display:block; font-size:50%; max-width:11em;text-overflow: ellipsis;overflow:hidden;}
 .lightbox .demo:hover:after {max-width:99em;}
+.lightbox .meter {position:absolute;bottom:0;left:0; width:0%; height:3px; background:white;}
 </style>
 <script src="jquery-2.0.3.js"></script>
 <script src="harvey.js"></script>
+<script>
+$.createCache = function(requestFunction) {
+  var cache = {};
+  return function (key, callback) {
+    if (!cache[key]) {
+      cache[key] = $.Deferred(function (defer) {
+        requestFunction(defer, key);
+      }).promise();
+    }
+    return cache[key].done(callback);
+  };
+};
+$.loadImage = $.createCache(function(defer, url) {
+  var req = new XMLHttpRequest();  
+  req.onprogress = function (e) {
+    defer.notify(e);
+  };
+  req.onload = function () {
+    defer.resolve(url);
+  };
+  req.onerror = defer.reject;
+
+  req.open("GET", url, true);  
+  req.send();
+});
+</script>
 <script>
 (function () {
   var lightboxEnabled = false;
@@ -333,6 +360,7 @@ blockquote p:after {content:"\201D";}
       $nav.hide(); // hide nav if items <2
     }
     var $demo = $('<a class="kbd demo" href="javascript:void 0;" target="_blank">Live demo <kbd>ENTER</kbd></a>').appendTo($el);
+    var $progressbar = $('<div class="meter">').appendTo($el);
 
     function render(item) {
       //
@@ -340,7 +368,16 @@ blockquote p:after {content:"\201D";}
       //
       var fullimg = $(item).attr('href');
 
-      //$img.css('background-image', 'url(' + fullimg + ')');
+      /* preload images */
+      $.loadImage(fullimg).progress(function (e) {
+        if (e.lengthComputable) {
+          //progressBar.value = e.loaded / e.total * 100;
+          $progressbar.css('width', e.loaded / e.total * 100 + '%')
+        }
+      }).done(function (url) {
+        $progressbar.css('width', '0%');
+      });
+
       $img.attr('src', fullimg);
 
       //
@@ -356,6 +393,7 @@ blockquote p:after {content:"\201D";}
         $demo.attr('href', 'javascript:void 0;');
         $demo.hide();
       }
+
     }
     render($link);
 
