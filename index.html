@@ -303,30 +303,26 @@ blockquote p:after {content:"\201D";}
 <script src="jquery-2.0.3.js"></script>
 <script src="harvey.js"></script>
 <script>
-$.createCache = function(requestFunction) {
-  var cache = {};
-  return function (key, callback) {
-    if (!cache[key]) {
-      cache[key] = $.Deferred(function (defer) {
-        requestFunction(defer, key);
-      }).promise();
-    }
-    return cache[key].done(callback);
-  };
-};
-$.loadImage = $.createCache(function(defer, url) {
+$.loadImage = function (url) {
+  var dfd = $.Deferred();
+
   var req = new XMLHttpRequest();  
   req.onprogress = function (e) {
-    defer.notify(e);
+    dfd.notify(e);
   };
   req.onload = function () {
-    defer.resolve(url);
+    dfd.resolve(url);
   };
-  req.onerror = defer.reject;
+  req.onerror = dfd.reject;
 
   req.open("GET", url, true);  
   req.send();
-});
+
+  var ret = dfd.promise();
+  ret.dfd = dfd;
+
+  return ret;
+}
 </script>
 <script>
 (function () {
@@ -367,21 +363,31 @@ $.loadImage = $.createCache(function(defer, url) {
     var $demo = $('<a class="kbd demo" href="javascript:void 0;" target="_blank">Live demo <kbd>ENTER</kbd></a>').appendTo($el);
     var $progressbar = $('<div class="meter">').appendTo($el);
 
+    var loading;
     function render(item) {
       //
       // image
       //
       var fullimg = $(item).attr('href');
 
-      /* preload images */
-      $.loadImage(fullimg).progress(function (e) {
-        if (e.lengthComputable) {
-          //progressBar.value = e.loaded / e.total * 100;
-          $progressbar.css('width', e.loaded / e.total * 100 + '%')
-        }
-      }).done(function (url) {
-        $progressbar.css('width', '0%');
-      });
+      if (loading) {
+        loading.dfd.reject(); // cancel previous one
+        loading = undefined;
+        load();
+      } else {
+        load();
+      }
+      function load() {
+        loading = $.loadImage(fullimg).progress(function (e) {
+          if (e.lengthComputable) {
+            //progressBar.value = e.loaded / e.total * 100;
+            $progressbar.css('width', e.loaded / e.total * 100 + '%')
+          }
+        }).done(function (url) {
+          loading = undefined;
+          $progressbar.css('width', '0%');
+        });
+      }
 
       $img.attr('src', fullimg);
 
