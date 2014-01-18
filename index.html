@@ -160,13 +160,13 @@ blockquote p:after {content:"\201D";}
       </blockquote>-->
 
       <p class="gallery">
-        <a href="images/likebook-homepage.png"><img src="images/likebook-homepage-h200.jpg" alt></a>
-        <a href="images/likebook-3d-parametric-cover.png"><img src="images/likebook-3d-parametric-cover-h200.jpg" alt></a>
-        <a href="images/likebook-app1.png"><img src="images/likebook-app1-h200.jpg" alt></a>
-        <a href="images/likebook-app2.png"><img src="images/likebook-app2-h200.jpg" alt></a>
-        <a href="images/likebook-library.png"><img src="images/likebook-library-h200.jpg" alt></a>
-        <a href="images/likebook-gp-mockup.png"><img src="images/likebook-gp-mockup-h200.jpg" alt></a>
-        <a href="images/likebook-gp-web.png"><img src="images/likebook-gp-web-h200.jpg" alt></a>
+        <a href="images/likebook-homepage.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/index.html"><img src="images/likebook-homepage-h200.jpg" alt></a>
+        <a href="images/likebook-3d-parametric-cover.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/cover.html"><img src="images/likebook-3d-parametric-cover-h200.jpg" alt></a>
+        <a href="images/likebook-app1.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/app.html"><img src="images/likebook-app1-h200.jpg" alt></a>
+        <a href="images/likebook-app2.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/app.html"><img src="images/likebook-app2-h200.jpg" alt></a>
+        <a href="images/likebook-library.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/profile.html"><img src="images/likebook-library-h200.jpg" alt></a>
+        <a href="images/likebook-gp-mockup.png" data-lightbox-demo="https://docs.google.com/file/d/0BwQNm5fx5y30Q2Z4Zm1JM2tvRGM/preview"><img src="images/likebook-gp-mockup-h200.jpg" alt></a>
+        <a href="images/likebook-gp-web.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30NFNKWVJfMmhsdTQ/gerardpique.html"><img src="images/likebook-gp-web-h200.jpg" alt></a>
       </p>
 
       <p>
@@ -284,6 +284,7 @@ blockquote p:after {content:"\201D";}
 .lightbox img {display:inline-block;vertical-align:middle; max-width:100%; max-height:100%;}
 
 .lightbox nav {position:absolute; bottom:0;right:0; margin:.5em;}
+.lightbox nav a+a {margin-left:.25em;}
 .lightbox .kbd {display:inline-block; background:black; color:white; padding:.5em; border-radius:3px;}
 .lightbox kbd {font-family:inherit; font-size:50%; vertical-align:middle; te}
 .lightbox kbd:before {content:"(";}
@@ -294,6 +295,7 @@ blockquote p:after {content:"\201D";}
 .lightbox a.active {opacity:1;}
 .lightbox a.disabled {opacity:0.2; cursor:not-allowed;}
 .lightbox .close {position:absolute; left:0; top:0; margin:.5em;}
+.lightbox .demo {position:absolute; right:0; top:0; margin:.5em; background:#FEEF70; color:black; opacity:.8;}
 </style>
 <script src="jquery-2.0.3.js"></script>
 <script src="harvey.js"></script>
@@ -301,40 +303,59 @@ blockquote p:after {content:"\201D";}
 (function () {
   var lightboxEnabled = false;
 
-  $('body').delegate('.gallery a', 'click', function (e) {
+  $('body').delegate('.gallery a img', 'click', function (e) {
     if (!lightboxEnabled) return true;
 
     e.preventDefault();
+
+    var $link = $(this).closest('a');
 
     // backup html's initial overflow and make it hidden
     var htmlOverflowOrig = $('html').css('overflow');
     $('html').css('overflow', 'hidden');
 
     // compute nth
-    var $items = $(this).closest('.gallery').find('a');
+    var $items = $link.closest('.gallery').find('a');
     var l = $items.length;
-    var nth = $items.index(this) + 1;
+    var nth = $items.index($link) + 1;
 
     // render markup
-    var $el = $('<div class="lightbox"><a class="kbd close" href="javascript:void 0;">Close <kbd>ESC</kbd></a></div>').appendTo(document.body);
+    var $el = $('<div class="lightbox"></div>').appendTo(document.body);
+    var $esc =  $('<a class="kbd close" href="javascript:void 0;">Close <kbd>ESC</kbd></a>').prependTo($el);
     //var $img = $('<div class="img">').appendTo($el);
-    var $img = $('<img src="" alt>').appendTo($el);
-    var $nav = $('<nav><a class="kbd" rel="prev" href="javascript:void 0;"><kbd>LEFT</kbd> Previous</a> <a class="kbd" rel="next" href="javascript:void 0;">Next <kbd>RIGHT</kbd></a></nav>').appendTo($el);
+    var $img =  $('<img src="" alt>').appendTo($el);
+    var $nav =  $('<nav></nav>').appendTo($el);
+    var $prev =   $('<a class="kbd" rel="prev" href="javascript:void 0;"><kbd>LEFT</kbd> Previous</a>').appendTo($nav);
+    var $next =   $('<a class="kbd" rel="next" href="javascript:void 0;">Next <kbd>RIGHT</kbd></a>').appendTo($nav);
     if (l < 2) {
       $nav.hide(); // hide nav if items <2
     }
-    // cache elements
-    var $esc = $('.close', $el);
-    var $prev = $('[rel="prev"]', $nav);
-    var $next = $('[rel="next"]', $nav);
+    var $demo = $('<a class="kbd demo" href="javascript:void 0;" target="_blank">Live demo <kbd>ENTER</kbd></a>').appendTo($el);
 
     function render(item) {
+      //
+      // image
+      //
       var fullimg = $(item).attr('href');
 
       //$img.css('background-image', 'url(' + fullimg + ')');
       $img.attr('src', fullimg);
+
+      //
+      // demo link
+      //
+
+      var demoLink = $(item).data('lightbox-demo');
+
+      if (demoLink && demoLink.length) {
+        $demo.attr('href', demoLink);
+        $demo.show();
+      } else {
+        $demo.attr('href', 'javascript:void 0;');
+        $demo.hide();
+      }
     }
-    render(this);
+    render($link);
 
     // nth setter
     function setNth(x) {
@@ -379,10 +400,26 @@ blockquote p:after {content:"\201D";}
       // restore initial html's overflow
       $('html').css('overflow', htmlOverflowOrig);
     }
+    function demo() {
+      if (!$demo.is(':visible')) return;
+
+      // http://stackoverflow.com/questions/4907843/open-url-in-new-tab-using-javascript
+      var newWindow = window.open($demo.attr('href'), '_blank');
+      newWindow.focus();
+    }
     
     // On click => go next
     $img.click(function () {next(true); return false;});
-    $el.click(function () {remove(); return false;});
+
+    $el.click(function (e) {
+      //console.log(e);
+
+      if (e.target !== $demo[0]) { // don't close if click comes from demo link
+        remove();
+      }
+
+      // don't return false here, to let click propagate to the page
+    });
 
     //
     // Keyboard bindings
@@ -411,6 +448,12 @@ blockquote p:after {content:"\201D";}
       if (e.keyCode === 39) { 
         next();
         fakeActiveImpulse($next);
+        return false;
+      }
+      // right
+      if (e.keyCode === 13) {
+        fakeActiveImpulse($demo);
+        demo();
         return false;
       }
       
