@@ -306,20 +306,21 @@ blockquote p:after {content:"\201D";}
 $.loadImage = function (url) {
   var dfd = $.Deferred();
 
-  var req = new XMLHttpRequest();  
-  req.onprogress = function (e) {
+  var xhr = new XMLHttpRequest();  
+  xhr.onprogress = function (e) {
     dfd.notify(e);
   };
-  req.onload = function () {
+  xhr.onload = function () {
     dfd.resolve(url);
   };
-  req.onerror = dfd.reject;
+  xhr.onerror = dfd.reject;
 
-  req.open("GET", url, true);  
-  req.send();
+  xhr.open("GET", url, true);
+  xhr.send();
 
   var ret = dfd.promise();
-  ret.dfd = dfd;
+  ret.dfd = dfd; // expose a reference to the deferred in order to be able to reject it
+  ret.xhr = xhr;
 
   return ret;
 }
@@ -364,32 +365,39 @@ $.loadImage = function (url) {
     var $progressbar = $('<div class="meter">').appendTo($el);
 
     var loading;
+    var xhr2capable = ('onprogress' in new XMLHttpRequest);
     function render(item) {
       //
       // image
       //
       var fullimg = $(item).attr('href');
 
-      if (loading) {
-        loading.dfd.reject(); // cancel previous one
-        loading = undefined;
-        load();
-      } else {
-        load();
-      }
-      function load() {
-        loading = $.loadImage(fullimg).progress(function (e) {
-          if (e.lengthComputable) {
-            //progressBar.value = e.loaded / e.total * 100;
-            $progressbar.css('width', e.loaded / e.total * 100 + '%')
-          }
-        }).done(function (url) {
+      if (xhr2capable) {
+        // progress bar
+        if (loading) {
+          loading.dfd.reject(); // cancel previous one
+          loading.xhr.abort();
           loading = undefined;
-          $progressbar.css('width', '0%');
-        });
-      }
 
-      $img.attr('src', fullimg);
+          load();
+        } else {
+          load();
+        }
+        function load() {
+          loading = $.loadImage(fullimg).progress(function (e) {
+            if (e.lengthComputable) {
+              $progressbar.css('width', e.loaded / e.total * 100 + '%')
+            }
+          }).done(function (url) {
+            loading = undefined;
+            $progressbar.css('width', '0%');
+
+            $img.attr('src', url);
+          });
+        }
+      } else {
+        $img.attr('src', url);
+      }
 
       //
       // demo link
