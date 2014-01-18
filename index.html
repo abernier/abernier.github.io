@@ -276,8 +276,13 @@ blockquote p:after {content:"\201D";}
 .lightbox {text-align:center;}
 .lightbox:before {content:" "; display:inline-block;vertical-align:middle; height:100%; width:0;}
 .lightbox img {display:inline-block;vertical-align:middle; max-width:100%; max-height:100%;}
+.lightbox .img-wrap {
+  width:100%;height:100%; position:absolute; top:0;left:0; display:inline-block;vertical-align:middle;
+  background-position:50% 50%; background-repeat:no-repeat; background-size:contain;
+}
+.lightbox .img-wrap:before {content:" "; display:inline-block;vertical-align:middle; height:100%;width:0;}
 
-.lightbox nav {position:absolute; bottom:0;right:0; margin:.5em;}
+.lightbox nav {position:absolute;bottom:0;right:0;z-index:99; margin:.5em;}
 .lightbox nav a+a {margin-left:.25em;}
 .lightbox .kbd {display:inline-block; background:black; color:white; padding:.5em; border-radius:3px;}
 .lightbox kbd {font-family:inherit; font-size:50%; vertical-align:middle; te}
@@ -288,11 +293,20 @@ blockquote p:after {content:"\201D";}
 .lightbox a:active,
 .lightbox a.active {opacity:1;}
 .lightbox a.disabled {opacity:0.2; cursor:not-allowed;}
-.lightbox .close {position:absolute; left:0; top:0; margin:.5em;}
-.lightbox .demo {position:absolute; right:0; top:0; margin:.5em; background:white; color:black; opacity:.8; text-align:left;}
+.lightbox .prevnext {display:block;}
+.lightbox .close {position:absolute;left:0;top:0;z-index:99; margin:.5em;}
+.lightbox .demo {position:absolute;right:0;top:0;z-index:99; margin:.5em; background:white; color:black; opacity:.8; text-align:left;}
 .lightbox .demo:after {content:attr(href); display:block; font-size:50%; max-width:11em;text-overflow: ellipsis;overflow:hidden;}
 .lightbox .demo:hover:after {max-width:99em;}
-.lightbox .meter {position:absolute;bottom:0;left:0; width:0%; height:3px; background:white;}
+.lightbox .meter {position:absolute;bottom:0;left:0;z-index:99; width:0%; height:3px; background:#FEEF70;}
+
+.lightbox:not(.wide) .unwide,
+.lightbox.wide .wide {opacity:.2;}
+.lightbox:not(.wide) .img-wrap {background-image:none!important;}
+.lightbox.wide .img-wrap {background-size:cover;}
+.lightbox.wide .img-wrap img {position:relative; z-index:-1; opacity:0;}
+.lightbox .wide {margin-bottom:.25em;}
+.lightbox .unwide {margin-top:.25em;}
 </style>
 <script src="jquery-2.0.3.js"></script>
 <script src="harvey.js"></script>
@@ -348,11 +362,16 @@ $.loadImage = function (url) {
     var $el =        $('<div class="lightbox"></div>').appendTo(document.body);
     var $esc =         $('<a class="kbd close" href="javascript:void 0;">Close <kbd>ESC</kbd></a>').prependTo($el);
     var $img =         $('<img src="" alt>').appendTo($el);
+    var $imgWrap =     $img.wrap('<div class="img-wrap"/>').parent();
     var $nav =         $('<nav></nav>').appendTo($el);
-    var $prev =          $('<a class="kbd" rel="prev" href="javascript:void 0;"><kbd>LEFT</kbd> Previous</a>').appendTo($nav);
-    var $next =          $('<a class="kbd" rel="next" href="javascript:void 0;">Next <kbd>RIGHT</kbd></a>').appendTo($nav);
+    var $prevnext =      $('<span class="prevnext">').appendTo($nav);
+    var $prev =            $('<a class="kbd" rel="prev" href="javascript:void 0;"><kbd>LEFT</kbd> Previous</a>').appendTo($prevnext);
+    var $next =            $('<a class="kbd" rel="next" href="javascript:void 0;">Next <kbd>RIGHT</kbd></a>').appendTo($prevnext);
+    var $wide =          $('<a class="kbd wide" href="javascript:void 0;">Wide <kbd>UP</kbd></a>').prependTo($nav);
+    var $unwide =        $('<a class="kbd unwide" href="javascript:void 0;">Unwide <kbd>DOWN</kbd></a>').appendTo($nav);
     if (l < 2) {
-      $nav.hide(); // hide nav if items <2
+      $prev.hide(); // hide if items <2
+      $next.hide(); // hide if items <2
     }
     var $demo =        $('<a class="kbd demo" href="javascript:void 0;" target="_blank">Live demo <kbd>ENTER</kbd></a>').appendTo($el);
     var $progressbar = $('<div class="meter">').appendTo($el);
@@ -366,18 +385,13 @@ $.loadImage = function (url) {
       var fullimg = $(item).attr('href');
       var smallimg = $(item).find('img').attr('src');
 
-      if (xhr2capable) {
-        // progress bar
-        if (loading) {
-          loading.dfd.reject(); // cancel previous one
-          loading.xhr.abort();
-          loading = undefined;
+      function changeImg(url) {
+        $img.attr('src', url);
+        $imgWrap.css('background-image', 'url(' + url + ')');
+      }
 
-          load();
-        } else {
-          load();
-        }
-        function load() {
+      if (xhr2capable) {
+        function loadImg() {
           //$img.attr('src', smallimg);
 
           loading = $.loadImage(fullimg).progress(function (e) {
@@ -388,11 +402,21 @@ $.loadImage = function (url) {
             loading = undefined;
             $progressbar.css('width', '0%');
 
-            $img.attr('src', url);
+            changeImg(url);
           });
         }
+        // progress bar
+        if (loading) {
+          loading.dfd.reject(); // cancel previous one
+          loading.xhr.abort();
+          loading = undefined;
+
+          loadImg();
+        } else {
+          loadImg();
+        }
       } else {
-        $img.attr('src', url);
+        changeImg(fullimg);
       }
 
       //
@@ -463,9 +487,21 @@ $.loadImage = function (url) {
       var newWindow = window.open($demo.attr('href'), '_blank');
       newWindow.focus();
     }
+    function wide() {
+      $el.addClass('wide');
+    }
+    function unwide() {
+      $el.removeClass('wide');
+    }
     
     // On click => go next
     $img.click(function () {next(true); return false;});
+    $el.delegate('.img-wrap', 'click', function () {
+      if ($el.is('.wide')) {
+        next(true); return false;
+      }
+      return true;
+    });
 
     $el.click(function (e) {
       //console.log(e);
@@ -512,6 +548,18 @@ $.loadImage = function (url) {
         demo();
         return false;
       }
+      // up
+      if (e.keyCode === 38) {
+        fakeActiveImpulse($wide);
+        wide();
+        return false;
+      }
+      // down
+      if (e.keyCode === 40) {
+        fakeActiveImpulse($unwide);
+        unwide();
+        return false;
+      }
       
     }
     $(document).keydown(keydown);
@@ -523,6 +571,8 @@ $.loadImage = function (url) {
     $esc.click(function () {remove(); return false;});
     $prev.click(function () {prev(); return false;});
     $next.click(function () {next(); return false;});
+    $wide.click(function () {wide(); return false;});
+    $unwide.click(function () {unwide(); return false;});
     
   });
 
