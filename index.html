@@ -332,12 +332,17 @@ $.loadImage = $.createCache(function(defer, url) {
 (function () {
   var lightboxEnabled = false;
 
-  $('body').delegate('.gallery a img', 'click', function (e) {
+  $('body').delegate('.gallery a', 'click', function (e) {
     if (!lightboxEnabled) return true;
 
-    e.preventDefault();
+    var $link = $(this);
 
-    var $link = $(this).closest('a');
+    // only works if link has a image inside
+    if ($link.has('img').length < 1) {
+      return true;
+    }
+
+    e.preventDefault();
 
     // backup html's initial overflow and make it hidden
     var htmlOverflowOrig = $('html').css('overflow');
