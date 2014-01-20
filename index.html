@@ -226,10 +226,10 @@ blockquote p:after {content:"\201D";}
       <a href="images/inertia.png" data-lightbox-demo="http://bl.ocks.org/abernier/raw/3306964/"><img src="images/inertia-h200.jpg" alt></a>
       <a href="images/pacman.png" data-lightbox-demo="http://bl.ocks.org/abernier/raw/4961058/"><img src="images/pacman-h200.jpg" alt></a>
       <a href="images/flyout.gif" data-lightbox-demo="http://bl.ocks.org/abernier/raw/8275645/"><img src="images/flyout-h200.gif" alt></a>
-      <a href="images/box2d.png" data-lightbox-demo="http://bl.ocks.org/abernier/3411189"><img src="images/box2d-h200.jpg" alt></a>
-      <a href="images/renard.png" data-lightbox-demo="http://bl.ocks.org/abernier/3156626"><img src="images/renard-h200.jpg" alt></a>
-      <a href="images/flipbook.png" data-lightbox-demo="http://bl.ocks.org/abernier/3136589"><img src="images/flipbook-h200.jpg" alt></a>
-      <a href="images/googlecamera.png" data-lightbox-demo="http://bl.ocks.org/abernier/1515911"><img src="images/googlecamera-h200.jpg" alt></a>
+      <a href="images/box2d.png" data-lightbox-demo="http://bl.ocks.org/3411189"><img src="images/box2d-h200.jpg" alt></a>
+      <a href="images/renard.png" data-lightbox-demo="http://bl.ocks.org/3156626"><img src="images/renard-h200.jpg" alt></a>
+      <a href="images/flipbook.png" data-lightbox-demo="http://bl.ocks.org/3136589"><img src="images/flipbook-h200.jpg" alt></a>
+      <a href="images/googlecamera.png" data-lightbox-demo="http://bl.ocks.org/1515911"><img src="images/googlecamera-h200.jpg" alt></a>
     </p>
     
     <p>
@@ -343,6 +343,31 @@ $.loadImage = function (url) {
   return ret;
 }
 </script>
+
+<style>
+.gallery + p a.highlight {text-decoration:underline;}
+.gallery [data-lightbox-demo].highlight {/*border-color:transparent;*/}
+</style>
+<script>
+(function () {
+  $('.gallery [data-lightbox-demo]').hover(function () {
+    var demoLink = $(this).data('lightbox-demo');
+    
+    $(this).closest('.gallery').find('+p a[href]').filter(function (i, el) {return $(el).attr('href') === demoLink;}).addClass('highlight');
+  }, function () {
+    $(this).closest('.gallery').find('+p a[href]').removeClass('highlight')
+  });
+
+  $('.gallery + p a[href]').hover(function () {
+    var link = $(this).attr('href');
+    
+    $(this).closest('p').prev().find('[data-lightbox-demo]').filter(function (i, el) {return $(el).data('lightbox-demo') === link;}).addClass('highlight');
+  }, function () {
+    $(this).closest('p').prev().find('[data-lightbox-demo]').removeClass('highlight')
+  });
+}());
+</script>
+
 <script>
 (function () {
   var lightboxEnabled = false;
