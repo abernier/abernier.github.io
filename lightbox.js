@@ -39,6 +39,7 @@ function dims(el) {
   };
 }
 
+// http://stackoverflow.com/questions/5661671/detecting-transform-translate3d-support#answer-12621264
 function has3d() {
   var el = document.createElement('p'), 
       has3d,
@@ -331,8 +332,8 @@ Lightbox.prototype.zoomin = function ($smallimg, cb) {
   var imgDims = dims(this.$img);
 
   // Position and scale the big image exactly on the small one
-  var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2);
-  var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2);
+  var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2); // centers' Δx
+  var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2); // centers' Δy
   var s = smallimgDims.w / imgDims.w;
   this.$img.css({transform: 'translate3d('+tx+'px,'+ty+'px, 0px) scale3d('+s+','+s+','+s+')'});
   setTimeout(function () {
@@ -358,8 +359,8 @@ Lightbox.prototype.zoomout = function ($smallimg, cb) {
     transform: 'translate3d(0px, 0px, 0px) scale3d(1)'
   });
   setTimeout(function () {
-    var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2);
-    var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2);
+    var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2); // centers' Δx
+    var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2); // centers' Δy
     var s = smallimgDims.w / imgDims.w;
     this.$img.css({
       transform: 'translate3d('+tx+'px,'+ty+'px, 0px) scale3d('+s+','+s+','+s+')',
