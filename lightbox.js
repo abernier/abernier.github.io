@@ -218,16 +218,13 @@ Lightbox.prototype.render = function (link, cb) {
     }
     loadImg = loadImg.bind(this);
 
-    // progress bar
     if (this.loading) {
-      this.loading.dfd.reject(); // cancel previous one
+      // cancel previous one
+      this.loading.dfd.reject();
       this.loading.xhr.abort();
       this.loading = undefined;
-
-      loadImg();
-    } else {
-      loadImg();
     }
+    loadImg();
   } else {
     changeImg(fullimg);
   }
