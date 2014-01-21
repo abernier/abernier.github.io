@@ -39,6 +39,32 @@ function dims(el) {
   };
 }
 
+function has3d() {
+  var el = document.createElement('p'), 
+      has3d,
+      transforms = {
+        'webkitTransform':'-webkit-transform',
+        'OTransform':'-o-transform',
+        'msTransform':'-ms-transform',
+        'MozTransform':'-moz-transform',
+        'transform':'transform'
+      };
+
+  // Add it to the body to get the computed style.
+  document.body.insertBefore(el, null);
+
+  for (var t in transforms) {
+    if (el.style[t] !== undefined) {
+      el.style[t] = "translate3d(1px,1px,1px)";
+      has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+    }
+  }
+
+  document.body.removeChild(el);
+
+  return (has3d !== undefined && has3d.length > 0 && has3d !== "none");
+}
+
 function Lightbox(link, options) {
   options = $.extend({}, {
     $links: null, // defaults: parent().find('a')
@@ -67,6 +93,9 @@ function Lightbox(link, options) {
   var xhr2capable = ('onprogress' in new XMLHttpRequest);
   this.progressbarCapable = xhr2capable && this.options.progressbar || false;
 
+  // 3d capable?
+  this.has3d = has3d();
+
   // compute nth
   this.l = this.$links.length;
   this.nth = this.$links.index(this.$link) + 1;
@@ -93,12 +122,12 @@ function Lightbox(link, options) {
   // Render
   //
 
-  if (this.options.transitionduration > 0) {
+  if (this.options.transitionduration > 0 && this.has3d) {
     this.$img.css({visibility: 'hidden'});
 
     this.render(this.$link, function () {
       this.$img.css({visibility: 'visible'});
-      
+
       var $smallimg = this.$link.find('img');
       this.zoomin($smallimg);
     }.bind(this));
@@ -245,7 +274,7 @@ Lightbox.prototype.remove = function () {
   }
   thenRemove = thenRemove.bind(this);
 
-  if (this.options.transitionduration > 0) {
+  if (this.options.transitionduration > 0 && this.has3d) {
     // find the corresponding small image in the gallery that matches the displayed (into $img) one
     var $smallimg = this.$links.filter(function (i, el) {return $(el).attr('href') === this.$img.attr('src');}.bind(this));
     
@@ -302,12 +331,15 @@ Lightbox.prototype.zoomin = function ($smallimg, cb) {
   var imgDims = dims(this.$img);
 
   // Position and scale the big image exactly on the small one
-  this.$img.css({transform: 'translate(' + ((smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2)) + 'px, ' + ((smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2)) + 'px) scale(' + (smallimgDims.w / imgDims.w) + ')'});
+  var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2);
+  var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2);
+  var s = smallimgDims.w / imgDims.w;
+  this.$img.css({transform: 'translate3d('+tx+'px,'+ty+'px, 0px) scale3d('+s+','+s+','+s+')'});
   setTimeout(function () {
     // then, undo with a transition
     this.$img.css({
       transition: 'all ' + this.options.transitionduration + 'ms',
-      transform: 'translate(0px, 0px) scale(1)'
+      transform: 'translate3d(0,0,0) scale3d(1,1,1)'
     });
 
     // cb
@@ -323,13 +355,14 @@ Lightbox.prototype.zoomout = function ($smallimg, cb) {
 
   this.$img.css({
     transition: 'all ' + this.options.transitionduration + 'ms',
-    transform: 'translate(0px, 0px) scale(1)'
+    transform: 'translate3d(0px, 0px, 0px) scale3d(1)'
   });
   setTimeout(function () {
+    var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2);
+    var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2);
+    var s = smallimgDims.w / imgDims.w;
     this.$img.css({
-      transform: 'translate(' + ((smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2)) + 'px, ' + ((smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2)) + 'px) scale(' + (smallimgDims.w / imgDims.w) + ')',
-      //opacity: 0,
-      //backgroundColor: 'transparent'
+      transform: 'translate3d('+tx+'px,'+ty+'px, 0px) scale3d('+s+','+s+','+s+')',
     });
 
     // cb
