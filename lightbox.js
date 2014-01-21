@@ -97,6 +97,8 @@ function Lightbox(link, options) {
     this.$img.css({visibility: 'hidden'});
 
     this.render(this.$link, function () {
+      this.$img.css({visibility: 'visible'});
+      
       var $smallimg = this.$link.find('img');
       this.zoomin($smallimg);
     }.bind(this));
@@ -304,7 +306,6 @@ Lightbox.prototype.zoomin = function ($smallimg, cb) {
   setTimeout(function () {
     // then, undo with a transition
     this.$img.css({
-      visibility: 'visible',
       transition: 'all ' + this.options.transitionduration + 'ms',
       transform: 'translate(0px, 0px) scale(1)'
     });
