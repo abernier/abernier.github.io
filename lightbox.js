@@ -195,7 +195,7 @@ Lightbox.prototype.render = function (link, cb) {
   var smallimg = $(link).find('img').attr('src');
 
   function changeImg(url) {
-    this.$img.one('load', cb);
+    this.$img.one('load', cb); // image loaded callback call
 
     this.$img.attr('src', url);
   }
@@ -203,8 +203,6 @@ Lightbox.prototype.render = function (link, cb) {
 
   if (this.progressbarCapable) {
     function loadImg() {
-      //this.$img.attr('src', smallimg);
-
       this.loading = loadImage(fullimg).progress(function (e) {
         if (e.lengthComputable) {
           this.$progressbar.css('width', e.loaded / e.total * 100 + '%')
