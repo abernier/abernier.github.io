@@ -1,0 +1,3 @@
+[submodule "gists/box2d-demo"]
+	path = gists/box2d-demo
+	url = https://gist.github.com/8561651.git
