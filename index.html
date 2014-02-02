@@ -292,7 +292,7 @@ blockquote p:after {content:"\201D";}
 .lightbox nav {position:fixed;bottom:0;right:0;z-index:99; margin:.5em;}
 .lightbox nav a+a {margin-left:.25em;}
 .lightbox .kbd {display:inline-block; background:black; color:white; padding:.5em; border-radius:3px;}
-.lightbox kbd {font-family:inherit; font-size:50%; vertical-align:middle; te}
+.lightbox kbd {font-family:inherit; font-size:50%; vertical-align:middle;}
 .lightbox kbd:before {content:"(";}
 .lightbox kbd:after {content:")";}
 .lightbox a {text-decoration:none; opacity:.5;}
@@ -301,7 +301,7 @@ blockquote p:after {content:"\201D";}
 .lightbox a.active {opacity:1;}
 .lightbox a.disabled {opacity:0.2; cursor:not-allowed;}
 .lightbox .close {position:fixed;left:0;top:0;z-index:99; margin:.5em;}
-.lightbox .demo {position:fixed;right:0;top:0;z-index:99; margin:.5em; background:white; color:black; opacity:.8; text-align:left;}
+.lightbox .demo {position:fixed;right:0;top:0;z-index:99; margin:.5em; background:#FEEF70; color:black; opacity:.8; text-align:left;}
 .lightbox .demo:after {content:attr(href); display:block; font-size:50%; /*max-width:11em;text-overflow: ellipsis;overflow:hidden;*/}
 .lightbox .demo:hover:after {max-width:99em;}
 .lightbox .meter {position:fixed;top:0;left:0;z-index:99; width:0%; height:3px; background:#FEEF70;}
@@ -390,5 +390,27 @@ loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure"
 /* custom configuration goes here (www.olark.com/documentation) */
 olark.identify('2691-966-10-1702');/*]]>*/</script><noscript><a href="https://www.olark.com/site/2691-966-10-1702/contact" title="Contact us" target="_blank">Questions? Feedback?</a> powered by <a href="http://www.olark.com?welcome" title="Olark live chat software">Olark live chat software</a></noscript>
 <!-- end olark code -->
+<!--<form class="olark">
+  <textarea></textarea>
+</form>
+<iframe id="olark" src="olark.html" frameborder="0" style="position:fixed;width:100%;height:100%;top:0;left:0;z-index:-1;"></iframe>
+<script>
+var $olarkIframe = $('iframe#olark');
+var olarkint = setInterval(function () {
+  var olarkLink = $('a[href*="olark.com"]', $olarkIframe.contents());
+  if (olarkLink.length > 0) {
+    clearInterval(olarkint);
+
+    console.log('olark loaded');
+
+    var $localTextarea = $('.olark textarea');
+    var $remoteTextarea = $('form textarea', $olarkIframe.contents());
+
+    $localTextarea.on('keyup change', function (e) {
+      $remoteTextarea.val($(this).val());
+    });
+  }
+}, 100);
+</script>-->
 </body>
 </html>
