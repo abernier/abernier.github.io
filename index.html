@@ -15,6 +15,12 @@ h1 abbr {letter-spacing:-.13em; margin-right:.1em;}
 
 h1 {/*overflow:hidden; padding-top:.5em;padding-bottom:.5em;*/}
 
+abbr[title].short +span {display:none;}
+@media (min-width:769px) {
+  abbr[title].short {display:none;}
+  abbr[title].short +span {display:initial;}
+}
+
 blockquote {margin-left:0; margin-right:0; font-style:italic;}
 blockquote p:before {content:"\201C";}
 blockquote p:after {content:"\201D";}
@@ -144,7 +150,7 @@ blockquote p:after {content:"\201D";}
     <h2>Recent work</h2>
     
     <article  id="pnensba">
-      <h3><abbr title="Pôle numérique de l'École Nationale des Beaux-Arts">pnENSBA</h3>
+      <h3><abbr class="short" title="Pôle numérique de l'École Nationale des Beaux-Arts">pnENSBA</abbr><span>Pôle numérique de l'École Nationale des Beaux-Arts</span></h3>
 
       <p class="gallery no-c">
         <a href="images/pnensba-mockup.png"><img src="images/pnensba-mockup-h200.jpg" alt></a>
