@@ -93,10 +93,13 @@ blockquote p:after {content:"\201D";}
   }
 }
 
-.btn {border:1px solid;padding-left:.25em;padding-right:.25em;}
+.btn {border:1px solid;padding-left:.25em;padding-right:.25em; border-radius:2px;}
 a.btn:hover {text-decoration:none;}
 
-#overview strong {font-weight:inherit; text-decoration:underline;}
+#overview ul strong {font-weight:inherit; text-decoration:underline;}
+#overview .calltoaction {text-align:center;background-color:#F4F4F4;padding:1em;}
+#overview .calltoaction p {margin:0;}
+#overview .calltoaction p:first-child {margin-bottom:.25em}
 </style>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900">
 </head>
@@ -164,7 +167,10 @@ a.btn:hover {text-decoration:none;}
       </li>
     </ul>
 
-    <p>Let's talk about your projects! Contact me by phone <a class="btn" href="javascript:void 0;" style="display:inline-block; unicode-bidi:bidi-override; direction: rtl;" onmouseover="this.innerText=this.innerText.split('').reverse().join(''); this.style.unicodeBidi='';this.style.direction=''; this.removeAttribute('onmouseover'); this.href='tel:'+this.innerText;">914404806.33+</a> or by email <a class="btn" href="javascript:void 0;" style="display:inline-block; unicode-bidi:bidi-override; direction: rtl;" onmouseover="this.innerText=this.innerText.split('').reverse().join(''); this.style.unicodeBidi='';this.style.direction=''; this.removeAttribute('onmouseover'); this.href='mailto:'+this.innerText;">moc.liamg@reinreb.eniotna</a></p>
+    <div class="calltoaction">
+      <p><strong>Let's talk about your projects!</strong></p>
+      <p>Contact me by phone <a class="btn" href="javascript:void 0;" style="display:inline-block; unicode-bidi:bidi-override; direction: rtl;" onmouseover="this.innerText=this.innerText.split('').reverse().join(''); this.style.unicodeBidi='';this.style.direction=''; this.removeAttribute('onmouseover'); this.href='tel:'+this.innerText;">914404806.33+</a> or email <a class="btn" href="javascript:void 0;" style="display:inline-block; unicode-bidi:bidi-override; direction: rtl;" onmouseover="this.innerText=this.innerText.split('').reverse().join(''); this.style.unicodeBidi='';this.style.direction=''; this.removeAttribute('onmouseover'); this.href='mailto:'+this.innerText;">moc.liamg@reinreb.eniotna</a></p>
+    </div>
   </section>
   <section id="recent">
     <h2>Recent work</h2>
