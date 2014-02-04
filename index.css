@@ -49,6 +49,8 @@ a {color:inherit;}
 a:not(:hover) {text-decoration:none;}
 /*a[href^="javascript:"]:before {content:"▶";}*/
 
+strong {font-weight:500;}
+
 body,
 .c {margin:0 5.55555%;/*column*/}
 .no-cc {
