@@ -1,0 +1,56 @@
+{
+  "checksum": {
+    "previous": "2c725c94cb7082b95189f3703a43b00eb2ed55141d830b6297fc0a965dee4dbd",
+    "current": "2c725c94cb7082b95189f3703a43b00eb2ed55141d830b6297fc0a965dee4dbd"
+  },
+  "fonts": [
+    "./aberniericonfont.ttf",
+    "./aberniericonfont.svg",
+    "./aberniericonfont.woff",
+    "./aberniericonfont.eot"
+  ],
+  "glyphs": {
+    "call": {
+      "codepoint": 61724,
+      "source": "src/call.svg"
+    },
+    "mail": {
+      "codepoint": 61725,
+      "source": "src/mail.svg"
+    },
+    "play": {
+      "codepoint": 61723,
+      "source": "src/play.svg"
+    },
+    "world": {
+      "codepoint": 61722,
+      "source": "src/world.svg"
+    }
+  },
+  "options": {
+    "autowidth": false,
+    "config": false,
+    "css_selector": ".icon-{{glyph}}",
+    "debug": false,
+    "font_name": "aberniericonfont",
+    "force": false,
+    "input": {
+      "templates": "src/",
+      "vectors": "src/"
+    },
+    "no_hash": true,
+    "output": {
+      "css": ".",
+      "fonts": ".",
+      "preview": "."
+    },
+    "preprocessor_path": null,
+    "quiet": true,
+    "templates": [
+      "preview"
+    ]
+  },
+  "templates": [
+    "./aberniericonfont-preview.html"
+  ]
+}
