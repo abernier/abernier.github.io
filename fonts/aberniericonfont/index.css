@@ -1,0 +1,10 @@
+@font-face {
+  font-family: "aberniericonfont";
+  src: url("./aberniericonfont.eot");
+  src: url("./aberniericonfont.eot?#iefix") format("embedded-opentype"),
+       url("./aberniericonfont.woff") format("woff"),
+       url("./aberniericonfont.ttf") format("truetype"),
+       url("./aberniericonfont.svg#aberniericonfont") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
