@@ -295,13 +295,6 @@ a.mail:before {content:"\f11d"; font-family:"aberniericonfont";}*/
       <article  id="likebook">
         <h3>My Social Book <small>(previously Likebook)</small></h3>
 
-        <!--<blockquote>
-            <p>Turning Facebook into books.</p>
-            — <cite class="vcard">
-                <span class="fn">My little paris</span> - <a href="http://google.com/">Lire l'article</a>
-            </cite>
-        </blockquote>-->
-
         <p class="gallery">
           <a href="images/likebook-homepage.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/index.html"><img src="images/likebook-homepage-h200.jpg" alt></a>
           <a href="images/likebook-homepage-global.png" data-lightbox-demo="https://googledrive.com/host/0BwQNm5fx5y30RXlldXF4ODUtT3c/index.html"><img src="images/likebook-homepage-global-h200.png" alt></a>
@@ -434,8 +427,8 @@ a.mail:before {content:"\f11d"; font-family:"aberniericonfont";}*/
   </footer>
 </div>
 
-<!-- lightbox component -->
 <style>
+/*lightbox component*/
 .lightbox {position:fixed; left:0;right:0;top:0;bottom:0; z-index:99; background:rgba(0,0,0,.8); overflow:auto;}
 .lightbox {text-align:center;}
 
@@ -487,7 +480,6 @@ a.mail:before {content:"\f11d"; font-family:"aberniericonfont";}*/
   });
 }());
 </script>
-<!-- EOF lightbox component -->
 
 <script src="jquery-2.0.3.js"></script>
 <style>
@@ -514,6 +506,27 @@ a.mail:before {content:"\f11d"; font-family:"aberniericonfont";}*/
 }());
 </script>
 
+<script src="jquery-2.0.3.js"></script>
+<script>
+(function($) {
+  $.fn.uncomment = function(recurse) {
+    $(this).contents().each(function() {
+      if ( recurse && this.hasChildNodes() ) {
+        $(this).uncomment(recurse);
+      } else if ( this.nodeType == 8 ) {
+        // Need to "evaluate" the HTML content,
+        // otherwise simple text won't replace
+        var e = $('<span>' + this.nodeValue + '</span>');
+        $(this).replaceWith(e.contents());
+      }
+    });
+  };
+})(jQuery);
+if (document.location.search && document.location.search.match(/uncomment(=(true|1))?/)) {
+  $('*:not(iframe)').uncomment();
+}
+</script>
+
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -524,7 +537,6 @@ ga('create', 'UA-13126287-1', 'abernier.name');
 ga('send', 'pageview');
 </script>
 
-<!-- begin olark code -->
 <script data-cfasync="false" type='text/javascript'>/*<![CDATA[*/window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){
 f[z]=function(){
 (a.s=a.s||[]).push(arguments)};var a=f[z]._={
@@ -543,28 +555,5 @@ b[k]=o+'d.write("'+p().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'
 loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure","extend","declare","identify"]});
 /* custom configuration goes here (www.olark.com/documentation) */
 olark.identify('2691-966-10-1702');/*]]>*/</script><noscript><a href="https://www.olark.com/site/2691-966-10-1702/contact" title="Contact us" target="_blank">Questions? Feedback?</a> powered by <a href="http://www.olark.com?welcome" title="Olark live chat software">Olark live chat software</a></noscript>
-<!-- end olark code -->
-<!--<form class="olark">
-  <textarea></textarea>
-</form>
-<iframe id="olark" src="olark.html" frameborder="0" style="position:fixed;width:100%;height:100%;top:0;left:0;z-index:-1;"></iframe>
-<script>
-var $olarkIframe = $('iframe#olark');
-var olarkint = setInterval(function () {
-  var olarkLink = $('a[href*="olark.com"]', $olarkIframe.contents());
-  if (olarkLink.length > 0) {
-    clearInterval(olarkint);
-
-    console.log('olark loaded');
-
-    var $localTextarea = $('.olark textarea');
-    var $remoteTextarea = $('form textarea', $olarkIframe.contents());
-
-    $localTextarea.on('keyup change', function (e) {
-      $remoteTextarea.val($(this).val());
-    });
-  }
-}, 100);
-</script>-->
 </body>
 </html>
