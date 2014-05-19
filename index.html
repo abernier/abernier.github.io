@@ -454,16 +454,12 @@ a.mail:before {content:"\f11d"; font-family:"aberniericonfont";}*/
 .lightbox .demo:hover:after {max-width:99em;}
 .lightbox .meter {position:fixed;top:0;left:0;z-index:99; width:0%; height:3px; background:#FEEF70;}
 </style>
-<script src="harvey.js"></script>
 <script src="jquery-2.0.3.js"></script>
 <script src="lightbox.js"></script>
 <script>
 (function () {
   // listen to instantiate lightbox instances
-  var lightboxEnabled = false;
   $('body').delegate('.gallery a', 'click', function (e) {
-    if (!lightboxEnabled) return true;
-
     e.preventDefault();
 
     var link = this;
@@ -471,12 +467,6 @@ a.mail:before {content:"\f11d"; font-family:"aberniericonfont";}*/
       //transitionduration: 500,
       //progressbar: false
     });
-  });
-
-  // Read more: http://bradfrostweb.com/blog/post/conditional-lightbox/
-  Harvey.attach('all and (min-width:769px)', {
-    on: function () {lightboxEnabled = true;},
-    //off: function () {lightboxEnabled = false;}
   });
 }());
 </script>
