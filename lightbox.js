@@ -195,23 +195,27 @@ Lightbox.prototype.render = function (link, cb) {
   var smallimg = $(link).find('img').attr('src');
 
   function changeImg(url) {
-    this.$img.one('load', cb); // image loaded callback call
+    this.$img.one('load', function () {
+      this.$el.scrollTop(0); // scroll to top
+
+      cb && cb.call(this, arguments);
+    }.bind(this)); // image loaded callback call
 
     this.$img.attr('src', url);
   }
   changeImg = changeImg.bind(this);
 
   if (this.progressbarCapable) {
-    function loadImg() {
-      this.loading = loadImage(fullimg).progress(function (e) {
+    function loadImg(url, cb) {
+      this.loading = loadImage(url).progress(function (e) {
         if (e.lengthComputable) {
           this.$progressbar.css('width', e.loaded / e.total * 100 + '%')
         }
       }.bind(this)).done(function (url) {
         this.loading = undefined;
-        this.$progressbar.css('width', '0%');
+        this.$progressbar.css('width', '0%'); // reset progress-bar
 
-        changeImg(url);
+        cb(url);
       }.bind(this));
     }
     loadImg = loadImg.bind(this);
@@ -222,7 +226,7 @@ Lightbox.prototype.render = function (link, cb) {
       this.loading.xhr.abort();
       this.loading = undefined;
     }
-    loadImg();
+    loadImg(fullimg, changeImg);
   } else {
     changeImg(fullimg);
   }

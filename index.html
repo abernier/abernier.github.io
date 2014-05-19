@@ -431,10 +431,13 @@ a.mail:before {content:"\f11d"; font-family:"aberniericonfont";}*/
 
 <!-- lightbox component -->
 <style>
-.lightbox {position:fixed; left:0;right:0;top:0;bottom:0; z-index:99; background:rgba(0,0,0,.8);}
+.lightbox {position:fixed; left:0;right:0;top:0;bottom:0; z-index:99; background:rgba(0,0,0,.8); overflow:auto;}
 .lightbox {text-align:center;}
+
+.lightbox {white-space:nowrap;}
+.lightbox * {white-space:normal;white-space:initial;}
 .lightbox:before {content:" "; display:inline-block;vertical-align:middle; height:100%; width:0;}
-.lightbox img {display:inline-block;vertical-align:middle; max-width:100%; max-height:100%;}
+.lightbox img {display:inline-block;vertical-align:middle; max-width:100%;/* max-height:100%;*/}
 
 .lightbox nav {position:fixed;bottom:0;right:0;z-index:99; margin:.5em;}
 .lightbox nav a+a {margin-left:.25em;}
