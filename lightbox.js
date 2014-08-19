@@ -333,7 +333,7 @@ Lightbox.prototype.zoomin = function ($smallimg, cb) {
   // Position and scale the big image exactly on the small one
   var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2); // centers' Δx
   var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2); // centers' Δy
-  var s = smallimgDims.w / imgDims.w;
+  var s = Math.min(smallimgDims.w / imgDims.w, smallimgDims.h / imgDims.h);
   this.$img.css({transform: 'translate3d('+tx+'px,'+ty+'px, 0) scale3d('+s+','+s+','+s+')'});
   setTimeout(function () {
     // then, undo with a transition
@@ -360,7 +360,7 @@ Lightbox.prototype.zoomout = function ($smallimg, cb) {
   setTimeout(function () {
     var tx = (smallimgDims.l + smallimgDims.w/2) - (imgDims.l + imgDims.w/2); // centers' Δx
     var ty = (smallimgDims.t + smallimgDims.h/2) - (imgDims.t + imgDims.h/2); // centers' Δy
-    var s = smallimgDims.w / imgDims.w;
+    var s = Math.min(smallimgDims.w / imgDims.w, smallimgDims.h / imgDims.h);
     this.$img.css({
       transform: 'translate3d('+tx+'px,'+ty+'px, 0) scale3d('+s+','+s+','+s+')',
     });
