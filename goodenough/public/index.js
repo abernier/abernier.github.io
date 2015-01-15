@@ -340,8 +340,8 @@ var HomeView = Backbone.View.extend({
 
         renderer.setSize(WW, WH);
       }
+      onresize();
       $window.resize(onresize);
-      setTimeout(onresize, 1);
 
       function update(dt) {
         camera.updateProjectionMatrix();
@@ -355,7 +355,7 @@ var HomeView = Backbone.View.extend({
 
       var clock = new THREE.Clock();
       function animate(t) {
-        requestAnimationFrame(animate);
+        //requestAnimationFrame(animate);
 
         update(clock.getDelta());
         render(clock.getDelta());
@@ -365,14 +365,32 @@ var HomeView = Backbone.View.extend({
       var dat = require('dat-gui');
       var gui = new dat.GUI();
       var f1 = gui.addFolder('camera.position');
-      f1.add(camera.position, 'x', -1000, 1000);
-      f1.add(camera.position, 'y', -1000, 3000);
-      f1.add(camera.position, 'z', -5000, 0);
+      var px = f1.add(camera.position, 'x', -1000, 1000);
+      var py = f1.add(camera.position, 'y', -1000, 3000);
+      var pz = f1.add(camera.position, 'z', -5000, 0);
+      px.onChange(function (val) {
+        animate();
+      });
+      py.onChange(function (val) {
+        animate();
+      });
+      pz.onChange(function (val) {
+        animate();
+      });
 
       var f2 = gui.addFolder('camera.rotation');
-      f2.add(camera.rotation, 'x', 0, 2*Math.PI);
-      f2.add(camera.rotation, 'y', 0, 2*Math.PI);
-      f2.add(camera.rotation, 'z', 0, 2*Math.PI);
+      var rx = f2.add(camera.rotation, 'x', 0, 2*Math.PI);
+      var ry = f2.add(camera.rotation, 'y', 0, 2*Math.PI);
+      var rz = f2.add(camera.rotation, 'z', 0, 2*Math.PI);
+      rx.onChange(function (val) {
+        animate();
+      });
+      ry.onChange(function (val) {
+        animate();
+      });
+      rz.onChange(function (val) {
+        animate();
+      });
 
       var f3 = gui.addFolder('camera.lookAt');
       var cx = f3.add(lookAt, 'x', -1000, 1000);
@@ -380,13 +398,34 @@ var HomeView = Backbone.View.extend({
       var cz = f3.add(lookAt, 'z', -1000, 1000);
       cx.onChange(function (val) {
         camera.lookAt(lookAt);
+        animate();
       });
       cy.onChange(function (val) {
         camera.lookAt(lookAt);
+        animate();
       });
       cz.onChange(function (val) {
         camera.lookAt(lookAt);
+        animate();
       });
+
+      // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+
+      this.$('.macbook1').on('click', function (e) {
+      	var $mba = $(e.currentTarget);
+
+      	//camera.rotation.x = 60*Math.PI/180;
+      	//animate();
+
+      	lookAt.x = $mba.offset().left + $mba.width()/2;
+      	lookAt.y = $mba.offset().top + $mba.height()/2;
+      	lookAt.z = 0;
+
+      	camera.lookAt(lookAt);
+      	animate();
+
+      	
+      })
 
     }).call(this);
 
