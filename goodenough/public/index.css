@@ -526,7 +526,7 @@ section .macbook {
     font-size: 20%;
   }
 }
-section .macbook1 .screen {
+section .macbook .screen {
   -webkit-transition: -webkit-transform 0.3s;
   -moz-transition: -moz-transform 0.3s;
   -o-transition: -o-transform 0.3s;
@@ -538,7 +538,7 @@ section .macbook1 .screen {
   -ms-transform: rotateX(10deg) translateZ(-1px);
   transform: rotateX(10deg) translateZ(-1px);
 }
-section .macbook1:hover .screen {
+section .macbook:hover .screen {
   -webkit-transform: rotateX(120deg) translateZ(-1px);
   -moz-transform: rotateX(120deg) translateZ(-1px);
   -o-transform: rotateX(120deg) translateZ(-1px);

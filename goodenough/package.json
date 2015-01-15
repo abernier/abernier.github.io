@@ -21,6 +21,7 @@
     "three": "^0.69.0",
     "uglify-js": "~2.4.2",
     "underscore": "^1.6.0",
-    "velocity-animate": "^0.10.0"
+    "velocity-animate": "^0.10.0",
+    "jquery.offsetRelative": "https://gist.github.com/abernier/3191472/download"
   }
 }

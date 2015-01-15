@@ -29,6 +29,7 @@ public/vendor.js: ./node_modules/.bin/browserify $(shell find node_modules -type
 	  -r velocity-animate \
 	  -r three \
 	  -r dat-gui \
+	  -r tween \
 	  > $@
 ifeq ($(ENV), production)
 	./node_modules/.bin/uglifyjs $@ -o $@ -m
@@ -51,6 +52,7 @@ public/index.js: ./node_modules/.bin/browserify $(shell find browser -type f -na
 	  -x velocity-animate \
 	  -x three \
 	  -x dat-gui \
+	  -x tween \
 	  -r ./browser/index.js:Goodenough \
 	  > $@
 ifeq ($(ENV), production)
