@@ -1,0 +1,548 @@
+.macbook {
+  width: 150em;
+  height: 100em;
+  display: inline-block;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+  position: relative;
+  font-size: 10%;
+}
+.macbook .shadow {
+  width: 100%;
+  height: 100%;
+  -webkit-border-radius: 8em;
+  border-radius: 8em;
+  -webkit-box-shadow: 0 0 10.500000000000002em 0px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10.500000000000002em 0px rgba(0,0,0,0.3);
+}
+.macbook .inner {
+  width: 150em;
+  height: 100em;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+.macbook .screen {
+  width: 150em;
+  height: 100em;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  -webkit-border-radius: 8em;
+  border-radius: 8em;
+  background: #ddd;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transform-origin: 50% 100%;
+  -moz-transform-origin: 50% 100%;
+  -o-transform-origin: 50% 100%;
+  -ms-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+  -webkit-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  -moz-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  -o-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  -ms-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  background-image: -webkit-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
+  background-image: -moz-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
+  background-image: -o-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
+  background-image: -ms-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
+  background-position: left bottom;
+  -webkit-background-size: 300em 300em;
+  -moz-background-size: 300em 300em;
+  background-size: 300em 300em;
+  -webkit-box-shadow: inset 0 3em 7.5em rgba(255,255,255,0.5);
+  box-shadow: inset 0 3em 7.5em rgba(255,255,255,0.5);
+}
+.macbook .screen .logo {
+  position: absolute;
+  width: 20em;
+  height: 25em;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: rotateY(180deg) translateZ(0.1px) translate(50%, -50%);
+  -moz-transform: rotateY(180deg) translateZ(0.1px) translate(50%, -50%);
+  -o-transform: rotateY(180deg) translateZ(0.1px) translate(50%, -50%);
+  -ms-transform: rotateY(180deg) translateZ(0.1px) translate(50%, -50%);
+  transform: rotateY(180deg) translateZ(0.1px) translate(50%, -50%);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.macbook .screen .face-one {
+  width: 150em;
+  height: 100em;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  -webkit-border-radius: 8em;
+  border-radius: 8em;
+  background: #d3d3d3;
+  -webkit-transform: translateZ(0.1px);
+  -moz-transform: translateZ(0.1px);
+  -o-transform: translateZ(0.1px);
+  -ms-transform: translateZ(0.1px);
+  transform: translateZ(0.1px);
+  background-image: -webkit-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -moz-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -o-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -ms-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.macbook .screen .face-one .camera {
+  width: 3em;
+  height: 3em;
+  -webkit-border-radius: 100%;
+  border-radius: 100%;
+  background: #000;
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  margin-left: -1.5em;
+}
+.macbook .screen .face-one .display {
+  width: 131em;
+  height: 77em;
+  margin: 10em;
+  background-color: #252525;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
+  position: relative;
+  -webkit-box-shadow: inset 0 0 1.5em #000;
+  box-shadow: inset 0 0 1.5em #000;
+  -webkit-transform: rotateY(180deg) translateZ(-1px);
+  -moz-transform: rotateY(180deg) translateZ(-1px);
+  -o-transform: rotateY(180deg) translateZ(-1px);
+  -ms-transform: rotateY(180deg) translateZ(-1px);
+  transform: rotateY(180deg) translateZ(-1px);
+}
+.macbook .screen .face-one .display .shade {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 131em;
+  height: 77em;
+  background: -webkit-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
+  background: -moz-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
+  background: -o-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
+  background: -ms-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
+  background: linear-gradient(-135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
+  -webkit-background-size: 300em 200em;
+  -moz-background-size: 300em 200em;
+  background-size: 300em 200em;
+  background-position: 0px 0px;
+}
+.macbook .screen .face-one span {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
+  -moz-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
+  -o-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
+  -ms-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
+  transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
+  font-size: 3em;
+  color: #666;
+  margin-bottom: 1em;
+}
+.macbook .body {
+  width: 150em;
+  height: 100em;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  -webkit-border-radius: 8em;
+  border-radius: 8em;
+  background: #cbcbcb;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transform-origin: 50% bottom;
+  -moz-transform-origin: 50% bottom;
+  -o-transform-origin: 50% bottom;
+  -ms-transform-origin: 50% bottom;
+  transform-origin: 50% bottom;
+  background-image: -webkit-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -moz-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -o-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -ms-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+}
+.macbook .body .face-one {
+  width: 150em;
+  height: 100em;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  -webkit-border-radius: 8em;
+  border-radius: 8em;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  background: #dfdfdf;
+  -webkit-transform: translateZ(-1px);
+  -moz-transform: translateZ(-1px);
+  -o-transform: translateZ(-1px);
+  -ms-transform: translateZ(-1px);
+  transform: translateZ(-1px);
+  background-image: -webkit-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -moz-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -o-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -ms-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+}
+.macbook .body .touchpad {
+  width: 41em;
+  height: 32em;
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  margin-bottom: -3%;
+  -webkit-transform: translate(-50%, 100%);
+  -moz-transform: translate(-50%, 100%);
+  -o-transform: translate(-50%, 100%);
+  -ms-transform: translate(-50%, 100%);
+  transform: translate(-50%, 100%);
+  -webkit-border-radius: 2em;
+  border-radius: 2em;
+  background: #cdcdcd;
+  background-image: -webkit-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -moz-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -o-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -ms-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  -webkit-box-shadow: inset 0 0 3em #888;
+  box-shadow: inset 0 0 3em #888;
+}
+.macbook .body .keyboard {
+  width: 130em;
+  height: 46em;
+  padding: 3em;
+  position: absolute;
+  left: 50%;
+  top: 42em;
+  -webkit-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
+  -moz-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
+  -o-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
+  -ms-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
+  transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
+  -webkit-border-radius: 3em;
+  border-radius: 3em;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  background: #cdcdcd;
+  background-image: -webkit-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -moz-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -o-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: -ms-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
+  -webkit-box-shadow: inset 0 0 3em #777;
+  box-shadow: inset 0 0 3em #777;
+}
+.macbook .body .keyboard .key {
+  width: 7.75em;
+  height: 8em;
+  float: left;
+  -webkit-transform: translateZ(-1px);
+  -moz-transform: translateZ(-1px);
+  -o-transform: translateZ(-1px);
+  -ms-transform: translateZ(-1px);
+  transform: translateZ(-1px);
+  padding: 0.775em 0.3875em;
+}
+.macbook .body .keyboard .key >.in {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #444;
+  -webkit-border-radius: 1em;
+  border-radius: 1em;
+  -webkit-box-shadow: 0 -round(0.3875em) 0 #222;
+  box-shadow: 0 -round(0.3875em) 0 #222;
+}
+.macbook .body .keyboard .key.space {
+  width: 34.61%;
+}
+.macbook .body .keyboard .key.f {
+  height: 5em;
+  margin-top: 1.25em;
+}
+.macbook .body .pad {
+  width: 5em;
+  height: 5em;
+  background: #333;
+  -webkit-border-radius: 5em;
+  border-radius: 5em;
+  position: absolute;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.macbook .pad.one {
+  left: 20em;
+  top: 20em;
+}
+.macbook .pad.two {
+  right: 20em;
+  top: 20em;
+}
+.macbook .pad.three {
+  right: 20em;
+  bottom: 20em;
+}
+.macbook .pad.four {
+  left: 20em;
+  bottom: 20em;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block;
+}
+/* http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/ */
+/*font-size(x)
+  if x in (inherit initial large larger medium small smaller x-large x-small xx-large xx-small)
+    ret = x
+  else
+    ret = nearestMultiple(unit(x, ''), $fs)
+    ret = unit(ret, unit(x))
+    //p(ret)
+
+  font-size:ret;*/
+html.no-js .js,
+html.js:not(.domready) .js,
+html.js.domready .no-js {
+  display: none;
+}
+.c {
+  padding-left: 5.555555%;
+  padding-right: 5.555555%;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (min-width: 1400px) {
+  .c {
+    max-width: 60%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.wide {
+  width: 112.49999859375%;
+  margin-left: -6.249999296875004%;
+}
+@media (min-width: 1400px) {
+  .wide {
+    width: 166.66666666666666%;
+    margin-left: -33.33333333333333%;
+  }
+}
+/* http:/nicolasgallagher.com/micro-clearfix-hack */
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+.cf:after {
+  clear: both;
+}
+.hidden,
+.visuallyhidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+}
+.vcenter {
+  height: 100%;
+  white-space: nowrap;
+  word-spacing: -0.25em;
+}
+.vcenter:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 0;
+  height: 100%;
+}
+.vcenter >* {
+  display: inline-block;
+  vertical-align: middle;
+  white-space: normal;
+  word-spacing: normal;
+}
+/*
+ ######   ######## ##    ## ######## ########     ###    ##       
+##    ##  ##       ###   ## ##       ##     ##   ## ##   ##       
+##        ##       ####  ## ##       ##     ##  ##   ##  ##       
+##   #### ######   ## ## ## ######   ########  ##     ## ##       
+##    ##  ##       ##  #### ##       ##   ##   ######### ##       
+##    ##  ##       ##   ### ##       ##    ##  ##     ## ##       
+ ######   ######## ##    ## ######## ##     ## ##     ## ######## 
+*/
+/* http:/paulirish.com/2012/box-sizing-border-box-ftw */
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+:root {
+  font-size: 16px;
+}
+body {
+  margin: 0;
+  font: 400 100%/1.5 'Roboto', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: #c9ced4;
+}
+a {
+  font: inherit;
+  text-decoration: inherit;
+  color: inherit;
+  -webkit-transition: color 0.3s;
+  -moz-transition: color 0.3s;
+  -o-transition: color 0.3s;
+  -ms-transition: color 0.3s;
+  transition: color 0.3s;
+}
+html.touch a:hover {
+  text-decoration: none;
+}
+img,
+svg,
+video,
+object {
+  max-width: 100%;
+}
+.img {
+  display: inline-block;
+  background-position: center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.img >img {
+  display: block;
+  width: 100%;
+}
+html.js .img >img {
+  visibility: hidden;
+}
+.img.contain {
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  background-size: contain;
+}
+input {
+  font: inherit;
+}
+#camera,
+#camera * {
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+body {
+  text-align: center;
+}
+#body {
+  height: 100vh;
+  background-color: #9bc1c4;
+  color: #fff;
+}
+section {
+  height: 100%;
+  white-space: nowrap;
+  word-spacing: -0.25em;
+}
+section:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 0;
+  height: 100%;
+}
+section >* {
+  display: inline-block;
+  vertical-align: middle;
+  white-space: normal;
+  word-spacing: normal;
+}
+section h1 {
+  font-size: 300%;
+}
+section .macbook {
+  margin-top: 3rem;
+}
+@media (min-width: 1024px) {
+  section .macbook {
+    font-size: 20%;
+  }
+}
+section .macbook1 .screen {
+  -webkit-transition: -webkit-transform 0.3s;
+  -moz-transition: -moz-transform 0.3s;
+  -o-transition: -o-transform 0.3s;
+  -ms-transition: -ms-transform 0.3s;
+  transition: transform 0.3s;
+  -webkit-transform: rotateX(10deg) translateZ(-1px);
+  -moz-transform: rotateX(10deg) translateZ(-1px);
+  -o-transform: rotateX(10deg) translateZ(-1px);
+  -ms-transform: rotateX(10deg) translateZ(-1px);
+  transform: rotateX(10deg) translateZ(-1px);
+}
+section .macbook1:hover .screen {
+  -webkit-transform: rotateX(120deg) translateZ(-1px);
+  -moz-transform: rotateX(120deg) translateZ(-1px);
+  -o-transform: rotateX(120deg) translateZ(-1px);
+  -ms-transform: rotateX(120deg) translateZ(-1px);
+  transform: rotateX(120deg) translateZ(-1px);
+}
+

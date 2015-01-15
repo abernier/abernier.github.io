@@ -1,0 +1,216 @@
+@import 'nib'
+
+@import './mba';
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block;
+}
+
+filter()
+  vendor('filter', arguments)
+pointer-events()
+  vendor('pointer-events', arguments)
+transition-timing-function()
+  vendor('transition-timing-function', arguments)
+
+fluid-background-image(path)
+    size = image-size(path)
+    background-image:url(path); width:px2em(size[0]); height:px2em(size[1]);
+    background-size:px2em(size[0]) px2em(size[1]);
+
+/* http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/ */
+image-replacement(path)
+    text-indent:100%; white-space:nowrap; overflow:hidden;
+    fluid-background-image(path)
+
+nearestMultiple(i, j)
+  // http://stackoverflow.com/questions/9280847/round-a-variable-up-to-the-next-closest-multiple-of-x
+  return (ceil(i / j) * j);
+
+// transparent mixin in order to have closest multiple font-size of $fs
+/*font-size(x)
+  if x in (inherit initial large larger medium small smaller x-large x-small xx-large xx-small)
+    ret = x
+  else
+    ret = nearestMultiple(unit(x, ''), $fs)
+    ret = unit(ret, unit(x))
+    //p(ret)
+
+  font-size:ret;*/
+
+$fs = 16px
+$lh = 1.5
+$pp = 5.555555%;
+$mww = 60%;
+$pad = 1em;
+
+html.no-js .js, html.js:not(.domready) .js, // hide elements that requires JS when JS is not available (or not ready)
+html.js.domready .no-js // hide no-js elements when js become available
+  display:none;
+
+c()
+  padding-left:$pp;padding-right:@padding-left; margin-left:auto;margin-right:auto;
+  @media (min-width:1400px)
+    max-width:$mww;
+    padding-left:0;padding-right:@padding-left;
+.c
+  c();
+
+wide()
+  w = (100% * 100/(100 - $pp*2));
+  width:w;
+  margin-left:((100% - w)/2);
+  @media (min-width:1400px)
+    w = (100% * 100/$mww)
+    width:w;
+    margin-left:((100% - w)/2);
+.wide
+  wide()
+
+/* http:/nicolasgallagher.com/micro-clearfix-hack */
+cf()
+  &:before,
+  &:after
+    content:" "; display:table;
+  &:after
+    clear:both
+
+.cf
+  cf();
+
+px2em(x)
+  1em * x / $fs
+px2rem(x)
+  1rem * x / $fs
+
+nowrap()
+  white-space:nowrap; word-spacing:-.25em;
+  >*
+    white-space:normal; word-spacing:normal;
+
+
+// http://css-tricks.com/places-its-tempting-to-use-display-none-but-dont/
+visuallyhidden()
+  position:absolute;
+  overflow:hidden; clip:rect(0 0 0 0);
+  height:1px; width:1px;
+  margin:-1px; padding:0; border:0;
+
+.hidden,
+.visuallyhidden
+  visuallyhidden()
+
+vcenter()
+  height:100%; white-space:nowrap;word-spacing:-.25em;
+  &:before
+    content:"";display:inline-block;vertical-align:middle; width:0;height:100%;
+  >*
+    display:inline-block;vertical-align:middle; white-space:normal;word-spacing:normal;
+.vcenter
+  vcenter()
+
+padheight(w, h)
+  padding-top:(h/w);
+
+  position:relative;
+  >*
+    position:absolute;left:0;right:0;top:0;bottom:0;
+
+/*
+ ######   ######## ##    ## ######## ########     ###    ##       
+##    ##  ##       ###   ## ##       ##     ##   ## ##   ##       
+##        ##       ####  ## ##       ##     ##  ##   ##  ##       
+##   #### ######   ## ## ## ######   ########  ##     ## ##       
+##    ##  ##       ##  #### ##       ##   ##   ######### ##       
+##    ##  ##       ##   ### ##       ##    ##  ##     ## ##       
+ ######   ######## ##    ## ######## ##     ## ##     ## ######## 
+*/
+
+/* http:/paulirish.com/2012/box-sizing-border-box-ftw */
+*,
+*:before,
+*:after
+  box-sizing:border-box;
+
+:root
+  font-size:$fs;
+
+body
+  margin:0;
+  font:400 100%/$lh 'Roboto', Arial, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  background-color:#C9CED4;
+
+a
+  font:inherit; text-decoration:inherit; color:inherit;
+    
+  transition:color .3s;
+  &:hover
+    //text-decoration:underline;
+html.touch a:hover
+  text-decoration:none;
+
+img,
+svg,
+video,
+object {max-width:100%;}
+
+.img {display:inline-block; background-position:center;background-size:cover; background-repeat:no-repeat;}
+.img >img {display:block;width:100%;}
+
+html.js .img >img {visibility:hidden;}
+
+.img.contain {background-size:contain;}
+
+input
+  font:inherit;
+
+.h {}
+
+#camera
+  //background:url("https://dl.dropbox.com/s/sw0qqg0j0qq8xng/grid.png?dl=1");
+#camera, #camera * {transform-style:preserve-3d;}
+
+body {text-align:center;}
+
+#body {
+  height:100vh;
+
+  background-color:#9BC1C4; color:white;
+  bgcolor = rgba(black,.05)
+  //background-image:linear-gradient(transparent 24%, bgcolor 25%, bgcolor 26%, transparent 27%, transparent 74%, bgcolor 75%, bgcolor 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, bgcolor 25%, bgcolor 26%, transparent 27%, transparent 74%, bgcolor 75%, bgcolor 76%, transparent 77%, transparent);background-size:50px 50px;
+}
+
+
+section
+  vcenter();
+  
+  h1 {font-size:300%;}
+  
+  .macbook
+    margin-top:3rem;
+    
+    @media (min-width:1024px)
+      font-size:20%;
+      
+  .macbook1
+    .screen
+      transition:transform .3s;
+      transform:rotateX(10deg) translateZ(-1px);
+    &:hover .screen
+      transform:rotateX(120deg) translateZ(-1px);
+      
+    
+
+    

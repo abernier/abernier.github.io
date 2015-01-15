@@ -1,0 +1,83 @@
+/*
+  Icon Font: cogedimiconfont
+*/
+
+@font-face {
+  font-family: "cogedimiconfont";
+  src: url("./cogedimiconfont.eot");
+  src: url("./cogedimiconfont.eot?#iefix") format("embedded-opentype"),
+       url("./cogedimiconfont.woff") format("woff"),
+       url("./cogedimiconfont.ttf") format("truetype"),
+       url("./cogedimiconfont.svg#cogedimiconfont") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "cogedimiconfont";
+    src: url("./cogedimiconfont.svg#cogedimiconfont") format("svg");
+  }
+}
+
+[data-icon]:before { content: attr(data-icon); }
+
+[data-icon]:before,
+.icon-accessibility:before,
+.icon-book:before,
+.icon-cofee:before,
+.icon-cooking:before,
+.icon-disclosure:before,
+.icon-dog:before,
+.icon-email:before,
+.icon-garage:before,
+.icon-handshake:before,
+.icon-handshake2:before,
+.icon-hold:before,
+.icon-home:before,
+.icon-homeuro:before,
+.icon-ladie:before,
+.icon-ladie2:before,
+.icon-letter:before,
+.icon-locker:before,
+.icon-marker:before,
+.icon-parking:before,
+.icon-receptionist:before,
+.icon-running:before,
+.icon-theater:before {
+  display: inline-block;
+  font-family: "cogedimiconfont";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+.icon-accessibility:before { content: "\f101"; }
+.icon-book:before { content: "\f102"; }
+.icon-cofee:before { content: "\f103"; }
+.icon-cooking:before { content: "\f104"; }
+.icon-disclosure:before { content: "\f10d"; }
+.icon-dog:before { content: "\f105"; }
+.icon-email:before { content: "\f106"; }
+.icon-garage:before { content: "\f10e"; }
+.icon-handshake:before { content: "\f10f"; }
+.icon-handshake2:before { content: "\f110"; }
+.icon-hold:before { content: "\f111"; }
+.icon-home:before { content: "\f100"; }
+.icon-homeuro:before { content: "\f112"; }
+.icon-ladie:before { content: "\f113"; }
+.icon-ladie2:before { content: "\f107"; }
+.icon-letter:before { content: "\f114"; }
+.icon-locker:before { content: "\f108"; }
+.icon-marker:before { content: "\f115"; }
+.icon-parking:before { content: "\f109"; }
+.icon-receptionist:before { content: "\f10a"; }
+.icon-running:before { content: "\f10b"; }
+.icon-theater:before { content: "\f10c"; }
