@@ -523,6 +523,10 @@ section {
   height: 100%;
   white-space: nowrap;
   word-spacing: -0.25em;
+  padding-left: 5.555555%;
+  padding-right: 5.555555%;
+  margin-left: auto;
+  margin-right: auto;
 }
 section:before {
   content: "";
@@ -537,20 +541,30 @@ section >* {
   white-space: normal;
   word-spacing: normal;
 }
+@media (min-width: 1400px) {
+  section {
+    max-width: 60%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
 section h1 {
   font-size: 500%;
   font-weight: 100;
   margin-bottom: 0;
+  text-shadow: 0px -1px 0px rgba(0,0,0,0.35);
 }
 section h1+p {
   margin-top: 0;
+  font-size: 130%;
 }
 section .macbook {
   margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 @media (min-width: 1024px) {
   section .macbook {
-    font-size: 20%;
+    font-size: 21%;
   }
 }
 section .macbook .screen {
@@ -571,5 +585,12 @@ section .macbook:hover .screen {
   -o-transform: rotateX(120deg) translateZ(-1px);
   -ms-transform: rotateX(120deg) translateZ(-1px);
   transform: rotateX(120deg) translateZ(-1px);
+}
+section .macbook {
+  -webkit-transform: rotateZ(183deg);
+  -moz-transform: rotateZ(183deg);
+  -o-transform: rotateZ(183deg);
+  -ms-transform: rotateZ(183deg);
+  transform: rotateZ(183deg);
 }
 

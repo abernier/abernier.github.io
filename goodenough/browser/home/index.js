@@ -31,6 +31,10 @@ window.TWEEN = TWEEN;
 
 var THREE = require('three');
 window.THREE = THREE;
+
+var epsilon = function ( value ) {
+  return Math.abs( value ) < 0.000001 ? 0 : value;
+};
 THREE.CSS3DObject = function ( element ) {
 	THREE.Object3D.call( this );
 
@@ -43,6 +47,8 @@ THREE.CSS3DObject = function ( element ) {
     w: $el.width(),
     h: $el.height()
   };
+  /*var elements = this.matrixWorld.elements;
+  this.rotation.set(epsilon(Math.asin(elements[5])), epsilon(Math.acos(elements[0])));*/
   
 	//this.element.style.position = 'absolute';
   $el.parentsUntil('#scene').andSelf().each(function (i, el) {
@@ -132,12 +138,6 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 
 	};
 
-	var epsilon = function ( value ) {
-
-		return Math.abs( value ) < 0.000001 ? 0 : value;
-
-	};
-
 	var getCameraCSSMatrix = function ( matrix ) {
 
 		var elements = matrix.elements;
@@ -147,14 +147,17 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 			epsilon(- elements[ 1 ] ) + ',' +
 			epsilon( elements[ 2 ] ) + ',' +
 			epsilon( elements[ 3 ] ) + ',' +
+
 			epsilon( elements[ 4 ] ) + ',' +
 			epsilon( -elements[ 5 ] ) + ',' +
 			epsilon( elements[ 6 ] ) + ',' +
 			epsilon( elements[ 7 ] ) + ',' +
+
 			epsilon( elements[ 8 ] ) + ',' +
 			epsilon(- elements[ 9 ] ) + ',' +
 			epsilon( elements[ 10 ] ) + ',' +
 			epsilon( elements[ 11 ] ) + ',' +
+
 			epsilon( elements[ 12 ] ) + ',' +
 			epsilon(- elements[ 13 ] ) + ',' +
 			epsilon( elements[ 14 ] ) + ',' +
@@ -324,7 +327,7 @@ var HomeView = Backbone.View.extend({
       var camera = new THREE.PerspectiveCamera(30, 1, -1000, 1000);
       window.camera = camera;
 
-      camera.position.set(WW/2, WH/2, -1500);
+      camera.position.set(WW/2, WH/2, -1500); // camera.position.z === -perspective
       camera.up.set(0, -1, 0);
 
       var lookAt = new THREE.Vector3(WW/2,WH/2,0);
@@ -448,6 +451,7 @@ var HomeView = Backbone.View.extend({
           activeMacbook = $mba[0];
 
           new TWEEN.Tween(camera.rotation).to({x: 240*Math.PI/180}, 300).start();
+          new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
           
           new TWEEN.Tween(camera.position).to({
             x: pos.x + dims.w/2,
@@ -456,6 +460,7 @@ var HomeView = Backbone.View.extend({
           }, 300).start();
         } else {
           new TWEEN.Tween(camera.rotation).to({x: 180*Math.PI/180}, 300).start();
+          new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
 
           new TWEEN.Tween(camera.position).to({
             x: pos.x + dims.w/2,
