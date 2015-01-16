@@ -311,6 +311,16 @@ var HomeView = Backbone.View.extend({
     var $camera = this.$('#camera');
     var $window = $(window);
     true && (function () {
+
+      // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+      function distw(width, fov, aspect) {
+        //return 2*height/Math.tan(2*fov/(180 /Math.PI))
+        //return 2*height / Math.tan(fov*(180/Math.PI)/2);
+        return ((width/aspect)/Math.tan((fov/2)/(180/Math.PI)))/2;
+      }
+      function disth(height, fov, aspect) {
+        return (height/Math.tan((fov/(180/Math.PI))/2))/2;
+      }
       
       var WW;
       function setWW() {
@@ -326,10 +336,10 @@ var HomeView = Backbone.View.extend({
       setWH();
       $window.resize(setWH);
 
-      var camera = new THREE.PerspectiveCamera(30, 1, -1000, 1000);
+      var camera = new THREE.PerspectiveCamera(30, WW/WH, -1000, 1000);
       window.camera = camera;
 
-      camera.position.set(WW/2, WH/2, -1500); // camera.position.z === -perspective
+      camera.position.set(WW/2, WH/2, -distw(WW, camera.fov, camera.aspect)); // camera.position.z === -perspective
       camera.up.set(0, -1, 0);
 
       var lookAt = new THREE.Vector3(WW/2,WH/2,0);
@@ -441,8 +451,8 @@ var HomeView = Backbone.View.extend({
         console.log('click');
       	var $mba = $(this);
 
-        var height = 1.5*WH
-        var dist = 2*height/Math.tan(2*camera.fov/(180 /Math.PI)); // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+        var height = 1*WH
+        var d = disth(height, camera.fov, camera.aspect);
 
         var css3dobject = $mba.data('css3dobject');
         var pos = css3dobject.position;
@@ -457,17 +467,17 @@ var HomeView = Backbone.View.extend({
           
           new TWEEN.Tween(camera.position).to({
             x: pos.x + dims.w/2,
-            y: dist*Math.cos(Math.PI/2-theta) + pos.y,
-            z: -(dist*Math.cos(theta))
+            y: d*Math.cos(Math.PI/2-theta) + pos.y,
+            z: -(d*Math.cos(theta))
           }, 300).start();
         } else {
           new TWEEN.Tween(camera.rotation).to({x: 180*Math.PI/180}, 300).start();
           new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
 
           new TWEEN.Tween(camera.position).to({
-            x: pos.x + dims.w/2,
-            y: pos.y + dims.h/2,
-            z: -1500
+            x: WW/2,
+            y: WH/2,
+            z: -distw(WW, camera.fov, camera.aspect)
           }, 300).start();
 
           activeMacbook = undefined;

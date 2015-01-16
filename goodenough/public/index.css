@@ -541,7 +541,6 @@ body {
   background-color: #9bc1c4;
 }
 #body {
-  position: relative;
   color: #fff;
 /*background:@background-color url("bg.jpg");
   #camera.cam3d & {
@@ -560,37 +559,6 @@ body {
 }
 #body:after {
   clear: both;
-}
-#body:before {
-  content: "";
-  display: block;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  -webkit-box-shadow: 0 0 0px 1px #0f0 inset;
-  box-shadow: 0 0 0px 1px #0f0 inset;
-  -webkit-transform: translateZ(-1px);
-  -moz-transform: translateZ(-1px);
-  -o-transform: translateZ(-1px);
-  -ms-transform: translateZ(-1px);
-  transform: translateZ(-1px);
-}
-#body:after {
-  content: "#body";
-  display: inline-block;
-  position: absolute;
-  right: 0;
-  top: 0;
-  -webkit-box-shadow: 0 0 0px 1px #0f0 inset;
-  box-shadow: 0 0 0px 1px #0f0 inset;
-  -webkit-transform: translateZ(-1px);
-  -moz-transform: translateZ(-1px);
-  -o-transform: translateZ(-1px);
-  -ms-transform: translateZ(-1px);
-  transform: translateZ(-1px);
-  color: #0f0;
 }
 section {
   padding-left: 5.555555%;
@@ -623,6 +591,9 @@ section .macbook {
   section .macbook {
     font-size: 21%;
   }
+}
+html.debug section .macbook .shadow {
+  display: none;
 }
 section .macbook .screen {
   -webkit-transition: -webkit-transform 0.3s;
