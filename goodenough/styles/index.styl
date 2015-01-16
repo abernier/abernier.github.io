@@ -148,7 +148,7 @@ padheight(w, h)
 
 body
   margin:0;
-  font:400 100%/$lh 'Roboto', Arial, sans-serif;
+  font:400 100%/$lh 'proximanova', Arial, sans-serif;
   -webkit-font-smoothing:antialiased;
   background-color:#C9CED4;
 
@@ -176,11 +176,12 @@ html.js .img >img {visibility:hidden;}
 input
   font:inherit;
 
-.h {}
+.h {line-height:1.2;}
 
 #camera
   //background:url("https://dl.dropbox.com/s/sw0qqg0j0qq8xng/grid.png?dl=1");
 #camera, #camera * {transform-style:preserve-3d;}
+
 
 body {text-align:center;}
 
@@ -188,15 +189,26 @@ body {text-align:center;}
   height:100vh;
 
   background-color:#9BC1C4; color:white;
+  background:@background-color url("bg.jpg");
   bgcolor = rgba(black,.05)
   //background-image:linear-gradient(transparent 24%, bgcolor 25%, bgcolor 26%, transparent 27%, transparent 74%, bgcolor 75%, bgcolor 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, bgcolor 25%, bgcolor 26%, transparent 27%, transparent 74%, bgcolor 75%, bgcolor 76%, transparent 77%, transparent);background-size:50px 50px;
+    
+  #camera.cam3d & {
+    background:transparent;
+    &:before {
+      content:"";display:block;width:500vw;height:@width;
+      position:absolute;left:50%;top:50%;transform:translate3d(-50%,-50%,0) translateZ(1px);
+      background:#9BC1C4 url("bg.jpg");
+    }
+  }
 }
 
 
 section
   vcenter();
   
-  h1 {font-size:300%;}
+  h1 {font-size:500%; font-weight:100; margin-bottom:0;}
+  h1+p {margin-top:0}
   
   .macbook
     margin-top:3rem;

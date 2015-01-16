@@ -101,6 +101,7 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 	domElement.style.transformStyle = 'preserve-3d';
 
 	var cameraElement = cameraElement || document.createElement( 'div' ) && domElement.appendChild(cameraElement);
+  $(cameraElement).addClass('cam3d');
 
 	cameraElement.style.WebkitTransformStyle = 'preserve-3d';
 	cameraElement.style.MozTransformStyle = 'preserve-3d';
@@ -447,7 +448,6 @@ var HomeView = Backbone.View.extend({
           activeMacbook = $mba[0];
 
           new TWEEN.Tween(camera.rotation).to({x: 240*Math.PI/180}, 300).start();
-          new TWEEN.Tween(css3dobject.rotation).to({z: 360*Math.PI/180}, 300).start();
           
           new TWEEN.Tween(camera.position).to({
             x: pos.x + dims.w/2,
@@ -456,7 +456,6 @@ var HomeView = Backbone.View.extend({
           }, 300).start();
         } else {
           new TWEEN.Tween(camera.rotation).to({x: 180*Math.PI/180}, 300).start();
-          new TWEEN.Tween(css3dobject.rotation).to({z: 0*Math.PI/180}, 300).start();
 
           new TWEEN.Tween(camera.position).to({
             x: pos.x + dims.w/2,

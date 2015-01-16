@@ -435,7 +435,7 @@ html.js.domready .no-js {
 }
 body {
   margin: 0;
-  font: 400 100%/1.5 'Roboto', Arial, sans-serif;
+  font: 400 100%/1.5 'proximanova', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   background-color: #c9ced4;
 }
@@ -481,6 +481,9 @@ html.js .img >img {
 input {
   font: inherit;
 }
+.h {
+  line-height: 1.2;
+}
 #camera,
 #camera * {
   -webkit-transform-style: preserve-3d;
@@ -496,6 +499,25 @@ body {
   height: 100vh;
   background-color: #9bc1c4;
   color: #fff;
+  background: #9bc1c4 url("bg.jpg");
+}
+#camera.cam3d #body {
+  background: transparent;
+}
+#camera.cam3d #body:before {
+  content: "";
+  display: block;
+  width: 500vw;
+  height: 500vw;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0) translateZ(1px);
+  -moz-transform: translate3d(-50%, -50%, 0) translateZ(1px);
+  -o-transform: translate3d(-50%, -50%, 0) translateZ(1px);
+  -ms-transform: translate3d(-50%, -50%, 0) translateZ(1px);
+  transform: translate3d(-50%, -50%, 0) translateZ(1px);
+  background: #9bc1c4 url("bg.jpg");
 }
 section {
   height: 100%;
@@ -516,7 +538,12 @@ section >* {
   word-spacing: normal;
 }
 section h1 {
-  font-size: 300%;
+  font-size: 500%;
+  font-weight: 100;
+  margin-bottom: 0;
+}
+section h1+p {
+  margin-top: 0;
 }
 section .macbook {
   margin-top: 3rem;
