@@ -341,7 +341,7 @@ var HomeView = Backbone.View.extend({
       camera.position.set(WW/2, WH/2, -distw(WW, camera.fov, camera.aspect)); // camera.position.z === -perspective
       camera.up.set(0, -1, 0);
 
-      var lookAt = new THREE.Vector3(WW/2,WH/2,0);
+      var lookAt = new THREE.Vector3(WW/2,WH/2,-1);
       window.lookAt = lookAt;
       camera.lookAt(lookAt);
 
@@ -350,6 +350,7 @@ var HomeView = Backbone.View.extend({
       //renderer.domElement.style.position = 'absolute';
 
       var scene = new THREE.Scene();
+      window.scene = scene;
 
       $('.obj').each(function (i, el) {
         var $el = $(el);
@@ -450,33 +451,53 @@ var HomeView = Backbone.View.extend({
         console.log('click');
       	var $mba = $(this);
 
-        var height = 1*WH
-        var d = disth(height, camera.fov, camera.aspect);
-
         var css3dobject = $mba.data('css3dobject');
-        var pos = css3dobject.position;
-        var dims = css3dobject.dims;
         var theta = 60*Math.PI/180;
+
+        var d = disth(WH*Math.cos(theta), camera.fov, camera.aspect);
 
         if (activeMacbook !== $mba[0]) {
           activeMacbook = $mba[0];
 
-          new TWEEN.Tween(camera.rotation).to({x: 240*Math.PI/180}, 300).start();
-          new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
           
+          new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
+        
+          // set new position before new rot
+          var p0 = new THREE.Vector3().copy(camera.position);
+          var p = new THREE.Vector3(WW/2, WH/2 + d*Math.sin(theta), -d);
+          camera.position.set(p.x, p.y, p.z);
+          // set new
+          var r0 = new THREE.Euler().copy(camera.rotation);
+          var lookAt = new THREE.Vector3(WW/2, WH/2, 0);
+          camera.lookAt(lookAt);
+          var r = new THREE.Euler().copy(camera.rotation);
+          
+          camera.position.set(p0.x, p0.y, p0.z);
+          camera.rotation.set(r0.x, r0.y, r0.z);
           new TWEEN.Tween(camera.position).to({
-            x: pos.x + dims.w/2,
-            y: d*Math.cos(Math.PI/2-theta) + pos.y,
-            z: -(d*Math.cos(theta))
+            x: p.x,
+            y: p.y,
+            z: p.z
           }, 300).start();
+          new TWEEN.Tween(camera.rotation).to({
+            x: r.x + 2*Math.PI, // gimbal !!!
+            y: r.y,
+            z: r.z
+          }, 300).start();
+
         } else {
-          new TWEEN.Tween(camera.rotation).to({x: 180*Math.PI/180}, 300).start();
+          
           new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
 
           new TWEEN.Tween(camera.position).to({
             x: WW/2,
             y: WH/2,
             z: -distw(WW, camera.fov, camera.aspect)
+          }, 300).start();
+          new TWEEN.Tween(camera.rotation).to({
+            x: Math.PI,
+            y: 0,
+            z: 0
           }, 300).start();
 
           activeMacbook = undefined;
