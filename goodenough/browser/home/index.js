@@ -7,6 +7,7 @@ require('jquery-waypoints-sticky');
 require('jquery-hammer');
 require('velocity-animate');
 
+var FTScroller = require('ftscroller');
 
 $.fn.offsetRelative = function offsetRelative(selector) {
   var $el = this;
@@ -221,7 +222,7 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
       $(object.element).parentsUntil('#camera').each(function (i,el) {
         var _t = $(el).css('transform');
         if (_t !== 'none') {
-          t.push(_t);
+          //t.push(_t);
         }
       });
       style = t.reverse().join(' ') + ' ' + getObjectCSSMatrix(object,  object.matrixWorld );
@@ -308,7 +309,7 @@ var HomeView = Backbone.View.extend({
     var $scene = this.$('#scene');
     var $camera = this.$('#camera');
     var $window = $(window);
-    (function () {
+    true && (function () {
       
       var WW;
       function setWW() {
@@ -511,6 +512,21 @@ var HomeView = Backbone.View.extend({
 
       });
     }).call(this);*/
+
+    //
+    // Scroller
+    //
+
+    var $scroller = this.$('#scroller');
+    $('html, body').css('overflow', 'hidden');
+    var ftscroller = new FTScroller($scroller[0], {
+      bouncing: false,
+      scrollbars: false,
+      scrollingX: false,
+      //contentHeight: undefined,
+      updateOnWindowResize: true
+    });
+
   }
 });
 

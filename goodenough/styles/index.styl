@@ -150,7 +150,6 @@ body
   margin:0;
   font:400 100%/$lh 'proximanova', Arial, sans-serif;
   -webkit-font-smoothing:antialiased;
-  background-color:#C9CED4;
 
 a
   font:inherit; text-decoration:inherit; color:inherit;
@@ -178,21 +177,53 @@ input
 
 .h {line-height:1.2;}
 
+html,body,#scene,#camera,#scroller {height:100%;}
+.ftscroller_container,
+.ftscroller_x, .ftscroller_y {overflow:visible;}
+.ftscroller_container {
+  position:relative;
+  &:before {
+    content:"";display:block;position:absolute;left:0;right:0;top:0;bottom:0;
+    box-shadow:0 0 0px 1px black inset;
+    transform:translateZ(-1px);
+  }
+  &:after {
+    content:".ftscroller_container";display:inline-block;position:absolute;left:0;top:0;
+    box-shadow:0 0 0px 1px black inset;
+    transform:translateZ(-1px);
+  }
+}
+
 #camera
   //background:url("https://dl.dropbox.com/s/sw0qqg0j0qq8xng/grid.png?dl=1");
 #camera, #camera * {transform-style:preserve-3d;}
 
 
-body {text-align:center;}
+body {
+  text-align:center;
+  background-color:#9BC1C4;
+}
 
 #body {
-  height:100vh;
+  //height:100vh;
+  cf();
+  
+  position:relative;
+  &:before {
+    content:"";display:block;position:absolute;left:0;right:0;top:0;bottom:0;
+    box-shadow:0 0 0px 1px #00ff00 inset;
+    transform:translateZ(-1px);
+  }
+  &:after {
+    content:"#body";display:inline-block;position:absolute;right:0;top:0;
+    box-shadow:0 0 0px 1px #00ff00 inset;
+    transform:translateZ(-1px); color:#00ff00;
+  }
 
-  background-color:#9BC1C4; color:white;
-  background:@background-color url("bg.jpg");
-  bgcolor = rgba(black,.05)
-  //background-image:linear-gradient(transparent 24%, bgcolor 25%, bgcolor 26%, transparent 27%, transparent 74%, bgcolor 75%, bgcolor 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, bgcolor 25%, bgcolor 26%, transparent 27%, transparent 74%, bgcolor 75%, bgcolor 76%, transparent 77%, transparent);background-size:50px 50px;
+  //background-color:#9BC1C4;
+  color:white;
     
+  /*background:@background-color url("bg.jpg");
   #camera.cam3d & {
     background:transparent;
     &:before {
@@ -200,12 +231,12 @@ body {text-align:center;}
       position:absolute;left:50%;top:50%;transform:translate3d(-50%,-50%,0) translateZ(1px);
       background:#9BC1C4 url("bg.jpg");
     }
-  }
+  }*/
 }
 
 
 section
-  vcenter();
+  //vcenter();
   c();
   
   h1 {font-size:500%; font-weight:100; margin-bottom:0; text-shadow:0px -1px 0px rgba(0,0,0,.35);}

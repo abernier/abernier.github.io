@@ -437,7 +437,6 @@ body {
   margin: 0;
   font: 400 100%/1.5 'proximanova', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-color: #c9ced4;
 }
 a {
   font: inherit;
@@ -484,6 +483,51 @@ input {
 .h {
   line-height: 1.2;
 }
+html,
+body,
+#scene,
+#camera,
+#scroller {
+  height: 100%;
+}
+.ftscroller_container,
+.ftscroller_x,
+.ftscroller_y {
+  overflow: visible;
+}
+.ftscroller_container {
+  position: relative;
+}
+.ftscroller_container:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0 0 0px 1px #000 inset;
+  box-shadow: 0 0 0px 1px #000 inset;
+  -webkit-transform: translateZ(-1px);
+  -moz-transform: translateZ(-1px);
+  -o-transform: translateZ(-1px);
+  -ms-transform: translateZ(-1px);
+  transform: translateZ(-1px);
+}
+.ftscroller_container:after {
+  content: ".ftscroller_container";
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  -webkit-box-shadow: 0 0 0px 1px #000 inset;
+  box-shadow: 0 0 0px 1px #000 inset;
+  -webkit-transform: translateZ(-1px);
+  -moz-transform: translateZ(-1px);
+  -o-transform: translateZ(-1px);
+  -ms-transform: translateZ(-1px);
+  transform: translateZ(-1px);
+}
 #camera,
 #camera * {
   -webkit-transform-style: preserve-3d;
@@ -494,52 +538,65 @@ input {
 }
 body {
   text-align: center;
+  background-color: #9bc1c4;
 }
 #body {
-  height: 100vh;
-  background-color: #9bc1c4;
+  position: relative;
   color: #fff;
-  background: #9bc1c4 url("bg.jpg");
+/*background:@background-color url("bg.jpg");
+  #camera.cam3d & {
+    background:transparent;
+    &:before {
+      content:"";display:block;width:500vw;height:@width;
+      position:absolute;left:50%;top:50%;transform:translate3d(-50%,-50%,0) translateZ(1px);
+      background:#9BC1C4 url("bg.jpg");
+    }
+  }*/
 }
-#camera.cam3d #body {
-  background: transparent;
+#body:before,
+#body:after {
+  content: " ";
+  display: table;
 }
-#camera.cam3d #body:before {
+#body:after {
+  clear: both;
+}
+#body:before {
   content: "";
   display: block;
-  width: 500vw;
-  height: 500vw;
   position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate3d(-50%, -50%, 0) translateZ(1px);
-  -moz-transform: translate3d(-50%, -50%, 0) translateZ(1px);
-  -o-transform: translate3d(-50%, -50%, 0) translateZ(1px);
-  -ms-transform: translate3d(-50%, -50%, 0) translateZ(1px);
-  transform: translate3d(-50%, -50%, 0) translateZ(1px);
-  background: #9bc1c4 url("bg.jpg");
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0 0 0px 1px #0f0 inset;
+  box-shadow: 0 0 0px 1px #0f0 inset;
+  -webkit-transform: translateZ(-1px);
+  -moz-transform: translateZ(-1px);
+  -o-transform: translateZ(-1px);
+  -ms-transform: translateZ(-1px);
+  transform: translateZ(-1px);
+}
+#body:after {
+  content: "#body";
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  -webkit-box-shadow: 0 0 0px 1px #0f0 inset;
+  box-shadow: 0 0 0px 1px #0f0 inset;
+  -webkit-transform: translateZ(-1px);
+  -moz-transform: translateZ(-1px);
+  -o-transform: translateZ(-1px);
+  -ms-transform: translateZ(-1px);
+  transform: translateZ(-1px);
+  color: #0f0;
 }
 section {
-  height: 100%;
-  white-space: nowrap;
-  word-spacing: -0.25em;
   padding-left: 5.555555%;
   padding-right: 5.555555%;
   margin-left: auto;
   margin-right: auto;
-}
-section:before {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  width: 0;
-  height: 100%;
-}
-section >* {
-  display: inline-block;
-  vertical-align: middle;
-  white-space: normal;
-  word-spacing: normal;
 }
 @media (min-width: 1400px) {
   section {

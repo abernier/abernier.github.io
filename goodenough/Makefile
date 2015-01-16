@@ -30,6 +30,7 @@ public/vendor.js: ./node_modules/.bin/browserify $(shell find node_modules -type
 	  -r three \
 	  -r dat-gui \
 	  -r tween \
+	  -r ftscroller \
 	  > $@
 ifeq ($(ENV), production)
 	./node_modules/.bin/uglifyjs $@ -o $@ -m
@@ -53,6 +54,7 @@ public/index.js: ./node_modules/.bin/browserify $(shell find browser -type f -na
 	  -x three \
 	  -x dat-gui \
 	  -x tween \
+	  -x ftscroller \
 	  -r ./browser/index.js:Goodenough \
 	  > $@
 ifeq ($(ENV), production)
