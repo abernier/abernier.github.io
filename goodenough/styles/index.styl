@@ -1,6 +1,8 @@
 @import 'nib'
 
 @import './mba';
+@import './stabilo';
+@import './cube';
 
 article,
 aside,
@@ -180,6 +182,7 @@ input
 html,body,#scene,#camera,#scroller {height:100%;}
 .ftscroller_container,
 .ftscroller_x, .ftscroller_y {overflow:visible;}
+//.ftscroller_y {transform:none!important;}
 .ftscroller_container {
   position:relative;
   &:before {
@@ -211,8 +214,8 @@ body {
   //background-color:#9BC1C4;
   color:white;
     
-  /*background:@background-color url("bg.jpg");
-  #camera.cam3d & {
+  //background:@background-color url("bg.jpg");
+  /*#camera.cam3d & {
     background:transparent;
     &:before {
       content:"";display:block;width:500vw;height:@width;
@@ -238,7 +241,7 @@ section
       
   .macbook
     html.debug & .shadow
-      display:none;
+      //display:none;
       
     .screen
       transition:transform .3s;
@@ -247,10 +250,32 @@ section
       transform:rotateX(120deg) translateZ(-1px);
   
   .macbook
-    transform:rotateZ(183deg)
+    //transform:rotateZ(183deg)
   
   .macbook2
     //transform:rotateZ(177deg)
+
+
+  .stabilo1
+    //position:absolute;top:58vh;left:50%;margin-left:-20em; transform:rotateX(-90deg) scale3d(.5,.5,.5) rotateY(0deg);
+      stabilo(topcolor:#9BCB60);
+  .stabilo2
+    //position:absolute;top:58vh;left:50%;margin-left:-20em; transform:rotateX(-90deg) scale3d(.5,.5,.5) rotateY(0deg);
+      stabilo(topcolor:#D8F955);
+    
+  .macbooks-and-stabilos
+    display:inline-block;
+    
+    .stabilo
+      transform:scale3d(.15,.15,.15) rotateY(-90deg);
+      @media (min-width:1024px)
+        transform:scale3d(.3,.3,.3) rotateY(-90deg);
+      
+    position:relative;
+    .stabilo1
+      position:absolute; top:95%;left:-10%;
+    .stabilo2
+      position:absolute; top:100%;left:-5%;
       
     
 

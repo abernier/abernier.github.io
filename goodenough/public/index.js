@@ -387,11 +387,342 @@ var HomeView = Backbone.View.extend({
       window.draw = draw;
       draw();
 
+      //
+      // shading
+      //
+
+      var renderlight;
+      (function () {
+        //
+        // Photon
+        //
+        /*var Photon = require('photon');
+        var light = new Photon.Light(100, 200, 500); window.light = light;
+        var faces = [];
+
+        var $stabilo = $('.stabilo');
+        //var stabilofacegroup = new Photon.FaceGroup($stabilo[0], $stabilo.find('.h, .f').get(), 1, 1, false);
+        //faces.push(stabilofacegroup);
+        $stabilo.find('.hexa .strip').each(function (i, el) {
+          //faces.push(new Photon.Face(el, .5));
+          faces.push(new Photon.FaceGroup(el, $(el).find('.h, .f').get(), .5, 0, true));
+        });
+
+        var $cube = $('.cube');
+        var cubefacegroup = new Photon.FaceGroup($('#camera')[0], $cube.find('>*').get(), .5, 0, true);
+        faces.push(cubefacegroup);*/
+
+        //
+        // http://keithclark.co.uk/articles/calculating-element-vertex-data-from-css-transforms/demo6/
+        //
+
+        /* Returns A, B, C and D vertices of an element
+        ---------------------------------------------------------------- */
+
+        function computeVertexData (elem) {
+            var w = elem.offsetWidth,
+                h = elem.offsetHeight,
+                x = elem.offsetLeft,
+                y = elem.offsetTop,
+                z = 0,
+                v = {
+                    a: { x: x,     y: y, z: z }, // top left corner
+                    b: { x: x+w, y: y,   z: z }, // top right corner
+                    c: { x: x+w, y: y+h, z: z }, // bottom right corner
+                    d: { x: x,   y: y+h, z: z }  // bottom left corner
+                },
+                transform;
+
+            while (elem.nodeType === 1) {
+                transform = getTransform(elem);
+                v.a = addVectors(rotateVector(v.a, transform.rotate), transform.translate);
+                v.b = addVectors(rotateVector(v.b, transform.rotate), transform.translate);
+                v.c = addVectors(rotateVector(v.c, transform.rotate), transform.translate);
+                v.d = addVectors(rotateVector(v.d, transform.rotate), transform.translate);
+                elem = elem.parentNode;
+            }
+            return v;
+        }
+
+
+        /* Returns the rotation and translation components of an element
+        ---------------------------------------------------------------- */
+
+        function getTransform (elem) {
+            var computedStyle = getComputedStyle(elem, null),
+                val = computedStyle.transform ||
+                    computedStyle.webkitTransform ||
+                    computedStyle.MozTransform ||
+                    computedStyle.msTransform,
+                matrix = parseMatrix(val),
+                rotateY = Math.asin(-matrix.m13),
+                rotateX, 
+                rotateZ;
+
+                rotateX = Math.atan2(matrix.m23, matrix.m33);
+                rotateZ = Math.atan2(matrix.m12, matrix.m11);
+
+            /*if (Math.cos(rotateY) !== 0) {
+                rotateX = Math.atan2(matrix.m23, matrix.m33);
+                rotateZ = Math.atan2(matrix.m12, matrix.m11);
+            } else {
+                rotateX = Math.atan2(-matrix.m31, matrix.m22);
+                rotateZ = 0;
+            }*/
+
+            return {
+                transformStyle: val,
+                matrix: matrix,
+                rotate: {
+                    x: rotateX,
+                    y: rotateY,
+                    z: rotateZ
+                },
+                translate: {
+                    x: matrix.m41,
+                    y: matrix.m42,
+                    z: matrix.m43
+                }
+            };
+        }
+
+
+        /* Parses a matrix string and returns a 4x4 matrix
+        ---------------------------------------------------------------- */
+
+        function parseMatrix (matrixString) {
+            var c = matrixString.split(/\s*[(),]\s*/).slice(1,-1),
+                matrix;
+
+            if (c.length === 6) {
+                // 'matrix()' (3x2)
+                matrix = {
+                    m11: +c[0], m21: +c[2], m31: 0, m41: +c[4],
+                    m12: +c[1], m22: +c[3], m32: 0, m42: +c[5],
+                    m13: 0,     m23: 0,     m33: 1, m43: 0,
+                    m14: 0,     m24: 0,     m34: 0, m44: 1
+                };
+            } else if (c.length === 16) {
+                // matrix3d() (4x4)
+                matrix = {
+                    m11: +c[0], m21: +c[4], m31: +c[8], m41: +c[12],
+                    m12: +c[1], m22: +c[5], m32: +c[9], m42: +c[13],
+                    m13: +c[2], m23: +c[6], m33: +c[10], m43: +c[14],
+                    m14: +c[3], m24: +c[7], m34: +c[11], m44: +c[15]
+                };
+
+            } else {
+                // handle 'none' or invalid values.
+                matrix = {
+                    m11: 1, m21: 0, m31: 0, m41: 0,
+                    m12: 0, m22: 1, m32: 0, m42: 0,
+                    m13: 0, m23: 0, m33: 1, m43: 0,
+                    m14: 0, m24: 0, m34: 0, m44: 1
+                };
+            }
+            return matrix;
+        }
+
+        /* Adds vector v2 to vector v1
+        ---------------------------------------------------------------- */
+
+        function addVectors (v1, v2) {
+            return {
+                x: v1.x + v2.x,
+                y: v1.y + v2.y,
+                z: v1.z + v2.z
+            };
+        }
+
+
+        /* Rotates vector v1 around vector v2
+        ---------------------------------------------------------------- */
+
+        function rotateVector (v1, v2) {
+            var x1 = v1.x,
+                y1 = v1.y,
+                z1 = v1.z,
+                angleX = v2.x / 2,
+                angleY = v2.y / 2,
+                angleZ = v2.z / 2,
+
+                cr = Math.cos(angleX),
+                cp = Math.cos(angleY),
+                cy = Math.cos(angleZ),
+                sr = Math.sin(angleX),
+                sp = Math.sin(angleY),
+                sy = Math.sin(angleZ),
+
+                w = cr * cp * cy + -sr * sp * -sy,
+                x = sr * cp * cy - -cr * sp * -sy,
+                y = cr * sp * cy + sr * cp * sy,
+                z = cr * cp * sy - -sr * sp * -cy,
+
+                m0 = 1 - 2 * ( y * y + z * z ),
+                m1 = 2 * (x * y + z * w),
+                m2 = 2 * (x * z - y * w),
+
+                m4 = 2 * ( x * y - z * w ),
+                m5 = 1 - 2 * ( x * x + z * z ),
+                m6 = 2 * (z * y + x * w ),
+
+                m8 = 2 * ( x * z + y * w ),
+                m9 = 2 * ( y * z - x * w ),
+                m10 = 1 - 2 * ( x * x + y * y );
+
+            return {
+                x: x1 * m0 + y1 * m4 + z1 * m8,
+                y: x1 * m1 + y1 * m5 + z1 * m9,
+                z: x1 * m2 + y1 * m6 + z1 * m10
+            };
+        }
+
+        /* Vector functions
+        -------------------------------------------------- */
+
+        var Vect3 = {
+            create: function(x, y, z) {
+                return {x: x || 0, y: y || 0, z: z || 0};
+            },
+            add: function(v1, v2) {
+                return {x: v1.x + v2.x, y: v1.y + v2.y, z: v1.z + v2.z};
+            },
+            sub: function(v1, v2) {
+                return {x: v1.x - v2.x, y: v1.y - v2.y, z: v1.z - v2.z};
+            },
+            mul: function(v1, v2) {
+                return {x: v1.x * v2.x, y: v1.y * v2.y, z: v1.z * v2.z};
+            },
+            div: function(v1, v2) {
+                return {x: v1.x / v2.x, y: v1.y / v2.y, z: v1.z / v2.z};
+            },
+            muls: function(v, s) {
+                return {x: v.x * s, y: v.y * s, z: v.z * s};
+            },
+            divs: function(v, s) {
+                return {x: v.x / s, y: v.y / s, z: v.z / s};
+            },
+            len: function(v) {
+                return Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+            },
+            dot: function(v1, v2) {
+                return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+            },
+            cross: function(v1, v2) {
+                return {x: v1.y * v2.z - v1.z * v2.y, y: v1.z * v2.x - v1.x * v2.z, z: v1.x * v2.y - v1.y * v2.x};
+            },
+            normalize: function(v) {
+                return Vect3.divs(v, Vect3.len(v));
+            },
+            ang: function(v1, v2) {
+                return Math.acos(Vect3.dot(v1, v2) / (Vect3.len(v1) * Vect3.len(v2)));
+            },
+            copy: function(v) {
+                return {x: v.x, y: v.y, z: v.z};
+            },
+            equal: function(v1,v2) {
+                return v1.x === v2.x && v1.y === v2.y && v1.z === v2.z;
+            },
+            rotate: function(v1, v2) {
+                var x1 = v1.x,
+                    y1 = v1.y,
+                    z1 = v1.z,
+                    angleX = v2.x / 2,
+                    angleY = v2.y / 2,
+                    angleZ = v2.z / 2,
+
+                    cr = Math.cos(angleX),
+                    cp = Math.cos(angleY),
+                    cy = Math.cos(angleZ),
+                    sr = Math.sin(angleX),
+                    sp = Math.sin(angleY),
+                    sy = Math.sin(angleZ),
+
+                    w = cr * cp * cy + -sr * sp * sy,
+                    x = sr * cp * cy - -cr * sp * sy,
+                    y = cr * sp * cy + sr * cp * -sy,
+                    z = cr * cp * sy - -sr * sp * cy,
+
+                    m0 = 1 - 2 * ( y * y + z * z ),
+                    m1 = 2 * (x * y + z * w),
+                    m2 = 2 * (x * z - y * w),
+
+                    m4 = 2 * ( x * y - z * w ),
+                    m5 = 1 - 2 * ( x * x + z * z ),
+                    m6 = 2 * (z * y + x * w ),
+
+                    m8 = 2 * ( x * z + y * w ),
+                    m9 = 2 * ( y * z - x * w ),
+                    m10 = 1 - 2 * ( x * x + y * y );
+
+                return {
+                    x: x1 * m0 + y1 * m4 + z1 * m8,
+                    y: x1 * m1 + y1 * m5 + z1 * m9,
+                    z: x1 * m2 + y1 * m6 + z1 * m10
+                };
+            }
+        };
+
+        // Determine the vendor prefixed transform property
+        var transformProp = ["transform", "webkitTransform", "MozTransform", "msTransform"].filter(function (prop) {
+            return prop in document.documentElement.style;
+        })[0];
+
+
+        // Default positions
+        var lightpos = {
+          x: WW/2,
+          y: WH/2,
+          z: 700
+        };
+        var objpos = {
+          x: 0,
+          y: 0,
+          z: 0
+        };
+
+        // Define the light source
+        var light = document.querySelector(".light");
+
+        // Grab the x-wing element
+        var obj = document.querySelector(".cube");
+        
+
+        /* Render
+        ---------------------------------------------------------------- */
+
+        function renderlight (startTime) {
+          startTime || (startTime = performance.now());
+
+          obj.style[transformProp] = "translateY(" + objpos.y + "px) translateX(" + objpos.x + "px) translateZ(" + objpos.z + "px)";
+          light.style[transformProp] = "translateY(" + lightpos.y + "px) translateX(" + lightpos.x + "px) translateZ(" + lightpos.z + "px)";
+          // Get the light position
+          var lightPosition = getTransform(light).translate;
+
+          // Light each face
+          [].slice.call(obj.querySelectorAll(".face")).forEach(function (face, i) {
+              var vertices = computeVertexData(face),
+                  faceCenter = Vect3.divs(Vect3.sub(vertices.c, vertices.a), 2),
+                  faceNormal = Vect3.normalize(Vect3.cross(Vect3.sub(vertices.b, vertices.a), Vect3.sub(vertices.c, vertices.a))),
+                  direction = Vect3.normalize(Vect3.sub(lightPosition, faceCenter)),
+                  amount = 1 - Math.max(0, Vect3.dot(faceNormal, direction)).toFixed(3);
+
+              face.style.backgroundImage = "linear-gradient(rgba(0,0,0," + amount + "), rgba(0,0,0," + amount + "))";
+          });
+        }
+      }).call(this);
+
       var clock = new THREE.Clock();
       var renderLoop = new Loop(function (t, t0) {
         //update(clock.getDelta());
         draw();
         TWEEN.update(t);
+        //renderlight();
+        
+        /*var l = faces.length;
+        while (l--) {
+          faces[l].render(light, true, true);
+        }*/
       });
       renderLoop.start();
 
@@ -445,7 +776,61 @@ var HomeView = Backbone.View.extend({
         draw();
       });
 
+      /*var f4 = gui.addFolder('light');
+      var lx = f4.add(light, 'x', -5000, 5000);
+      var ly = f4.add(light, 'y', -5000, 5000);
+      var lz = f4.add(light, 'z', -100, 10000);
+      lx.onChange(function (val) {
+        light.moveTo(val, light.y, light.z);
+      });
+      ly.onChange(function (val) {
+        light.moveTo(light.x, val, light.z);
+      });
+      lz.onChange(function (val) {
+        light.moveTo(light.x, light.y, val);
+      });*/
+
       // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+
+      function moveAndLookAt(camera, dstpos, dstlookat, options) {
+        options || (options = {duration: 300});
+
+        var origpos = new THREE.Vector3().copy(camera.position); // original position
+        var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
+
+        camera.position.set(dstpos.x, dstpos.y, dstpos.z);
+        camera.lookAt(dstlookat);
+        var dstrot = new THREE.Euler().copy(camera.rotation)
+
+        // reset original position and rotation
+        camera.position.set(origpos.x, origpos.y, origpos.z);
+        camera.rotation.set(origrot.x, origrot.y, origrot.z);
+
+        //
+        // Tweening
+        //
+
+        // position
+        new TWEEN.Tween(camera.position).to({
+          x: dstpos.x,
+          y: dstpos.y,
+          z: dstpos.z
+        }, options.duration).start();;
+
+        // rotation (using slerp)
+        (function () {
+          var qa = new THREE.Quaternion().copy(camera.quaternion); // src quaternion
+          var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
+          var qm = new THREE.Quaternion();
+          //camera.quaternion = qm;
+
+          var o = {t: 0};
+          new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
+            THREE.Quaternion.slerp(qa, qb, qm, o.t);
+            camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
+          }).start();
+        }).call(this);
+      }
 
       var activeMacbook;
       this.$('.macbook').on('click', function (e) {
@@ -453,53 +838,30 @@ var HomeView = Backbone.View.extend({
       	var $mba = $(this);
 
         var css3dobject = $mba.data('css3dobject');
-        var theta = 60*Math.PI/180;
-
-        var d = disth(WH*Math.cos(theta), camera.fov, camera.aspect);
 
         if (activeMacbook !== $mba[0]) {
           activeMacbook = $mba[0];
 
           
-          new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
+          //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
         
-          // set new position before new rot
-          var p0 = new THREE.Vector3().copy(camera.position);
-          var p = new THREE.Vector3(WW/2, WH/2 + d*Math.sin(theta), -d);
-          camera.position.set(p.x, p.y, p.z);
-          // set new
-          var r0 = new THREE.Euler().copy(camera.rotation);
-          var lookAt = new THREE.Vector3(WW/2, WH/2, 0);
-          camera.lookAt(lookAt);
-          var r = new THREE.Euler().copy(camera.rotation);
-          
-          camera.position.set(p0.x, p0.y, p0.z);
-          camera.rotation.set(r0.x, r0.y, r0.z);
-          new TWEEN.Tween(camera.position).to({
-            x: p.x,
-            y: p.y,
-            z: p.z
-          }, 300).start();
-          new TWEEN.Tween(camera.rotation).to({
-            x: r.x + 2*Math.PI, // gimbal !!!
-            y: r.y,
-            z: r.z
-          }, 300).start();
+          var theta = 60*Math.PI/180;
+          var d = disth(WH*Math.cos(theta), camera.fov, camera.aspect);
+          moveAndLookAt(
+            camera,
+            new THREE.Vector3(WW/2, WH/2 + d*Math.sin(theta), -d),
+            new THREE.Vector3(WW/2, WH/2, 0)
+          );
 
         } else {
           
-          new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
+          //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
 
-          new TWEEN.Tween(camera.position).to({
-            x: WW/2,
-            y: WH/2,
-            z: -distw(WW, camera.fov, camera.aspect)
-          }, 300).start();
-          new TWEEN.Tween(camera.rotation).to({
-            x: Math.PI,
-            y: 0,
-            z: 0
-          }, 300).start();
+          moveAndLookAt(
+            camera,
+            new THREE.Vector3(WW/2, WH/2, -distw(WW, camera.fov, camera.aspect)),
+            new THREE.Vector3(WW/2, WH/2, 0)
+          );
 
           activeMacbook = undefined;
         }
@@ -557,6 +919,9 @@ var HomeView = Backbone.View.extend({
       scrollingX: false,
       //contentHeight: undefined,
       updateOnWindowResize: true
+    });
+    ftscroller.addEventListener('scroll', function () {
+      console.log('scroll', ftscroller.scrollTop);
     });
 
   }

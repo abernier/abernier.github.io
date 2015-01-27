@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+	div {display:inline-block;background:rgba(255,0,0,.5); width:100px; box-shadow:0 0 0 1px red;}
+	#a {margin-left:50px; /*border:50px solid yellow;*/ transform:rotate(5deg);}
+	#b {margin-left:100px; position:relative; left:50px;}
+	#c {position:absolute; left:50px; transform:translateX(100px);}
+	#d {transform:translateX(200px) rotate(10deg);/*padding:50px;border:50px solid yellow;*/}
+	</style>
+</head>
+<body style="margin:0;">
+	<div id="a">
+		a
+		<div id="b">
+			b
+			<div id="c">
+				c
+				<div id="d">
+					d
+				</div>
+			</div>
+		</div>
+	</div>
+
+<script src="https://code.jquery.com/jquery-2.1.3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js"></script>
+<script>
+function parseMatrix (matrixString) {
+  var c = matrixString.split(/\s*[(),]\s*/).slice(1,-1),
+      matrix;
+
+  if (c.length === 6) {
+      // 'matrix()' (3x2)
+      matrix = {
+          m11: +c[0], m21: +c[2], m31: 0, m41: +c[4],
+          m12: +c[1], m22: +c[3], m32: 0, m42: +c[5],
+          m13: 0,     m23: 0,     m33: 1, m43: 0,
+          m14: 0,     m24: 0,     m34: 0, m44: 1
+      };
+  } else if (c.length === 16) {
+      // matrix3d() (4x4)
+      matrix = {
+          m11: +c[0], m21: +c[4], m31: +c[8], m41: +c[12],
+          m12: +c[1], m22: +c[5], m32: +c[9], m42: +c[13],
+          m13: +c[2], m23: +c[6], m33: +c[10], m43: +c[14],
+          m14: +c[3], m24: +c[7], m34: +c[11], m44: +c[15]
+      };
+
+  } else {
+      // handle 'none' or invalid values.
+      matrix = {
+          m11: 1, m21: 0, m31: 0, m41: 0,
+          m12: 0, m22: 1, m32: 0, m42: 0,
+          m13: 0, m23: 0, m33: 1, m43: 0,
+          m14: 0, m24: 0, m34: 0, m44: 1
+      };
+  }
+  return matrix;
+}
+
+/* Adds vector v2 to vector v1
+---------------------------------------------------------------- */
+
+function addVectors (v1, v2) {
+  return {
+      x: v1.x + v2.x,
+      y: v1.y + v2.y,
+      z: v1.z + v2.z
+  };
+}
+function subVectors (v1, v2) {
+  return {
+      x: v1.x - v2.x,
+      y: v1.y - v2.y,
+      z: v1.z - v2.z
+  };
+}
+
+/* Rotates vector v1 around vector v2
+---------------------------------------------------------------- */
+
+function rotateVector (v1, v2) {
+  var x1 = v1.x,
+      y1 = v1.y,
+      z1 = v1.z,
+      angleX = v2.x / 2,
+      angleY = v2.y / 2,
+      angleZ = v2.z / 2,
+
+      cr = Math.cos(angleX),
+      cp = Math.cos(angleY),
+      cy = Math.cos(angleZ),
+      sr = Math.sin(angleX),
+      sp = Math.sin(angleY),
+      sy = Math.sin(angleZ),
+
+      w = cr * cp * cy + -sr * sp * sy,
+      x = sr * cp * cy - -cr * sp * sy,
+      y = cr * sp * cy + sr * cp * -sy,
+      z = cr * cp * sy - -sr * sp * cy,
+
+      m0 = 1 - 2 * ( y * y + z * z ),
+      m1 = 2 * (x * y + z * w),
+      m2 = 2 * (x * z - y * w),
+
+      m4 = 2 * ( x * y - z * w ),
+      m5 = 1 - 2 * ( x * x + z * z ),
+      m6 = 2 * (z * y + x * w ),
+
+      m8 = 2 * ( x * z + y * w ),
+      m9 = 2 * ( y * z - x * w ),
+      m10 = 1 - 2 * ( x * x + y * y );
+
+  return {
+      x: x1 * m0 + y1 * m4 + z1 * m8,
+      y: x1 * m1 + y1 * m5 + z1 * m9,
+      z: x1 * m2 + y1 * m6 + z1 * m10
+  };
+}
+function getTransform (matrix) {
+  /*var computedStyle = getComputedStyle(elem, null);
+    var val = computedStyle.transform ||
+          computedStyle.webkitTransform ||
+          computedStyle.MozTransform ||
+          computedStyle.msTransform;
+    var matrix = parseMatrix(val);*/
+    var rotateY = Math.asin(-matrix.m13);
+    var rotateX;
+    var rotateZ;
+
+    rotateX = Math.atan2(matrix.m23, matrix.m33);
+    rotateZ = Math.atan2(matrix.m12, matrix.m11);
+
+    /*var orig = computedStyle.transformOrigin ||
+          computedStyle.webkitTransformOrigin ||
+          computedStyle.MozTransformOrigin ||
+          computedStyle.msTransformOrigin;
+    var splitorig = orig.split(" ");
+    var origX = parseInt(splitorig[0], 10);
+    var origY = parseInt(splitorig[1], 10);*/
+
+
+    /*if (Math.cos(rotateY) !== 0) {
+        rotateX = Math.atan2(matrix.m23, matrix.m33);
+        rotateZ = Math.atan2(matrix.m12, matrix.m11);
+    } else {
+        rotateX = Math.atan2(-matrix.m31, matrix.m22);
+        rotateZ = 0;
+    }*/
+
+
+    return {
+        //transformStyle: val,
+        matrix: matrix,
+        rotate: {
+            x: rotateX,
+            y: rotateY,
+            z: rotateZ
+        },
+        translate: {
+            x: matrix.m41,
+            y: matrix.m42,
+            z: matrix.m43
+        },
+        /*origin: {
+          x: origX,
+          y: origY,
+          z: 0
+        }*/
+    };
+}
+function computeVertexData (elem) {
+  var w = elem.offsetWidth;
+  var h = elem.offsetHeight;
+  var v = {
+      a: { x: 0, y: 0, z: 0 }, // top left corner
+      b: { x: w, y: 0, z: 0 }, // top right corner
+      c: { x: w, y: h, z: 0 }, // bottom right corner
+      d: { x: 0, y: h, z: 0 }  // bottom left corner
+  };
+
+  /*var t = {
+    a: {x: 0, y: 0 , z: 0},
+    b: {x: 0, y: 0 , z: 0},
+    c: {x: 0, y: 0 , z: 0},
+    d: {x: 0, y: 0 , z: 0}
+  };*/
+  var p = {
+    a: {x: 0, y: 0 , z: 0},
+    b: {x: 0, y: 0 , z: 0},
+    c: {x: 0, y: 0 , z: 0},
+    d: {x: 0, y: 0 , z: 0}
+  };
+
+  var matrices = [];
+
+  var computedStyle = getComputedStyle(elem, null);
+  var trans = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
+  var matrix = parseMatrix(trans);
+  var mat4 = new THREE.Matrix4().set(matrix.m11,matrix.m12,matrix.m13,matrix.m14, matrix.m21,matrix.m22,matrix.m23,matrix.m24, matrix.m31,matrix.m32,matrix.m33,matrix.m34, matrix.m41,matrix.m42,matrix.m43,matrix.m44);
+  matrices.push(mat4);
+
+  /*var transform = getTransform(elem);
+  t.a = addVectors(t.a, subVectors(addVectors(rotateVector(subVectors(v.a, transform.origin), transform.rotate), transform.origin),v.a)); // rotation decay
+  t.a = addVectors(t.a, transform.translate); // translate decay
+
+  t.b = addVectors(t.b, subVectors(addVectors(rotateVector(subVectors(v.b, transform.origin), transform.rotate), transform.origin),v.b)); // rotation decay
+  t.b = addVectors(t.b, transform.translate); // translate decay
+
+  t.c = addVectors(t.c, subVectors(addVectors(rotateVector(subVectors(v.c, transform.origin), transform.rotate), transform.origin),v.c)); // rotation decay
+  t.c = addVectors(t.c, transform.translate); // translate decay
+
+  t.d = addVectors(t.d, subVectors(addVectors(rotateVector(subVectors(v.d, transform.origin), transform.rotate), transform.origin),v.d)); // rotation decay
+  t.d = addVectors(t.d, transform.translate); // translate decay*/
+
+  var x = elem.offsetLeft - elem.scrollLeft + elem.clientLeft;
+  var y = elem.offsetTop - elem.scrollTop + elem.clientTop;
+  p.a.x += x;
+  p.b.x += x;
+  p.c.x += x;
+  p.d.x += x;
+
+  p.a.y += y;
+  p.b.y += y;
+  p.c.y += y;
+  p.d.y += y;
+
+  elem = elem.parentNode;
+  while (elem.nodeType === 1) {(function () {
+    var w = elem.offsetWidth;
+    var h = elem.offsetHeight;
+    var v = {
+        a: { x: 0, y: 0, z: 0 }, // top left corner
+        b: { x: w, y: 0, z: 0 }, // top right corner
+        c: { x: w, y: h, z: 0 }, // bottom right corner
+        d: { x: 0, y: h, z: 0 }  // bottom left corner
+    };        
+
+    /*var transform = getTransform(elem);
+    t.a = addVectors(t.a, subVectors(addVectors(rotateVector(subVectors(v.a, transform.origin), transform.rotate), transform.origin),v.a)); // rotation decay
+    t.a = addVectors(t.a, transform.translate); // translate decay
+
+    t.b = addVectors(t.b, subVectors(addVectors(rotateVector(subVectors(v.b, transform.origin), transform.rotate), transform.origin),v.b)); // rotation decay
+    t.b = addVectors(t.b, transform.translate); // translate decay
+
+    t.c = addVectors(t.c, subVectors(addVectors(rotateVector(subVectors(v.c, transform.origin), transform.rotate), transform.origin),v.c)); // rotation decay
+    t.c = addVectors(t.c, transform.translate); // translate decay
+
+    t.d = addVectors(t.d, subVectors(addVectors(rotateVector(subVectors(v.d, transform.origin), transform.rotate), transform.origin),v.d)); // rotation decay
+    t.d = addVectors(t.d, transform.translate); // translate decay*/
+
+    var computedStyle = getComputedStyle(elem, null);
+    var trans = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
+    var m = parseMatrix(trans);
+    var m4 = new THREE.Matrix4().set(m.m11,m.m12,m.m13,m.m14, m.m21,m.m22,m.m23,m.m24, m.m31,m.m32,m.m33,m.m34, m.m41,m.m42,m.m43,m.m44);
+    matrices.push(m4);
+
+    var computedpos = computedStyle.position;
+    if (computedpos === 'relative' || computedpos === 'absolute') {
+      var x = elem.offsetLeft - elem.scrollLeft + elem.clientLeft;
+      var y = elem.offsetTop - elem.scrollTop + elem.clientTop;
+
+      p.a.x += x;
+      p.b.x += x;
+      p.c.x += x;
+      p.d.x += x;
+
+      p.a.y += y;
+      p.b.y += y;
+      p.c.y += y;
+      p.d.y += y;
+    }
+
+    elem = elem.parentNode;
+  }())}
+
+  console.log(matrices);
+  matrices.forEach(function (m) {
+    console.log(getTransform({
+        m11: m.elements[0], m21: m.elements[1], m31: m.elements[2], m41: m.elements[3],
+        m12: m.elements[4], m22: m.elements[5], m32: m.elements[6], m42: m.elements[7],
+        m13: m.elements[8], m23: m.elements[9], m33: m.elements[10], m43: m.elements[11],
+        m14: m.elements[12], m24: m.elements[13], m34: m.elements[15], m44: m.elements[15]
+    }));
+  });
+  var globalmatrix = new THREE.Matrix4().identity();
+  matrices.forEach(function (m) {
+    globalmatrix = globalmatrix.multiply(m);
+  });
+  var globalmatrixinverse = globalmatrix.getInverse(globalmatrix);
+
+  //v.a = addVectors(v.a, t.a);
+  v.a = addVectors(v.a, p.a);
+  var va = new THREE.Vector3(v.a.x, v.a.y, v.a.z);
+  va = va.applyMatrix4(globalmatrixinverse);
+  /*matrices.forEach(function (m) {
+    //m.getInverse(m);
+    va = va.applyMatrix4(m);
+  });*/
+  v.a = addVectors(v.a, va);
+
+  //v.b = addVectors(v.b, t.b);
+  v.b = addVectors(v.b, p.b);
+  var vb = new THREE.Vector3(v.b.x, v.b.y, v.b.z);
+  vb = vb.applyMatrix4(globalmatrixinverse);
+  /*matrices.forEach(function (m) {
+    //m.getInverse(m);
+    vb = vb.applyMatrix4(m);
+  });*/
+  v.b = addVectors(v.b, vb);
+
+  //v.c = addVectors(v.c, t.c);
+  v.c = addVectors(v.c, p.c);
+  var vc = new THREE.Vector3(v.c.x, v.c.y, v.c.z);
+  vc = vc.applyMatrix4(globalmatrixinverse);
+  /*matrices.forEach(function (m) {
+    //m.getInverse(m);
+    vc = vc.applyMatrix4(m);
+  });*/
+  v.c = addVectors(v.c, vc);
+
+  //v.d = addVectors(v.d, t.d);
+  v.d = addVectors(v.d, p.d);
+  var vd = new THREE.Vector3(v.d.x, v.d.y, v.d.z);
+  vd = vd.applyMatrix4(globalmatrixinverse);
+  /*matrices.forEach(function (m) {
+    //m.getInverse(m);
+    vd = vd.applyMatrix4(m);
+  });*/
+  v.d = addVectors(v.d, vd);
+
+  for (k in v) {
+    $('<b>').css({
+      display: 'block', width: '2px', height: '2px', background: 'green',
+      position: 'absolute', left: v[k].x+'px', top: v[k].y+'px', transform:'translate(-1px,-1px)'
+    }).appendTo(document.body);
+  }
+
+  return v;
+}
+
+computeVertexData($('#d')[0]);
+</script>
+</body>
+</html>
