@@ -391,6 +391,7 @@ var HomeView = Backbone.View.extend({
       //
 
       var renderlight;
+      var lightpos;
       (function () {
         //
         // Photon
@@ -418,29 +419,163 @@ var HomeView = Backbone.View.extend({
         /* Returns A, B, C and D vertices of an element
         ---------------------------------------------------------------- */
 
-        function computeVertexData (elem) {
-            var w = elem.offsetWidth,
-                h = elem.offsetHeight,
-                x = elem.offsetLeft,
-                y = elem.offsetTop,
-                z = 0,
-                v = {
-                    a: { x: x,     y: y, z: z }, // top left corner
-                    b: { x: x+w, y: y,   z: z }, // top right corner
-                    c: { x: x+w, y: y+h, z: z }, // bottom right corner
-                    d: { x: x,   y: y+h, z: z }  // bottom left corner
-                },
-                transform;
+        function computeVertexData(el) {
+          function parseMatrix (matrixString) {
+            var c = matrixString.split(/\s*[(),]\s*/).slice(1,-1);
+            var matrix;
 
-            while (elem.nodeType === 1) {
-                transform = getTransform(elem);
-                v.a = addVectors(rotateVector(v.a, transform.rotate), transform.translate);
-                v.b = addVectors(rotateVector(v.b, transform.rotate), transform.translate);
-                v.c = addVectors(rotateVector(v.c, transform.rotate), transform.translate);
-                v.d = addVectors(rotateVector(v.d, transform.rotate), transform.translate);
-                elem = elem.parentNode;
+            if (c.length === 6) {
+                // 'matrix()' (3x2)
+                matrix = new THREE.Matrix4().set(
+                  c[0],  +c[2], 0, +c[4],
+                  +c[1], +c[3], 0, +c[5],
+                  0,     0,     1, 0,
+                  0,     0,     0, 1
+                );
+            } else if (c.length === 16) {
+                // matrix3d() (4x4)
+                matrix = new THREE.Matrix4().set(
+                    +c[0], +c[4], +c[8],  +c[12],
+                    +c[1], +c[5], +c[9],  +c[13],
+                    +c[2], +c[6], +c[10], +c[14],
+                    +c[3], +c[7], +c[11], +c[15]
+                );
+
+            } else {
+                // handle 'none' or invalid values.
+                matrix = new THREE.Matrix4().identity();
             }
-            return v;
+            
+            return matrix;
+          }
+
+          var w = el.offsetWidth;
+          var h = el.offsetHeight;
+          var v = {
+              a: new THREE.Vector3().set(0, 0, 0), // top left corner
+              b: new THREE.Vector3().set(w, 0, 0), // top right corner
+              c: new THREE.Vector3().set(w, h, 0), // bottom right corner
+              d: new THREE.Vector3().set(0, h, 0)  // bottom left corner
+          };  
+          //console.log(v);
+
+          var elem = el;
+
+          var matrices = [];
+          while (elem.nodeType === 1) {(function () {
+            var computedStyle = getComputedStyle(elem, null);
+
+            //
+            // P(0->1) : position (ie: translation)
+            //
+
+            var P01;
+            (function () {
+              var x = 0;
+              var y = 0;
+              var parent = elem.parentNode;
+              if (parent && parent.nodeType === 1) {
+                var parentComputedStyle = getComputedStyle(parent, null);
+
+                var offsetLeft = elem.offsetLeft;
+                var offsetTop = elem.offsetTop;
+                if (parentComputedStyle.position === 'static') {
+                  offsetLeft -= parent.offsetLeft;
+                  offsetTop -= parent.offsetTop;
+                }
+                x = offsetLeft - elem.scrollLeft + elem.clientLeft;
+                y = offsetTop - elem.scrollTop + elem.clientTop;
+              }
+
+              /*P01 = new THREE.Matrix4().set(
+                1, 0, x, 0,
+                0, 1, y, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+              );*/
+              P01 = new THREE.Matrix4().makeTranslation(x, y, 0);
+            }).call(this);
+
+            //
+            // P(1->2) : transform-origin (ie: translation)
+            //
+
+            var P12;
+            (function () {
+              var transformOrigin = computedStyle.transformOrigin || computedStyle.webkitTransformOrigin || computedStyle.MozTransformOrigin || computedStyle.msTransformOrigin;
+              transformOrigin = transformOrigin.split(' ');
+              var x = parseFloat(transformOrigin[0], 10);
+              var y = parseFloat(transformOrigin[1], 10);
+
+              /*P12 = new THREE.Matrix4().set(
+                1, 0, x, 0,
+                0, 1, y, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+              );*/
+              P12 = new THREE.Matrix4().makeTranslation(x, y, 0);
+            }).call(this);
+
+            //
+            // P(2->3) : transform
+            //
+
+            var P23;
+            (function () {
+              var transform = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
+              
+              P23 = parseMatrix(transform);
+            }).call(this);
+
+            //
+            // P(0->3) = P(0->1) . P(1->2) . P(2->3)
+            //
+
+            //console.log(P01.elements);
+            //console.log(P12.elements);
+            //console.log(P23.elements);
+
+            var P10 = new THREE.Matrix4().getInverse(P01);
+            var P21 = new THREE.Matrix4().getInverse(P12);
+            var P32 = new THREE.Matrix4().getInverse(P23);
+
+            //console.log(P10.elements);
+            //console.log(P21.elements);
+            //console.log(P32.elements);
+
+            var P03 = new THREE.Matrix4().identity();
+            /*P03.multiply(P01);
+            P03.multiply(P12);
+            P03.multiply(P23);*/
+            P03.multiply(P01);
+            P03.multiply(P12);
+            P03.multiply(P23);
+            P03.multiply(P21);
+
+            //var P30 = new THREE.Matrix4().getInverse(P03);
+            //var P30 = P03;
+
+            matrices.push(P03);
+
+            elem = elem.parentNode;
+          }())}
+
+          matrices.forEach(function (m) {
+            v.a = v.a.applyMatrix4(m);
+            v.b = v.b.applyMatrix4(m);
+            v.c = v.c.applyMatrix4(m);
+            v.d = v.d.applyMatrix4(m);
+          });
+
+          //console.log('toto');
+          /*for (k in v) { //
+            $('<b>').css({
+              display:'block', width:'1px', height:'1px', background: 'lime',
+              position:'absolute', left:'0px', top:'0px', transform:'translate3d(' + v[k].x + 'px,' + v[k].y + 'px, ' + v[k].z + 'px)', borderRadius:'4px'
+            }).appendTo('#camera');
+          }*/
+
+          return v;
         }
 
 
@@ -669,10 +804,10 @@ var HomeView = Backbone.View.extend({
 
 
         // Default positions
-        var lightpos = {
+        lightpos = {
           x: WW/2,
           y: WH/2,
-          z: 700
+          z: -700
         };
         var objpos = {
           x: 0,
@@ -682,31 +817,32 @@ var HomeView = Backbone.View.extend({
 
         // Define the light source
         var light = document.querySelector(".light");
-
-        // Grab the x-wing element
-        var obj = document.querySelector(".cube");
         
 
         /* Render
         ---------------------------------------------------------------- */
 
-        function renderlight (startTime) {
+        renderlight = function (startTime) {
           startTime || (startTime = performance.now());
 
-          obj.style[transformProp] = "translateY(" + objpos.y + "px) translateX(" + objpos.x + "px) translateZ(" + objpos.z + "px)";
+          //obj.style[transformProp] = "translateY(" + objpos.y + "px) translateX(" + objpos.x + "px) translateZ(" + objpos.z + "px)";
           light.style[transformProp] = "translateY(" + lightpos.y + "px) translateX(" + lightpos.x + "px) translateZ(" + lightpos.z + "px)";
           // Get the light position
-          var lightPosition = getTransform(light).translate;
+          //var lightPosition = getTransform(light).translate;
+
+          var lightPosition = computeVertexData(light).a;
 
           // Light each face
-          [].slice.call(obj.querySelectorAll(".face")).forEach(function (face, i) {
-              var vertices = computeVertexData(face),
-                  faceCenter = Vect3.divs(Vect3.sub(vertices.c, vertices.a), 2),
-                  faceNormal = Vect3.normalize(Vect3.cross(Vect3.sub(vertices.b, vertices.a), Vect3.sub(vertices.c, vertices.a))),
-                  direction = Vect3.normalize(Vect3.sub(lightPosition, faceCenter)),
-                  amount = 1 - Math.max(0, Vect3.dot(faceNormal, direction)).toFixed(3);
+          [].slice.call(document.querySelectorAll(".stabilo .f, .stabilo .h")).forEach(function (face, i) {
+              var vertices = computeVertexData(face);
+              
 
-              face.style.backgroundImage = "linear-gradient(rgba(0,0,0," + amount + "), rgba(0,0,0," + amount + "))";
+              var faceCenter = Vect3.divs(Vect3.sub(vertices.c, vertices.a), 2);
+              var faceNormal = Vect3.normalize(Vect3.cross(Vect3.sub(vertices.b, vertices.a), Vect3.sub(vertices.c, vertices.a)));
+              var direction = Vect3.normalize(Vect3.sub(lightpos, faceCenter));
+              var amount = 1 - Math.max(0, Vect3.dot(faceNormal, direction));
+
+              face.style.backgroundImage = "linear-gradient(rgba(0,0,0," + amount.toFixed(3) + "), rgba(0,0,0," + amount.toFixed(3) + "))";
           });
         }
       }).call(this);
@@ -716,7 +852,7 @@ var HomeView = Backbone.View.extend({
         //update(clock.getDelta());
         draw();
         TWEEN.update(t);
-        //renderlight();
+        renderlight();
         
         /*var l = faces.length;
         while (l--) {
@@ -775,19 +911,10 @@ var HomeView = Backbone.View.extend({
         draw();
       });
 
-      /*var f4 = gui.addFolder('light');
-      var lx = f4.add(light, 'x', -5000, 5000);
-      var ly = f4.add(light, 'y', -5000, 5000);
-      var lz = f4.add(light, 'z', -100, 10000);
-      lx.onChange(function (val) {
-        light.moveTo(val, light.y, light.z);
-      });
-      ly.onChange(function (val) {
-        light.moveTo(light.x, val, light.z);
-      });
-      lz.onChange(function (val) {
-        light.moveTo(light.x, light.y, val);
-      });*/
+      var f4 = gui.addFolder('lightpos');
+      f4.add(lightpos, 'x', -1000, 1000);
+      f4.add(lightpos, 'y', -1000, 1000);
+      f4.add(lightpos, 'z', -700, 700);
 
       // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
 

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+	body {margin:0;}
+  div {
+    display: inline-block;
+    background: rgba(255,0,0,.5);
+    width: 100px;
+    box-shadow: 0 0 0 1px red; 
+  }
+
+  #a {margin-left:-50px;margin-top:-10px; transform:translate(100px, 50px) rotate(-10deg); transform-origin:center;}
+  #b {margin-left:100px; transform:translate(50px, 50px) rotate(-10deg); transform-origin:center;}
+  #c {position:relative; transform:translateY(100px);}
+  #d {position:absolute;left:100px; transform:translateX(150px) rotate(10deg); transform-origin:right top;}
+  #e {position:fixed;left:100px;top:50%; transform:scale(2) translateX(-200px) rotate(50deg); transform-origin:right top;}
+	</style>
+</head>
+<body style="margin:0;">
+	<div id="a">
+		a
+		<div id="b">
+			b
+			<div id="c">
+				c
+				<div id="d">
+					d
+          <div id="e">
+            e
+          </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<script src="https://code.jquery.com/jquery-2.1.3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js"></script>
+<script>
+
+
+function computeVertexData(el) {
+  function parseMatrix (matrixString) {
+    var c = matrixString.split(/\s*[(),]\s*/).slice(1,-1);
+    var matrix;
+
+    if (c.length === 6) {
+        // 'matrix()' (3x2)
+        matrix = new THREE.Matrix4().set(
+          c[0],  +c[2], 0, +c[4],
+          +c[1], +c[3], 0, +c[5],
+          0,     0,     1, 0,
+          0,     0,     0, 1
+        );
+    } else if (c.length === 16) {
+        // matrix3d() (4x4)
+        matrix = new THREE.Matrix4().set(
+            +c[0], +c[4], +c[8],  +c[12],
+            +c[1], +c[5], +c[9],  +c[13],
+            +c[2], +c[6], +c[10], +c[14],
+            +c[3], +c[7], +c[11], +c[15]
+        );
+
+    } else {
+        // handle 'none' or invalid values.
+        matrix = new THREE.Matrix4().identity();
+    }
+    
+    return matrix;
+  }
+
+  var w = el.offsetWidth;
+  var h = el.offsetHeight;
+  var v = {
+      a: new THREE.Vector3().set(0, 0, 0), // top left corner
+      b: new THREE.Vector3().set(w, 0, 0), // top right corner
+      c: new THREE.Vector3().set(w, h, 0), // bottom right corner
+      d: new THREE.Vector3().set(0, h, 0)  // bottom left corner
+  };  
+  console.log(v);
+
+  var elem = el;
+
+  var matrices = [];
+  while (elem.nodeType === 1) {(function () {
+    var computedStyle = getComputedStyle(elem, null);
+
+    //
+    // P(0->1) : position (ie: translation)
+    //
+
+    var P01;
+    (function () {
+      var x = 0;
+      var y = 0;
+      var parent = elem.parentNode;
+      if (parent && parent.nodeType === 1) {
+        var parentComputedStyle = getComputedStyle(parent, null);
+
+        var offsetLeft = elem.offsetLeft;
+        var offsetTop = elem.offsetTop;
+        if (parentComputedStyle.position === 'static') {
+          offsetLeft -= parent.offsetLeft;
+          offsetTop -= parent.offsetTop;
+        }
+        x = offsetLeft - elem.scrollLeft + elem.clientLeft;
+        y = offsetTop - elem.scrollTop + elem.clientTop;
+      }
+
+      /*P01 = new THREE.Matrix4().set(
+        1, 0, x, 0,
+        0, 1, y, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+      );*/
+      P01 = new THREE.Matrix4().makeTranslation(x, y, 0);
+    }).call(this);
+
+    //
+    // P(1->2) : transform-origin (ie: translation)
+    //
+
+    var P12;
+    (function () {
+      var transformOrigin = computedStyle.transformOrigin || computedStyle.webkitTransformOrigin || computedStyle.MozTransformOrigin || computedStyle.msTransformOrigin;
+      transformOrigin = transformOrigin.split(' ');
+      var x = parseFloat(transformOrigin[0], 10);
+      var y = parseFloat(transformOrigin[1], 10);
+
+      /*P12 = new THREE.Matrix4().set(
+        1, 0, x, 0,
+        0, 1, y, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+      );*/
+      P12 = new THREE.Matrix4().makeTranslation(x, y, 0);
+    }).call(this);
+
+    //
+    // P(2->3) : transform
+    //
+
+    var P23;
+    (function () {
+      var transform = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
+      
+      P23 = parseMatrix(transform);
+    }).call(this);
+
+    //
+    // P(0->3) = P(0->1) . P(1->2) . P(2->3)
+    //
+
+    console.log(P01.elements);
+    console.log(P12.elements);
+    console.log(P23.elements);
+
+    var P10 = new THREE.Matrix4().getInverse(P01);
+    var P21 = new THREE.Matrix4().getInverse(P12);
+    var P32 = new THREE.Matrix4().getInverse(P23);
+
+    console.log(P10.elements);
+    console.log(P21.elements);
+    console.log(P32.elements);
+
+    var P03 = new THREE.Matrix4().identity();
+    /*P03.multiply(P01);
+    P03.multiply(P12);
+    P03.multiply(P23);*/
+    P03.multiply(P01);
+    P03.multiply(P12);
+    P03.multiply(P23);
+    P03.multiply(P21);
+
+    //var P30 = new THREE.Matrix4().getInverse(P03);
+    //var P30 = P03;
+
+    matrices.push(P03);
+
+    elem = elem.parentNode;
+  }())}
+
+  matrices.forEach(function (m) {
+    v.a = v.a.applyMatrix4(m);
+    v.b = v.b.applyMatrix4(m);
+    v.c = v.c.applyMatrix4(m);
+    v.d = v.d.applyMatrix4(m);
+  });
+
+  console.log('toto');
+  for (k in v) { //
+    $('<b>').css({
+      display: 'block', width: '4px', height: '4px', background: 'lime',
+      position: 'absolute', left: v[k].x+'px', top: v[k].y+'px', transform:'translate(-2px,-2px)', borderRadius:'4px'
+    }).appendTo(document.body);
+  }
+
+  return v;
+}
+
+computeVertexData(document.querySelector('#a'));
+computeVertexData(document.querySelector('#b'));
+computeVertexData(document.querySelector('#c'));
+computeVertexData(document.querySelector('#d'));
+computeVertexData(document.querySelector('#e'));
+</script>
+</body>
+</html>
