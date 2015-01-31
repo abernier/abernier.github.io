@@ -2,11 +2,11 @@
   width: 150em;
   height: 100em;
   display: inline-block;
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  transform: rotate(180deg);
+  -webkit-transform: rotateX(180deg);
+  -moz-transform: rotateX(180deg);
+  -o-transform: rotateX(180deg);
+  -ms-transform: rotateX(180deg);
+  transform: rotateX(180deg);
   position: relative;
   font-size: 10%;
 }
@@ -642,643 +642,667 @@ section .macbook {
     font-size: 21%;
   }
 }
-section .macbook .screen {
-  -webkit-transition: -webkit-transform 0.3s;
-  -moz-transition: -moz-transform 0.3s;
-  -o-transition: -o-transform 0.3s;
-  -ms-transition: -ms-transform 0.3s;
-  transition: transform 0.3s;
-  -webkit-transform: rotateX(10deg) translateZ(-1px);
-  -moz-transform: rotateX(10deg) translateZ(-1px);
-  -o-transform: rotateX(10deg) translateZ(-1px);
-  -ms-transform: rotateX(10deg) translateZ(-1px);
-  transform: rotateX(10deg) translateZ(-1px);
+section .sheet {
+  display: block;
+  width: 17em;
+  height: 23.8em;
+  background: #fff;
 }
-section .macbook:hover .screen {
-  -webkit-transform: rotateX(120deg) translateZ(-1px);
-  -moz-transform: rotateX(120deg) translateZ(-1px);
-  -o-transform: rotateX(120deg) translateZ(-1px);
-  -ms-transform: rotateX(120deg) translateZ(-1px);
-  transform: rotateX(120deg) translateZ(-1px);
+section .sheet:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  -webkit-box-shadow: 0 0 0.9px rgba(0,0,0,0.15);
+  box-shadow: 0 0 0.9px rgba(0,0,0,0.15);
 }
-section .stabilo1 {
+section .stabilo {
   display: inline-block;
   width: 1em;
   height: 1em;
-}
-section .stabilo1 .hexa.bottom,
-section .stabilo1 .hexa.body,
-section .stabilo1 .hexa.top {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-section .stabilo1 .hexa.bottom {
-  display: inline-block;
-}
-section .stabilo1 .hexa.bottom >.in {
-  font-size: 10%;
-  display: inline-block;
-  width: 18em;
-  height: 18em;
-}
-section .stabilo1 .hexa.bottom >.in .h,
-section .stabilo1 .hexa.bottom >.in .f {
-  display: inline-block;
-  height: 8em;
-  background-color: #9bcb60;
-}
-section .stabilo1 .hexa.bottom >.in .h {
-  width: 14em;
-}
-section .stabilo1 .hexa.bottom >.in .f {
-  width: 13em;
-}
-section .stabilo1 .hexa.bottom >.in .f,
-section .stabilo1 .hexa.bottom >.in .h {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-section .stabilo1 .hexa.bottom >.in .f1 {
-  position: static;
-}
-section .stabilo1 .hexa.bottom >.in .f2 {
-  -webkit-transform: translateZ(-14em) rotateX(180deg);
-  -moz-transform: translateZ(-14em) rotateX(180deg);
-  -o-transform: translateZ(-14em) rotateX(180deg);
-  -ms-transform: translateZ(-14em) rotateX(180deg);
-  transform: translateZ(-14em) rotateX(180deg);
-}
-section .stabilo1 .hexa.bottom >.in .h1 {
-  -webkit-transform: rotateY(90deg) rotateX(180deg);
-  -moz-transform: rotateY(90deg) rotateX(180deg);
-  -o-transform: rotateY(90deg) rotateX(180deg);
-  -ms-transform: rotateY(90deg) rotateX(180deg);
-  transform: rotateY(90deg) rotateX(180deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-section .stabilo1 .hexa.bottom >.in .h2 {
-  -webkit-transform: translateX(13em) rotateY(90deg);
-  -moz-transform: translateX(13em) rotateY(90deg);
-  -o-transform: translateX(13em) rotateY(90deg);
-  -ms-transform: translateX(13em) rotateY(90deg);
-  transform: translateX(13em) rotateY(90deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-section .stabilo1 .hexa.bottom >.in .strip {
-  width: 13em;
-  height: 8em;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-6.5em, -4em);
-  -moz-transform: translate(-6.5em, -4em);
-  -o-transform: translate(-6.5em, -4em);
-  -ms-transform: translate(-6.5em, -4em);
-  transform: translate(-6.5em, -4em);
-}
-section .stabilo1 .hexa.bottom >.in .strip2 {
-  -webkit-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -moz-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -o-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -ms-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-}
-section .stabilo1 .hexa.bottom >.in .strip3 {
-  -webkit-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -moz-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -o-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -ms-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-}
-section .stabilo1 .hexa.body {
-  display: inline-block;
-  -webkit-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  -moz-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  -o-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  -ms-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-}
-section .stabilo1 .hexa.body >.in {
-  font-size: 10%;
-  display: inline-block;
-  width: 24em;
-  height: 24em;
-}
-section .stabilo1 .hexa.body >.in .h,
-section .stabilo1 .hexa.body >.in .f {
-  display: inline-block;
-  height: 10em;
-  background-color: #f09000;
-}
-section .stabilo1 .hexa.body >.in .h {
-  width: 323em;
-}
-section .stabilo1 .hexa.body >.in .f {
-  width: 17em;
-}
-section .stabilo1 .hexa.body >.in .f,
-section .stabilo1 .hexa.body >.in .h {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-section .stabilo1 .hexa.body >.in .f1 {
-  position: static;
-}
-section .stabilo1 .hexa.body >.in .f2 {
-  -webkit-transform: translateZ(-323em) rotateX(180deg);
-  -moz-transform: translateZ(-323em) rotateX(180deg);
-  -o-transform: translateZ(-323em) rotateX(180deg);
-  -ms-transform: translateZ(-323em) rotateX(180deg);
-  transform: translateZ(-323em) rotateX(180deg);
-}
-section .stabilo1 .hexa.body >.in .h1 {
-  -webkit-transform: rotateY(90deg) rotateX(180deg);
-  -moz-transform: rotateY(90deg) rotateX(180deg);
-  -o-transform: rotateY(90deg) rotateX(180deg);
-  -ms-transform: rotateY(90deg) rotateX(180deg);
-  transform: rotateY(90deg) rotateX(180deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-section .stabilo1 .hexa.body >.in .h2 {
-  -webkit-transform: translateX(17em) rotateY(90deg);
-  -moz-transform: translateX(17em) rotateY(90deg);
-  -o-transform: translateX(17em) rotateY(90deg);
-  -ms-transform: translateX(17em) rotateY(90deg);
-  transform: translateX(17em) rotateY(90deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-section .stabilo1 .hexa.body >.in .strip {
-  width: 17em;
-  height: 10em;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-8.5em, -5em);
-  -moz-transform: translate(-8.5em, -5em);
-  -o-transform: translate(-8.5em, -5em);
-  -ms-transform: translate(-8.5em, -5em);
-  transform: translate(-8.5em, -5em);
-}
-section .stabilo1 .hexa.body >.in .strip2 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-}
-section .stabilo1 .hexa.body >.in .strip3 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-}
-section .stabilo1 .hexa.body .h {
-  background-image: -webkit-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: -moz-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: -o-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: -ms-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-}
-section .stabilo1 .hexa.top {
-  display: inline-block;
-  -webkit-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  -moz-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  -o-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  -ms-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-}
-section .stabilo1 .hexa.top >.in {
-  font-size: 10%;
-  display: inline-block;
-  width: 24em;
-  height: 24em;
-}
-section .stabilo1 .hexa.top >.in .h,
-section .stabilo1 .hexa.top >.in .f {
-  display: inline-block;
-  height: 10em;
-  background-color: #9bcb60;
-}
-section .stabilo1 .hexa.top >.in .h {
-  width: 72em;
-}
-section .stabilo1 .hexa.top >.in .f {
-  width: 17em;
-}
-section .stabilo1 .hexa.top >.in .f,
-section .stabilo1 .hexa.top >.in .h {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-section .stabilo1 .hexa.top >.in .f1 {
-  position: static;
-}
-section .stabilo1 .hexa.top >.in .f2 {
-  -webkit-transform: translateZ(-72em) rotateX(180deg);
-  -moz-transform: translateZ(-72em) rotateX(180deg);
-  -o-transform: translateZ(-72em) rotateX(180deg);
-  -ms-transform: translateZ(-72em) rotateX(180deg);
-  transform: translateZ(-72em) rotateX(180deg);
-}
-section .stabilo1 .hexa.top >.in .h1 {
-  -webkit-transform: rotateY(90deg) rotateX(180deg);
-  -moz-transform: rotateY(90deg) rotateX(180deg);
-  -o-transform: rotateY(90deg) rotateX(180deg);
-  -ms-transform: rotateY(90deg) rotateX(180deg);
-  transform: rotateY(90deg) rotateX(180deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-section .stabilo1 .hexa.top >.in .h2 {
-  -webkit-transform: translateX(17em) rotateY(90deg);
-  -moz-transform: translateX(17em) rotateY(90deg);
-  -o-transform: translateX(17em) rotateY(90deg);
-  -ms-transform: translateX(17em) rotateY(90deg);
-  transform: translateX(17em) rotateY(90deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-section .stabilo1 .hexa.top >.in .strip {
-  width: 17em;
-  height: 10em;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-8.5em, -5em);
-  -moz-transform: translate(-8.5em, -5em);
-  -o-transform: translate(-8.5em, -5em);
-  -ms-transform: translate(-8.5em, -5em);
-  transform: translate(-8.5em, -5em);
-}
-section .stabilo1 .hexa.top >.in .strip2 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-}
-section .stabilo1 .hexa.top >.in .strip3 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-}
-.stabilo2 {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-}
-.stabilo2 .hexa.bottom,
-.stabilo2 .hexa.body,
-.stabilo2 .hexa.top {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-.stabilo2 .hexa.bottom {
-  display: inline-block;
-}
-.stabilo2 .hexa.bottom >.in {
-  font-size: 10%;
-  display: inline-block;
-  width: 18em;
-  height: 18em;
-}
-.stabilo2 .hexa.bottom >.in .h,
-.stabilo2 .hexa.bottom >.in .f {
-  display: inline-block;
-  height: 8em;
-  background-color: #d8f955;
-}
-.stabilo2 .hexa.bottom >.in .h {
-  width: 14em;
-}
-.stabilo2 .hexa.bottom >.in .f {
-  width: 13em;
-}
-.stabilo2 .hexa.bottom >.in .f,
-.stabilo2 .hexa.bottom >.in .h {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.stabilo2 .hexa.bottom >.in .f1 {
-  position: static;
-}
-.stabilo2 .hexa.bottom >.in .f2 {
-  -webkit-transform: translateZ(-14em) rotateX(180deg);
-  -moz-transform: translateZ(-14em) rotateX(180deg);
-  -o-transform: translateZ(-14em) rotateX(180deg);
-  -ms-transform: translateZ(-14em) rotateX(180deg);
-  transform: translateZ(-14em) rotateX(180deg);
-}
-.stabilo2 .hexa.bottom >.in .h1 {
-  -webkit-transform: rotateY(90deg) rotateX(180deg);
-  -moz-transform: rotateY(90deg) rotateX(180deg);
-  -o-transform: rotateY(90deg) rotateX(180deg);
-  -ms-transform: rotateY(90deg) rotateX(180deg);
-  transform: rotateY(90deg) rotateX(180deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-.stabilo2 .hexa.bottom >.in .h2 {
-  -webkit-transform: translateX(13em) rotateY(90deg);
-  -moz-transform: translateX(13em) rotateY(90deg);
-  -o-transform: translateX(13em) rotateY(90deg);
-  -ms-transform: translateX(13em) rotateY(90deg);
-  transform: translateX(13em) rotateY(90deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-.stabilo2 .hexa.bottom >.in .strip {
-  width: 13em;
-  height: 8em;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-6.5em, -4em);
-  -moz-transform: translate(-6.5em, -4em);
-  -o-transform: translate(-6.5em, -4em);
-  -ms-transform: translate(-6.5em, -4em);
-  transform: translate(-6.5em, -4em);
-}
-.stabilo2 .hexa.bottom >.in .strip2 {
-  -webkit-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -moz-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -o-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -ms-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-}
-.stabilo2 .hexa.bottom >.in .strip3 {
-  -webkit-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -moz-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -o-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -ms-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-}
-.stabilo2 .hexa.body {
-  display: inline-block;
-  -webkit-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  -moz-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  -o-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  -ms-transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-  transform: translate(-50%, -50%) translateZ(-1.420571428571429em);
-}
-.stabilo2 .hexa.body >.in {
-  font-size: 10%;
-  display: inline-block;
-  width: 24em;
-  height: 24em;
-}
-.stabilo2 .hexa.body >.in .h,
-.stabilo2 .hexa.body >.in .f {
-  display: inline-block;
-  height: 10em;
-  background-color: #f09000;
-}
-.stabilo2 .hexa.body >.in .h {
-  width: 323em;
-}
-.stabilo2 .hexa.body >.in .f {
-  width: 17em;
-}
-.stabilo2 .hexa.body >.in .f,
-.stabilo2 .hexa.body >.in .h {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.stabilo2 .hexa.body >.in .f1 {
-  position: static;
-}
-.stabilo2 .hexa.body >.in .f2 {
-  -webkit-transform: translateZ(-323em) rotateX(180deg);
-  -moz-transform: translateZ(-323em) rotateX(180deg);
-  -o-transform: translateZ(-323em) rotateX(180deg);
-  -ms-transform: translateZ(-323em) rotateX(180deg);
-  transform: translateZ(-323em) rotateX(180deg);
-}
-.stabilo2 .hexa.body >.in .h1 {
-  -webkit-transform: rotateY(90deg) rotateX(180deg);
-  -moz-transform: rotateY(90deg) rotateX(180deg);
-  -o-transform: rotateY(90deg) rotateX(180deg);
-  -ms-transform: rotateY(90deg) rotateX(180deg);
-  transform: rotateY(90deg) rotateX(180deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-.stabilo2 .hexa.body >.in .h2 {
-  -webkit-transform: translateX(17em) rotateY(90deg);
-  -moz-transform: translateX(17em) rotateY(90deg);
-  -o-transform: translateX(17em) rotateY(90deg);
-  -ms-transform: translateX(17em) rotateY(90deg);
-  transform: translateX(17em) rotateY(90deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-.stabilo2 .hexa.body >.in .strip {
-  width: 17em;
-  height: 10em;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-8.5em, -5em);
-  -moz-transform: translate(-8.5em, -5em);
-  -o-transform: translate(-8.5em, -5em);
-  -ms-transform: translate(-8.5em, -5em);
-  transform: translate(-8.5em, -5em);
-}
-.stabilo2 .hexa.body >.in .strip2 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-}
-.stabilo2 .hexa.body >.in .strip3 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-}
-.stabilo2 .hexa.body .h {
-  background-image: -webkit-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: -moz-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: -o-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: -ms-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-  background-image: linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
-}
-.stabilo2 .hexa.top {
-  display: inline-block;
-  -webkit-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  -moz-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  -o-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  -ms-transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-  transform: translate(-50%, -50%) translateZ(-33.70628571428572em);
-}
-.stabilo2 .hexa.top >.in {
-  font-size: 10%;
-  display: inline-block;
-  width: 24em;
-  height: 24em;
-}
-.stabilo2 .hexa.top >.in .h,
-.stabilo2 .hexa.top >.in .f {
-  display: inline-block;
-  height: 10em;
-  background-color: #d8f955;
-}
-.stabilo2 .hexa.top >.in .h {
-  width: 72em;
-}
-.stabilo2 .hexa.top >.in .f {
-  width: 17em;
-}
-.stabilo2 .hexa.top >.in .f,
-.stabilo2 .hexa.top >.in .h {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.stabilo2 .hexa.top >.in .f1 {
-  position: static;
-}
-.stabilo2 .hexa.top >.in .f2 {
-  -webkit-transform: translateZ(-72em) rotateX(180deg);
-  -moz-transform: translateZ(-72em) rotateX(180deg);
-  -o-transform: translateZ(-72em) rotateX(180deg);
-  -ms-transform: translateZ(-72em) rotateX(180deg);
-  transform: translateZ(-72em) rotateX(180deg);
-}
-.stabilo2 .hexa.top >.in .h1 {
-  -webkit-transform: rotateY(90deg) rotateX(180deg);
-  -moz-transform: rotateY(90deg) rotateX(180deg);
-  -o-transform: rotateY(90deg) rotateX(180deg);
-  -ms-transform: rotateY(90deg) rotateX(180deg);
-  transform: rotateY(90deg) rotateX(180deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-.stabilo2 .hexa.top >.in .h2 {
-  -webkit-transform: translateX(17em) rotateY(90deg);
-  -moz-transform: translateX(17em) rotateY(90deg);
-  -o-transform: translateX(17em) rotateY(90deg);
-  -ms-transform: translateX(17em) rotateY(90deg);
-  transform: translateX(17em) rotateY(90deg);
-  -webkit-transform-origin: left center;
-  -moz-transform-origin: left center;
-  -o-transform-origin: left center;
-  -ms-transform-origin: left center;
-  transform-origin: left center;
-}
-.stabilo2 .hexa.top >.in .strip {
-  width: 17em;
-  height: 10em;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-8.5em, -5em);
-  -moz-transform: translate(-8.5em, -5em);
-  -o-transform: translate(-8.5em, -5em);
-  -ms-transform: translate(-8.5em, -5em);
-  transform: translate(-8.5em, -5em);
-}
-.stabilo2 .hexa.top >.in .strip2 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(-0.1px);
-}
-.stabilo2 .hexa.top >.in .strip3 {
-  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(-0.1px);
-}
-.macbooks-and-stabilos {
-  display: inline-block;
-  position: relative;
-}
-.macbooks-and-stabilos .stabilo {
   -webkit-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
   -moz-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
   -o-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
   -ms-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
   transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
 }
+section .stabilo .hexa.bottom,
+section .stabilo .hexa.body,
+section .stabilo .hexa.top {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+section .stabilo .hexa.bottom {
+  display: inline-block;
+}
+section .stabilo .hexa.bottom >.in {
+  font-size: 10%;
+  display: inline-block;
+  width: 18em;
+  height: 18em;
+}
+section .stabilo .hexa.bottom >.in .h,
+section .stabilo .hexa.bottom >.in .f {
+  display: inline-block;
+  height: 8em;
+  background-color: #9bcb60;
+}
+section .stabilo .hexa.bottom >.in .h {
+  width: 14em;
+}
+section .stabilo .hexa.bottom >.in .f {
+  width: 13em;
+}
+section .stabilo .hexa.bottom >.in .f,
+section .stabilo .hexa.bottom >.in .h {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+section .stabilo .hexa.bottom >.in .f1 {
+  position: static;
+}
+section .stabilo .hexa.bottom >.in .f2 {
+  -webkit-transform: translateZ(14em) rotateX(180deg);
+  -moz-transform: translateZ(14em) rotateX(180deg);
+  -o-transform: translateZ(14em) rotateX(180deg);
+  -ms-transform: translateZ(14em) rotateX(180deg);
+  transform: translateZ(14em) rotateX(180deg);
+}
+section .stabilo .hexa.bottom >.in .h1 {
+  -webkit-transform: rotateY(-90deg) rotateX(180deg);
+  -moz-transform: rotateY(-90deg) rotateX(180deg);
+  -o-transform: rotateY(-90deg) rotateX(180deg);
+  -ms-transform: rotateY(-90deg) rotateX(180deg);
+  transform: rotateY(-90deg) rotateX(180deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo .hexa.bottom >.in .h2 {
+  -webkit-transform: translateX(13em) rotateY(-90deg);
+  -moz-transform: translateX(13em) rotateY(-90deg);
+  -o-transform: translateX(13em) rotateY(-90deg);
+  -ms-transform: translateX(13em) rotateY(-90deg);
+  transform: translateX(13em) rotateY(-90deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo .hexa.bottom >.in .strip {
+  width: 13em;
+  height: 8em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-6.5em, -4em);
+  -moz-transform: translate(-6.5em, -4em);
+  -o-transform: translate(-6.5em, -4em);
+  -ms-transform: translate(-6.5em, -4em);
+  transform: translate(-6.5em, -4em);
+}
+section .stabilo .hexa.bottom >.in .strip2 {
+  -webkit-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -moz-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -o-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -ms-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+}
+section .stabilo .hexa.bottom >.in .strip3 {
+  -webkit-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -moz-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -o-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -ms-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+}
+section .stabilo .hexa.body {
+  display: inline-block;
+  -webkit-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  -moz-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  -o-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  -ms-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+}
+section .stabilo .hexa.body >.in {
+  font-size: 10%;
+  display: inline-block;
+  width: 24em;
+  height: 24em;
+}
+section .stabilo .hexa.body >.in .h,
+section .stabilo .hexa.body >.in .f {
+  display: inline-block;
+  height: 10em;
+  background-color: #f09000;
+}
+section .stabilo .hexa.body >.in .h {
+  width: 323em;
+}
+section .stabilo .hexa.body >.in .f {
+  width: 17em;
+}
+section .stabilo .hexa.body >.in .f,
+section .stabilo .hexa.body >.in .h {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+section .stabilo .hexa.body >.in .f1 {
+  position: static;
+}
+section .stabilo .hexa.body >.in .f2 {
+  -webkit-transform: translateZ(323em) rotateX(180deg);
+  -moz-transform: translateZ(323em) rotateX(180deg);
+  -o-transform: translateZ(323em) rotateX(180deg);
+  -ms-transform: translateZ(323em) rotateX(180deg);
+  transform: translateZ(323em) rotateX(180deg);
+}
+section .stabilo .hexa.body >.in .h1 {
+  -webkit-transform: rotateY(-90deg) rotateX(180deg);
+  -moz-transform: rotateY(-90deg) rotateX(180deg);
+  -o-transform: rotateY(-90deg) rotateX(180deg);
+  -ms-transform: rotateY(-90deg) rotateX(180deg);
+  transform: rotateY(-90deg) rotateX(180deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo .hexa.body >.in .h2 {
+  -webkit-transform: translateX(17em) rotateY(-90deg);
+  -moz-transform: translateX(17em) rotateY(-90deg);
+  -o-transform: translateX(17em) rotateY(-90deg);
+  -ms-transform: translateX(17em) rotateY(-90deg);
+  transform: translateX(17em) rotateY(-90deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo .hexa.body >.in .strip {
+  width: 17em;
+  height: 10em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-8.5em, -5em);
+  -moz-transform: translate(-8.5em, -5em);
+  -o-transform: translate(-8.5em, -5em);
+  -ms-transform: translate(-8.5em, -5em);
+  transform: translate(-8.5em, -5em);
+}
+section .stabilo .hexa.body >.in .strip2 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+}
+section .stabilo .hexa.body >.in .strip3 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+}
+section .stabilo .hexa.body .h {
+  background-image: -webkit-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: -moz-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: -o-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: -ms-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+}
+section .stabilo .hexa.top {
+  display: inline-block;
+  -webkit-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  -moz-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  -o-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  -ms-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+}
+section .stabilo .hexa.top >.in {
+  font-size: 10%;
+  display: inline-block;
+  width: 24em;
+  height: 24em;
+}
+section .stabilo .hexa.top >.in .h,
+section .stabilo .hexa.top >.in .f {
+  display: inline-block;
+  height: 10em;
+  background-color: #9bcb60;
+}
+section .stabilo .hexa.top >.in .h {
+  width: 72em;
+}
+section .stabilo .hexa.top >.in .f {
+  width: 17em;
+}
+section .stabilo .hexa.top >.in .f,
+section .stabilo .hexa.top >.in .h {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+section .stabilo .hexa.top >.in .f1 {
+  position: static;
+}
+section .stabilo .hexa.top >.in .f2 {
+  -webkit-transform: translateZ(72em) rotateX(180deg);
+  -moz-transform: translateZ(72em) rotateX(180deg);
+  -o-transform: translateZ(72em) rotateX(180deg);
+  -ms-transform: translateZ(72em) rotateX(180deg);
+  transform: translateZ(72em) rotateX(180deg);
+}
+section .stabilo .hexa.top >.in .h1 {
+  -webkit-transform: rotateY(-90deg) rotateX(180deg);
+  -moz-transform: rotateY(-90deg) rotateX(180deg);
+  -o-transform: rotateY(-90deg) rotateX(180deg);
+  -ms-transform: rotateY(-90deg) rotateX(180deg);
+  transform: rotateY(-90deg) rotateX(180deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo .hexa.top >.in .h2 {
+  -webkit-transform: translateX(17em) rotateY(-90deg);
+  -moz-transform: translateX(17em) rotateY(-90deg);
+  -o-transform: translateX(17em) rotateY(-90deg);
+  -ms-transform: translateX(17em) rotateY(-90deg);
+  transform: translateX(17em) rotateY(-90deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo .hexa.top >.in .strip {
+  width: 17em;
+  height: 10em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-8.5em, -5em);
+  -moz-transform: translate(-8.5em, -5em);
+  -o-transform: translate(-8.5em, -5em);
+  -ms-transform: translate(-8.5em, -5em);
+  transform: translate(-8.5em, -5em);
+}
+section .stabilo .hexa.top >.in .strip2 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+}
+section .stabilo .hexa.top >.in .strip3 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+}
 @media (min-width: 1024px) {
-  .macbooks-and-stabilos .stabilo {
-    -webkit-transform: scale3d(0.3, 0.3, 0.3) rotateY(-90deg);
-    -moz-transform: scale3d(0.3, 0.3, 0.3) rotateY(-90deg);
-    -o-transform: scale3d(0.3, 0.3, 0.3) rotateY(-90deg);
-    -ms-transform: scale3d(0.3, 0.3, 0.3) rotateY(-90deg);
-    transform: scale3d(0.3, 0.3, 0.3) rotateY(-90deg);
+  section .stabilo {
+    -webkit-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    -moz-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    -o-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    -ms-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
   }
+}
+section .stabilo2 {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+section .stabilo2 .hexa.bottom,
+section .stabilo2 .hexa.body,
+section .stabilo2 .hexa.top {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+section .stabilo2 .hexa.bottom {
+  display: inline-block;
+}
+section .stabilo2 .hexa.bottom >.in {
+  font-size: 10%;
+  display: inline-block;
+  width: 18em;
+  height: 18em;
+}
+section .stabilo2 .hexa.bottom >.in .h,
+section .stabilo2 .hexa.bottom >.in .f {
+  display: inline-block;
+  height: 8em;
+  background-color: #d8f955;
+}
+section .stabilo2 .hexa.bottom >.in .h {
+  width: 14em;
+}
+section .stabilo2 .hexa.bottom >.in .f {
+  width: 13em;
+}
+section .stabilo2 .hexa.bottom >.in .f,
+section .stabilo2 .hexa.bottom >.in .h {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+section .stabilo2 .hexa.bottom >.in .f1 {
+  position: static;
+}
+section .stabilo2 .hexa.bottom >.in .f2 {
+  -webkit-transform: translateZ(14em) rotateX(180deg);
+  -moz-transform: translateZ(14em) rotateX(180deg);
+  -o-transform: translateZ(14em) rotateX(180deg);
+  -ms-transform: translateZ(14em) rotateX(180deg);
+  transform: translateZ(14em) rotateX(180deg);
+}
+section .stabilo2 .hexa.bottom >.in .h1 {
+  -webkit-transform: rotateY(-90deg) rotateX(180deg);
+  -moz-transform: rotateY(-90deg) rotateX(180deg);
+  -o-transform: rotateY(-90deg) rotateX(180deg);
+  -ms-transform: rotateY(-90deg) rotateX(180deg);
+  transform: rotateY(-90deg) rotateX(180deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo2 .hexa.bottom >.in .h2 {
+  -webkit-transform: translateX(13em) rotateY(-90deg);
+  -moz-transform: translateX(13em) rotateY(-90deg);
+  -o-transform: translateX(13em) rotateY(-90deg);
+  -ms-transform: translateX(13em) rotateY(-90deg);
+  transform: translateX(13em) rotateY(-90deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo2 .hexa.bottom >.in .strip {
+  width: 13em;
+  height: 8em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-6.5em, -4em);
+  -moz-transform: translate(-6.5em, -4em);
+  -o-transform: translate(-6.5em, -4em);
+  -ms-transform: translate(-6.5em, -4em);
+  transform: translate(-6.5em, -4em);
+}
+section .stabilo2 .hexa.bottom >.in .strip2 {
+  -webkit-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -moz-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -o-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -ms-transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  transform: translate(-6.5em, -4em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+}
+section .stabilo2 .hexa.bottom >.in .strip3 {
+  -webkit-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -moz-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -o-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -ms-transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  transform: translate(-6.5em, -4em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+}
+section .stabilo2 .hexa.body {
+  display: inline-block;
+  -webkit-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  -moz-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  -o-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  -ms-transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+  transform: translate(-50%, -50%) translateZ(1.420571428571429em);
+}
+section .stabilo2 .hexa.body >.in {
+  font-size: 10%;
+  display: inline-block;
+  width: 24em;
+  height: 24em;
+}
+section .stabilo2 .hexa.body >.in .h,
+section .stabilo2 .hexa.body >.in .f {
+  display: inline-block;
+  height: 10em;
+  background-color: #f09000;
+}
+section .stabilo2 .hexa.body >.in .h {
+  width: 323em;
+}
+section .stabilo2 .hexa.body >.in .f {
+  width: 17em;
+}
+section .stabilo2 .hexa.body >.in .f,
+section .stabilo2 .hexa.body >.in .h {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+section .stabilo2 .hexa.body >.in .f1 {
+  position: static;
+}
+section .stabilo2 .hexa.body >.in .f2 {
+  -webkit-transform: translateZ(323em) rotateX(180deg);
+  -moz-transform: translateZ(323em) rotateX(180deg);
+  -o-transform: translateZ(323em) rotateX(180deg);
+  -ms-transform: translateZ(323em) rotateX(180deg);
+  transform: translateZ(323em) rotateX(180deg);
+}
+section .stabilo2 .hexa.body >.in .h1 {
+  -webkit-transform: rotateY(-90deg) rotateX(180deg);
+  -moz-transform: rotateY(-90deg) rotateX(180deg);
+  -o-transform: rotateY(-90deg) rotateX(180deg);
+  -ms-transform: rotateY(-90deg) rotateX(180deg);
+  transform: rotateY(-90deg) rotateX(180deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo2 .hexa.body >.in .h2 {
+  -webkit-transform: translateX(17em) rotateY(-90deg);
+  -moz-transform: translateX(17em) rotateY(-90deg);
+  -o-transform: translateX(17em) rotateY(-90deg);
+  -ms-transform: translateX(17em) rotateY(-90deg);
+  transform: translateX(17em) rotateY(-90deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo2 .hexa.body >.in .strip {
+  width: 17em;
+  height: 10em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-8.5em, -5em);
+  -moz-transform: translate(-8.5em, -5em);
+  -o-transform: translate(-8.5em, -5em);
+  -ms-transform: translate(-8.5em, -5em);
+  transform: translate(-8.5em, -5em);
+}
+section .stabilo2 .hexa.body >.in .strip2 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+}
+section .stabilo2 .hexa.body >.in .strip3 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+}
+section .stabilo2 .hexa.body .h {
+  background-image: -webkit-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: -moz-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: -o-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: -ms-linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+  background-image: linear-gradient(#fff 0%, #fff 7%, transparent 7%, transparent 93%, #fff 93%, #fff 100%);
+}
+section .stabilo2 .hexa.top {
+  display: inline-block;
+  -webkit-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  -moz-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  -o-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  -ms-transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+  transform: translate(-50%, -50%) translateZ(33.70628571428572em);
+}
+section .stabilo2 .hexa.top >.in {
+  font-size: 10%;
+  display: inline-block;
+  width: 24em;
+  height: 24em;
+}
+section .stabilo2 .hexa.top >.in .h,
+section .stabilo2 .hexa.top >.in .f {
+  display: inline-block;
+  height: 10em;
+  background-color: #d8f955;
+}
+section .stabilo2 .hexa.top >.in .h {
+  width: 72em;
+}
+section .stabilo2 .hexa.top >.in .f {
+  width: 17em;
+}
+section .stabilo2 .hexa.top >.in .f,
+section .stabilo2 .hexa.top >.in .h {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+section .stabilo2 .hexa.top >.in .f1 {
+  position: static;
+}
+section .stabilo2 .hexa.top >.in .f2 {
+  -webkit-transform: translateZ(72em) rotateX(180deg);
+  -moz-transform: translateZ(72em) rotateX(180deg);
+  -o-transform: translateZ(72em) rotateX(180deg);
+  -ms-transform: translateZ(72em) rotateX(180deg);
+  transform: translateZ(72em) rotateX(180deg);
+}
+section .stabilo2 .hexa.top >.in .h1 {
+  -webkit-transform: rotateY(-90deg) rotateX(180deg);
+  -moz-transform: rotateY(-90deg) rotateX(180deg);
+  -o-transform: rotateY(-90deg) rotateX(180deg);
+  -ms-transform: rotateY(-90deg) rotateX(180deg);
+  transform: rotateY(-90deg) rotateX(180deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo2 .hexa.top >.in .h2 {
+  -webkit-transform: translateX(17em) rotateY(-90deg);
+  -moz-transform: translateX(17em) rotateY(-90deg);
+  -o-transform: translateX(17em) rotateY(-90deg);
+  -ms-transform: translateX(17em) rotateY(-90deg);
+  transform: translateX(17em) rotateY(-90deg);
+  -webkit-transform-origin: left center;
+  -moz-transform-origin: left center;
+  -o-transform-origin: left center;
+  -ms-transform-origin: left center;
+  transform-origin: left center;
+}
+section .stabilo2 .hexa.top >.in .strip {
+  width: 17em;
+  height: 10em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-8.5em, -5em);
+  -moz-transform: translate(-8.5em, -5em);
+  -o-transform: translate(-8.5em, -5em);
+  -ms-transform: translate(-8.5em, -5em);
+  transform: translate(-8.5em, -5em);
+}
+section .stabilo2 .hexa.top >.in .strip2 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(60.00000000000002deg) translateZ(0.1px);
+}
+section .stabilo2 .hexa.top >.in .strip3 {
+  -webkit-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -moz-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -o-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  -ms-transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+  transform: translate(-8.5em, -5em) rotateZ(119.99999999999997deg) translateZ(0.1px);
+}
+.macbooks-and-stabilos {
+  display: inline-block;
+  position: relative;
 }
 .macbooks-and-stabilos .stabilo1 {
   position: absolute;
-  top: 95%;
+  top: 94%;
   left: -10%;
 }
 .macbooks-and-stabilos .stabilo2 {
   position: absolute;
-  top: 100%;
+  top: 98%;
   left: -5%;
+}
+.macbooks-and-stabilos .sheet {
+  position: absolute;
+  right: 119%;
+  bottom: -1em;
+  -webkit-transform: rotate(-2deg);
+  -moz-transform: rotate(-2deg);
+  -o-transform: rotate(-2deg);
+  -ms-transform: rotate(-2deg);
+  transform: rotate(-2deg);
+}
+.macbooks-and-stabilos .sheet .sheet {
+  right: 0;
+  bottom: 0;
+  background: #fff url("http://static.squarespace.com/static/5101cc2ee4b0696772bf0809/511abb6ee4b0110f1eca9d58/511c29ace4b00307a2610b94/1360800174441/sketch6.jpg") center no-repeat;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  background-size: contain;
+  -webkit-transform: rotate(-2deg) translateZ(0.1px);
+  -moz-transform: rotate(-2deg) translateZ(0.1px);
+  -o-transform: rotate(-2deg) translateZ(0.1px);
+  -ms-transform: rotate(-2deg) translateZ(0.1px);
+  transform: rotate(-2deg) translateZ(0.1px);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 

@@ -145,23 +145,23 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 		var elements = matrix.elements;
 
 		return 'matrix3d(' +
-			epsilon( elements[ 0 ] ) + ',' +
-			epsilon(- elements[ 1 ] ) + ',' +
+			epsilon(elements[ 0 ] ) + ',' +
+			epsilon(elements[ 1 ] ) + ',' +
 			epsilon( elements[ 2 ] ) + ',' +
 			epsilon( elements[ 3 ] ) + ',' +
 
 			epsilon( elements[ 4 ] ) + ',' +
-			epsilon( -elements[ 5 ] ) + ',' +
+			epsilon(elements[ 5 ] ) + ',' +
 			epsilon( elements[ 6 ] ) + ',' +
 			epsilon( elements[ 7 ] ) + ',' +
 
 			epsilon( elements[ 8 ] ) + ',' +
-			epsilon(- elements[ 9 ] ) + ',' +
+			epsilon(elements[ 9 ] ) + ',' +
 			epsilon( elements[ 10 ] ) + ',' +
 			epsilon( elements[ 11 ] ) + ',' +
 
 			epsilon( elements[ 12 ] ) + ',' +
-			epsilon(- elements[ 13 ] ) + ',' +
+			epsilon(elements[ 13 ] ) + ',' +
 			epsilon( elements[ 14 ] ) + ',' +
 			epsilon( elements[ 15 ] ) +
 		')';
@@ -281,7 +281,7 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
 
 		var style = "translate3d(0,0," + fov + "px)" + getCameraCSSMatrix( camera.matrixWorldInverse ) +
-			" translate3d(" + _widthHalf + "px," + _heightHalf + "px, 0)";
+			" translate3d(" + _widthHalf + "px," + _heightHalf + "px, 0) ";
 
 		if ( cache.camera.style !== style ) {
 
@@ -321,6 +321,46 @@ var HomeView = Backbone.View.extend({
       function disth(height, fov, aspect) {
         return (height/Math.tan((fov/(180/Math.PI))/2))/2;
       }
+
+      function moveAndLookAt(camera, dstpos, dstlookat, options) {
+        options || (options = {duration: 300});
+
+        var origpos = new THREE.Vector3().copy(camera.position); // original position
+        var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
+
+        camera.position.set(dstpos.x, dstpos.y, dstpos.z);
+        camera.lookAt(dstlookat);
+        var dstrot = new THREE.Euler().copy(camera.rotation)
+
+        // reset original position and rotation
+        camera.position.set(origpos.x, origpos.y, origpos.z);
+        camera.rotation.set(origrot.x, origrot.y, origrot.z);
+
+        //
+        // Tweening
+        //
+
+        // position
+        new TWEEN.Tween(camera.position).to({
+          x: dstpos.x,
+          y: dstpos.y,
+          z: dstpos.z
+        }, options.duration).start();;
+
+        // rotation (using slerp)
+        (function () {
+          var qa = new THREE.Quaternion().copy(camera.quaternion); // src quaternion
+          var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
+          var qm = new THREE.Quaternion();
+          //camera.quaternion = qm;
+
+          var o = {t: 0};
+          new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
+            THREE.Quaternion.slerp(qa, qb, qm, o.t);
+            camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
+          }).start();
+        }).call(this);
+      }
       
       var WW;
       function setWW() {
@@ -339,12 +379,19 @@ var HomeView = Backbone.View.extend({
       var camera = new THREE.PerspectiveCamera(30, WW/WH, -1000, 1000);
       window.camera = camera;
 
-      camera.position.set(WW/2, WH/2, -distw(WW, camera.fov, camera.aspect)); // camera.position.z === -perspective
-      camera.up.set(0, -1, 0);
 
-      var lookAt = new THREE.Vector3(WW/2,WH/2,-1);
+      var lookAt = new THREE.Vector3(WW/2,WH/2,0);
+      //camera.up.set(0, -1, 0);
+      /*camera.position.set(WW/2, WH/2, distw(WW, camera.fov, camera.aspect)); // camera.position.z === -perspective
+      
       window.lookAt = lookAt;
-      camera.lookAt(lookAt);
+      camera.lookAt(lookAt);*/
+      moveAndLookAt(
+        camera,
+        new THREE.Vector3(WW/2, WH/2, distw(WW, camera.fov, camera.aspect)),
+        lookAt,
+        {duration: 0}
+      );
 
       var renderer = new THREE.CSS3DRenderer($scene[0], $camera[0]);
       window.renderer = renderer;
@@ -394,24 +441,6 @@ var HomeView = Backbone.View.extend({
       var renderlight;
       var lightpos;
       (function () {
-        //
-        // Photon
-        //
-        /*var Photon = require('photon');
-        var light = new Photon.Light(100, 200, 500); window.light = light;
-        var faces = [];
-
-        var $stabilo = $('.stabilo');
-        //var stabilofacegroup = new Photon.FaceGroup($stabilo[0], $stabilo.find('.h, .f').get(), 1, 1, false);
-        //faces.push(stabilofacegroup);
-        $stabilo.find('.hexa .strip').each(function (i, el) {
-          //faces.push(new Photon.Face(el, .5));
-          faces.push(new Photon.FaceGroup(el, $(el).find('.h, .f').get(), .5, 0, true));
-        });
-
-        var $cube = $('.cube');
-        var cubefacegroup = new Photon.FaceGroup($('#camera')[0], $cube.find('>*').get(), .5, 0, true);
-        faces.push(cubefacegroup);*/
 
         //
         // http://keithclark.co.uk/articles/calculating-element-vertex-data-from-css-transforms/demo6/
@@ -567,14 +596,6 @@ var HomeView = Backbone.View.extend({
             v.c = v.c.applyMatrix4(m);
             v.d = v.d.applyMatrix4(m);
           });
-
-          //console.log('toto');
-          /*for (k in v) { //
-            $('<b>').css({
-              display:'block', width:'1px', height:'1px', background: 'lime',
-              position:'absolute', left:'0px', top:'0px', transform:'translate3d(' + v[k].x + 'px,' + v[k].y + 'px, ' + v[k].z + 'px)', borderRadius:'4px'
-            }).appendTo('#camera');
-          }*/
 
           return v;
         }
@@ -806,16 +827,10 @@ var HomeView = Backbone.View.extend({
 
         // Default positions
         lightpos = {
-          x: WW/2,
-          y: WH/2,
-          z: -700
-        };
-        var objpos = {
           x: 0,
           y: 0,
-          z: 0
+          z: -1000
         };
-
         // Define the light source
         var light = document.querySelector(".light");
         
@@ -823,27 +838,75 @@ var HomeView = Backbone.View.extend({
         /* Render
         ---------------------------------------------------------------- */
 
+        console.log('toto');
         renderlight = function (startTime) {
           startTime || (startTime = performance.now());
 
-          //obj.style[transformProp] = "translateY(" + objpos.y + "px) translateX(" + objpos.x + "px) translateZ(" + objpos.z + "px)";
           light.style[transformProp] = "translateY(" + lightpos.y + "px) translateX(" + lightpos.x + "px) translateZ(" + lightpos.z + "px)";
           // Get the light position
-          //var lightPosition = getTransform(light).translate;
+          var lightVertices = computeVertexData(light)
+          var lightPosition = lightVertices.a;
 
-          var lightPosition = computeVertexData(light).a;
+          /*var $el = $(light);
+          for (var k in lightVertices) { //
+            var verticeEl = $el.data('vertice-'+k);
+            if (!verticeEl) {
+              var $b = $('<b>').css({
+                display:'block', width:'0px', height:'0px', boxShadow:'0 0 0 1px red',
+                position:'absolute', left:'0px', top:'0px', transform:'translate3d(' + lightVertices[k].x + 'px,' + lightVertices[k].y + 'px, ' + lightVertices[k].z + 'px)'
+              }).appendTo('#scene');
+
+              $el.data('vertice-'+k, $b[0]);
+            } else {
+              $(verticeEl).css('transform', 'translate3d(' + lightVertices[k].x + 'px,' + lightVertices[k].y + 'px, ' + lightVertices[k].z + 'px)');
+            }
+          }*/
 
           // Light each face
-          [].slice.call(document.querySelectorAll(".stabilo .f, .stabilo .h")).forEach(function (face, i) {
-              var vertices = computeVertexData(face);
-              
+          [].slice.call(document.querySelectorAll(".stabilo .f, .stabilo .h, .cube .face")).forEach(function (face, i) {
+            var $el = $(face);
+            var vertices = computeVertexData(face);
 
-              var faceCenter = Vect3.divs(Vect3.sub(vertices.c, vertices.a), 2);
-              var faceNormal = Vect3.normalize(Vect3.cross(Vect3.sub(vertices.b, vertices.a), Vect3.sub(vertices.c, vertices.a)));
-              var direction = Vect3.normalize(Vect3.sub(lightpos, faceCenter));
-              var amount = 1 - Math.max(0, Vect3.dot(faceNormal, direction));
+            /*for (var k in vertices) { //
+              var verticeEl = $el.data('vertice-'+k);
+              if (!verticeEl) {
+                var $b = $('<b>').css({
+                  display:'block', width:'0px', height:'0px', boxShadow:'0 0 0 1px lime',
+                  position:'absolute', left:'0px', top:'0px', transform:'translate3d(' + vertices[k].x + 'px,' + vertices[k].y + 'px, ' + vertices[k].z + 'px)'
+                }).appendTo('#scene');
 
-              face.style.backgroundImage = "linear-gradient(rgba(0,0,0," + amount.toFixed(3) + "), rgba(0,0,0," + amount.toFixed(3) + "))";
+                $el.data('vertice-'+k, $b[0]);
+              } else {
+                $(verticeEl).css('transform', 'translate3d(' + vertices[k].x + 'px,' + vertices[k].y + 'px, ' + vertices[k].z + 'px)');
+              }
+            }*/
+            
+            var ac = Vect3.sub(vertices.c, vertices.a);
+            var ab = Vect3.sub(vertices.b, vertices.a)
+
+            var faceCenter = Vect3.divs(ac, 2);
+            var faceNormal = Vect3.normalize(Vect3.cross(ab, ac));
+
+            /*var normalEl = $el.data('normal');
+            if (!normalEl) {
+              var $b = $('<i>').css({
+                display:'block', width:'0px', height:'0px', boxShadow:'0 0 0 1px red',
+                position:'absolute', left:'0px', top:'0px', transform:'translate3d(' + Vect3.add(vertices.a, faceCenter).x + 'px,' + Vect3.add(vertices.a, faceCenter).y + 'px, ' + Vect3.add(vertices.a, faceCenter).z + 'px)'
+              }).appendTo('#scene');
+
+              $el.data('normal', $b[0]);
+            } else {
+              $(normalEl).css('transform', 'translate3d(' + Vect3.add(vertices.a, faceCenter).x + 'px,' + Vect3.add(vertices.a, faceCenter).y + 'px, ' + Vect3.add(vertices.a, faceCenter).z + 'px)');
+            }*/
+
+            //var direction = Vect3.normalize(Vect3.sub(lightPosition, faceCenter));
+            var direction = Vect3.sub(lightPosition, faceCenter);
+            var amount = .5* (1 - Math.max(0, Vect3.dot(faceNormal, direction)));
+
+            if (!$el.data('orig-bgimg')) {
+              $el.data('orig-bgimg', $el.css('background-image'));
+            }
+            face.style.backgroundImage = $el.data('orig-bgimg') + ", linear-gradient(rgba(0,0,0," + amount.toFixed(3) + "), rgba(0,0,0," + amount.toFixed(3) + "))";
           });
         }
       }).call(this);
@@ -853,7 +916,7 @@ var HomeView = Backbone.View.extend({
         //update(clock.getDelta());
         draw();
         TWEEN.update(t);
-        renderlight();
+        //renderlight();
         
         /*var l = faces.length;
         while (l--) {
@@ -861,13 +924,14 @@ var HomeView = Backbone.View.extend({
         }*/
       });
       renderLoop.start();
+      renderlight();
 
       var dat = require('dat-gui');
       var gui = new dat.GUI();
       var f1 = gui.addFolder('camera.position');
       var px = f1.add(camera.position, 'x', -1000, 1000);
       var py = f1.add(camera.position, 'y', -1000, 3000);
-      var pz = f1.add(camera.position, 'z', -5000, 0);
+      var pz = f1.add(camera.position, 'z', -5000, 5000);
       px.onChange(function (val) {
         draw();
       });
@@ -913,51 +977,11 @@ var HomeView = Backbone.View.extend({
       });
 
       var f4 = gui.addFolder('lightpos');
-      f4.add(lightpos, 'x', -1000, 1000);
-      f4.add(lightpos, 'y', -1000, 1000);
-      f4.add(lightpos, 'z', -700, 700);
+      f4.add(lightpos, 'x', -5000, 5000);
+      f4.add(lightpos, 'y', -5000, 5000);
+      f4.add(lightpos, 'z', -2000, 2000);
 
       // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
-
-      function moveAndLookAt(camera, dstpos, dstlookat, options) {
-        options || (options = {duration: 300});
-
-        var origpos = new THREE.Vector3().copy(camera.position); // original position
-        var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
-
-        camera.position.set(dstpos.x, dstpos.y, dstpos.z);
-        camera.lookAt(dstlookat);
-        var dstrot = new THREE.Euler().copy(camera.rotation)
-
-        // reset original position and rotation
-        camera.position.set(origpos.x, origpos.y, origpos.z);
-        camera.rotation.set(origrot.x, origrot.y, origrot.z);
-
-        //
-        // Tweening
-        //
-
-        // position
-        new TWEEN.Tween(camera.position).to({
-          x: dstpos.x,
-          y: dstpos.y,
-          z: dstpos.z
-        }, options.duration).start();;
-
-        // rotation (using slerp)
-        (function () {
-          var qa = new THREE.Quaternion().copy(camera.quaternion); // src quaternion
-          var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
-          var qm = new THREE.Quaternion();
-          //camera.quaternion = qm;
-
-          var o = {t: 0};
-          new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
-            THREE.Quaternion.slerp(qa, qb, qm, o.t);
-            camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
-          }).start();
-        }).call(this);
-      }
 
       var activeMacbook;
       this.$('.macbook').on('click', function (e) {
@@ -976,7 +1000,7 @@ var HomeView = Backbone.View.extend({
           var d = disth(WH*Math.cos(theta), camera.fov, camera.aspect);
           moveAndLookAt(
             camera,
-            new THREE.Vector3(WW/2, WH/2 + d*Math.sin(theta), -d),
+            new THREE.Vector3(WW/2, WH/2 + d*Math.sin(theta), d),
             new THREE.Vector3(WW/2, WH/2, 0)
           );
 
@@ -986,7 +1010,7 @@ var HomeView = Backbone.View.extend({
 
           moveAndLookAt(
             camera,
-            new THREE.Vector3(WW/2, WH/2, -distw(WW, camera.fov, camera.aspect)),
+            new THREE.Vector3(WW/2, WH/2, distw(WW, camera.fov, camera.aspect)),
             new THREE.Vector3(WW/2, WH/2, 0)
           );
 

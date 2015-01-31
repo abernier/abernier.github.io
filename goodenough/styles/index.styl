@@ -199,6 +199,7 @@ html,body,#scene,#camera,#scroller {height:100%;}
 
 #camera
   //background:url("https://dl.dropbox.com/s/sw0qqg0j0qq8xng/grid.png?dl=1");
+  //transition:transform 3s;
 #camera, #camera * {transform-style:preserve-3d;}
 
 
@@ -243,11 +244,11 @@ section
     html.debug & .shadow
       //display:none;
       
-    .screen
+    /*.screen
       transition:transform .3s;
       transform:rotateX(10deg) translateZ(-1px);
     &:hover .screen
-      transform:rotateX(120deg) translateZ(-1px);
+      transform:rotateX(120deg) translateZ(-1px);*/
   
   .macbook
     //transform:rotateZ(183deg)
@@ -256,26 +257,39 @@ section
     //transform:rotateZ(177deg)
 
 
-  .stabilo1
+  .sheet
+    display:block; width:17em; height:23.8em;
+    background:white;
+    &:before
+      content:"";display:block;
+      position:absolute;left:0;right:0;top:0;bottom:0; z-index:-1;
+      box-shadow:0 0 .9px rgba(0,0,0,.15);
+
+  .stabilo
     //position:absolute;top:58vh;left:50%;margin-left:-20em; transform:rotateX(-90deg) scale3d(.5,.5,.5) rotateY(0deg);
-      stabilo(topcolor:#9BCB60);
+    stabilo(topcolor:#9BCB60);
+    transform:scale3d(.15,.15,.15) rotateY(-90deg);
+    @media (min-width:1024px)
+      transform:scale3d(.4,.4,.4) rotateY(-90deg);
+        
   .stabilo2
     //position:absolute;top:58vh;left:50%;margin-left:-20em; transform:rotateX(-90deg) scale3d(.5,.5,.5) rotateY(0deg);
       stabilo(topcolor:#D8F955);
     
   .macbooks-and-stabilos
     display:inline-block;
-    
-    .stabilo
-      transform:scale3d(.15,.15,.15) rotateY(-90deg);
-      @media (min-width:1024px)
-        transform:scale3d(.3,.3,.3) rotateY(-90deg);
       
     position:relative;
     .stabilo1
-      position:absolute; top:95%;left:-10%;
+      position:absolute; top:94%;left:-10%;
     .stabilo2
-      position:absolute; top:100%;left:-5%;
+      position:absolute; top:98%;left:-5%;
+    
+    .sheet
+      position:absolute; right:119%;bottom:-1em; transform:rotate(-2deg);
+      .sheet
+        right:0;bottom:0;
+        background:white url("http://static.squarespace.com/static/5101cc2ee4b0696772bf0809/511abb6ee4b0110f1eca9d58/511c29ace4b00307a2610b94/1360800174441/sketch6.jpg") center no-repeat; background-size:contain; transform:rotate(-2deg) translateZ(.1px);backface-visibility:hidden;
       
     
 

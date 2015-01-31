@@ -4,7 +4,11 @@
 	<meta charset="utf-8">
 	<title></title>
 	<style>
-	body {margin:0;}
+  .scene {-webkit-perspective:250;}
+  .scene, .camera {width:100vw; height:100vh;}
+  .camera, .camera * {-webkit-transform-style:preserve-3d;}
+  .camera {transform:rotateZ(10deg) rotateX(86deg); background:rgba(255,255,255,.5);}
+
   div {
     display: inline-block;
     background: rgba(255,0,0,.5);
@@ -12,29 +16,31 @@
     box-shadow: 0 0 0 1px red; 
   }
 
-  #a {margin-left:-50px;margin-top:-10px; transform:translate(100px, 50px) rotate(-10deg); transform-origin:center;}
-  #b {margin-left:100px; transform:translate(50px, 50px) rotate(-10deg); transform-origin:center;}
+  #a {margin-left:-50px;margin-top:-10px; transform:translate(300px, 500px) rotate(-10deg) translateZ(50px); transform-origin:center;}
+  #b {margin-left:100px; transform:translate(50px, 50px) rotate(-10deg) translateZ(50px); transform-origin:center;}
   #c {position:relative; transform:translateY(100px);}
   #d {position:absolute;left:100px; transform:translateX(150px) rotate(10deg); transform-origin:right top;}
   #e {position:fixed;left:100px;top:50%; transform:scale(2) translateX(-200px) rotate(50deg); transform-origin:right top;}
 	</style>
 </head>
 <body style="margin:0;">
-	<div id="a">
-		a
-		<div id="b">
-			b
-			<div id="c">
-				c
-				<div id="d">
-					d
-          <div id="e">
-            e
-          </div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<div class="scene"><div class="camera">
+    <div id="a">
+  		a
+  		<div id="b">
+  			b
+  			<div id="c">
+  				c
+  				<div id="d">
+  					d
+            <div id="e">
+              e
+            </div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+  </div></div>
 
 <script src="https://code.jquery.com/jquery-2.1.3.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js"></script>
@@ -143,10 +149,22 @@ function computeVertexData(el) {
     //
 
     var P23;
+    var P34;
     (function () {
       var transform = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
-      
       P23 = parseMatrix(transform);
+
+      var perspective = computedStyle.perspective || computedStyle.webkitPerspective || computedStyle.MozPerspective || computedStyle.msPerspective;
+      if (perspective !== 'none') {
+        perspective = parseInt(perspective, 10);
+        var fov = 360*Math.atan(0.5 / (perspective/h))/Math.PI;
+        P34 = new THREE.PerspectiveCamera(fov, w/h, -1000, 1000).projectionMatrix;
+      } else {
+        P34 = new THREE.Matrix4().identity();
+      }
+      
+
+      
     }).call(this);
 
     //
@@ -156,6 +174,7 @@ function computeVertexData(el) {
     console.log(P01.elements);
     console.log(P12.elements);
     console.log(P23.elements);
+    console.log(P34.elements);
 
     var P10 = new THREE.Matrix4().getInverse(P01);
     var P21 = new THREE.Matrix4().getInverse(P12);
@@ -171,6 +190,7 @@ function computeVertexData(el) {
     P03.multiply(P23);*/
     P03.multiply(P01);
     P03.multiply(P12);
+    //P03.multiply(P34);
     P03.multiply(P23);
     P03.multiply(P21);
 
@@ -192,9 +212,9 @@ function computeVertexData(el) {
   console.log('toto');
   for (k in v) { //
     $('<b>').css({
-      display: 'block', width: '4px', height: '4px', background: 'lime',
-      position: 'absolute', left: v[k].x+'px', top: v[k].y+'px', transform:'translate(-2px,-2px)', borderRadius:'4px'
-    }).appendTo(document.body);
+      display:'block', width:'0px', height:'0px', background: 'lime', boxShadow:'0 0 0 5px lime',
+      position:'absolute', left:'0px', top:'0px', transform:'translate3d(' + v[k].x + 'px,' + v[k].y + 'px, ' + v[k].z + 'px)', borderRadius:'4px'
+    }).appendTo('body');
   }
 
   return v;
@@ -202,9 +222,9 @@ function computeVertexData(el) {
 
 computeVertexData(document.querySelector('#a'));
 computeVertexData(document.querySelector('#b'));
-computeVertexData(document.querySelector('#c'));
-computeVertexData(document.querySelector('#d'));
-computeVertexData(document.querySelector('#e'));
+//computeVertexData(document.querySelector('#c'));
+//computeVertexData(document.querySelector('#d'));
+//computeVertexData(document.querySelector('#e'));
 </script>
 </body>
 </html>
