@@ -1278,6 +1278,14 @@ section .stabilo2 .hexa.top >.in .strip3 {
   top: 98%;
   left: -5%;
 }
+.macbooks-and-stabilos .sheets {
+  font-size: 50%;
+}
+@media (min-width: 1024px) {
+  .macbooks-and-stabilos .sheets {
+    font-size: 100%;
+  }
+}
 .macbooks-and-stabilos .sheet {
   position: absolute;
   right: 119%;
