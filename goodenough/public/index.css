@@ -50,11 +50,11 @@
   -o-transform-origin: 50% 100%;
   -ms-transform-origin: 50% 100%;
   transform-origin: 50% 100%;
-  -webkit-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
-  -moz-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
-  -o-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
-  -ms-transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
-  transform: rotateX(100deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  -webkit-transform: rotateX(115deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  -moz-transform: rotateX(115deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  -o-transform: rotateX(115deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  -ms-transform: rotateX(115deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
+  transform: rotateX(115deg) rotateY(0deg) rotateZ(0deg) translateZ(-1px);
   background-image: -webkit-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
   background-image: -moz-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
   background-image: -o-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
@@ -634,10 +634,10 @@ section h1+p {
   font-size: 130%;
 }
 section h1 {
-  margin-top: 7rem;
+  margin-top: 10rem;
 }
 section h1+p {
-  margin-bottom: 7rem;
+  margin-bottom: 13rem;
 }
 section .macbook {
   margin-top: 3rem;
