@@ -633,6 +633,12 @@ section h1+p {
   margin-top: 0;
   font-size: 130%;
 }
+section h1 {
+  margin-top: 7rem;
+}
+section h1+p {
+  margin-bottom: 7rem;
+}
 section .macbook {
   margin-top: 3rem;
   margin-bottom: 3rem;

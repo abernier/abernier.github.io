@@ -555,7 +555,7 @@ var HomeView = Backbone.View.extend({
           } else {
             distance = disth(h, camera.fov, camera.aspect);
           }*/
-          distance = distw(w, camera.fov, camera.aspect);
+          distance = distw(w+w*.2, camera.fov, camera.aspect);
         }
 
         console.log(v.a, w)
