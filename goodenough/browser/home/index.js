@@ -25,6 +25,157 @@ $.fn.offsetRelative = function offsetRelative(selector) {
   };
 };
 
+function computeVertexData(el) {
+  function parseMatrix (matrixString) {
+    var c = matrixString.split(/\s*[(),]\s*/).slice(1,-1);
+    var matrix;
+
+    if (c.length === 6) {
+        // 'matrix()' (3x2)
+        matrix = new THREE.Matrix4().set(
+          c[0],  +c[2], 0, +c[4],
+          +c[1], +c[3], 0, +c[5],
+          0,     0,     1, 0,
+          0,     0,     0, 1
+        );
+    } else if (c.length === 16) {
+        // matrix3d() (4x4)
+        matrix = new THREE.Matrix4().set(
+            +c[0], +c[4], +c[8],  +c[12],
+            +c[1], +c[5], +c[9],  +c[13],
+            +c[2], +c[6], +c[10], +c[14],
+            +c[3], +c[7], +c[11], +c[15]
+        );
+
+    } else {
+        // handle 'none' or invalid values.
+        matrix = new THREE.Matrix4().identity();
+    }
+    
+    return matrix;
+  }
+
+  var w = el.offsetWidth;
+  var h = el.offsetHeight;
+  var v = {
+      a: new THREE.Vector3().set(0, 0, 0), // top left corner
+      b: new THREE.Vector3().set(w, 0, 0), // top right corner
+      c: new THREE.Vector3().set(w, h, 0), // bottom right corner
+      d: new THREE.Vector3().set(0, h, 0)  // bottom left corner
+  };  
+  //console.log(v);
+
+  var elem = el;
+
+  var matrices = [];
+  while (elem.nodeType === 1) {(function () {
+    var computedStyle = getComputedStyle(elem, null);
+
+    //
+    // P(0->1) : position (ie: translation)
+    //
+
+    var P01;
+    (function () {
+      var x = 0;
+      var y = 0;
+      var parent = elem.parentNode;
+      if (parent && parent.nodeType === 1) {
+        var parentComputedStyle = getComputedStyle(parent, null);
+
+        var offsetLeft = elem.offsetLeft;
+        var offsetTop = elem.offsetTop;
+        if (parentComputedStyle.position === 'static') {
+          offsetLeft -= parent.offsetLeft;
+          offsetTop -= parent.offsetTop;
+        }
+        x = offsetLeft - elem.scrollLeft + elem.clientLeft;
+        y = offsetTop - elem.scrollTop + elem.clientTop;
+      }
+
+      /*P01 = new THREE.Matrix4().set(
+        1, 0, x, 0,
+        0, 1, y, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+      );*/
+      P01 = new THREE.Matrix4().makeTranslation(x, y, 0);
+    }).call(this);
+
+    //
+    // P(1->2) : transform-origin (ie: translation)
+    //
+
+    var P12;
+    (function () {
+      var transformOrigin = computedStyle.transformOrigin || computedStyle.webkitTransformOrigin || computedStyle.MozTransformOrigin || computedStyle.msTransformOrigin;
+      transformOrigin = transformOrigin.split(' ');
+      var x = parseFloat(transformOrigin[0], 10);
+      var y = parseFloat(transformOrigin[1], 10);
+
+      /*P12 = new THREE.Matrix4().set(
+        1, 0, x, 0,
+        0, 1, y, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+      );*/
+      P12 = new THREE.Matrix4().makeTranslation(x, y, 0);
+    }).call(this);
+
+    //
+    // P(2->3) : transform
+    //
+
+    var P23;
+    (function () {
+      var transform = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
+      
+      P23 = parseMatrix(transform);
+    }).call(this);
+
+    //
+    // P(0->3) = P(0->1) . P(1->2) . P(2->3)
+    //
+
+    //console.log(P01.elements);
+    //console.log(P12.elements);
+    //console.log(P23.elements);
+
+    var P10 = new THREE.Matrix4().getInverse(P01);
+    var P21 = new THREE.Matrix4().getInverse(P12);
+    var P32 = new THREE.Matrix4().getInverse(P23);
+
+    //console.log(P10.elements);
+    //console.log(P21.elements);
+    //console.log(P32.elements);
+
+    var P03 = new THREE.Matrix4().identity();
+    /*P03.multiply(P01);
+    P03.multiply(P12);
+    P03.multiply(P23);*/
+    P03.multiply(P01);
+    P03.multiply(P12);
+    P03.multiply(P23);
+    P03.multiply(P21);
+
+    //var P30 = new THREE.Matrix4().getInverse(P03);
+    //var P30 = P03;
+
+    matrices.push(P03);
+
+    elem = elem.parentNode;
+  }())}
+
+  matrices.forEach(function (m) {
+    v.a = v.a.applyMatrix4(m);
+    v.b = v.b.applyMatrix4(m);
+    v.c = v.c.applyMatrix4(m);
+    v.d = v.d.applyMatrix4(m);
+  });
+
+  return v;
+}
+
 var Loop = require('loop');
 
 var TWEEN = require('tween');
@@ -36,6 +187,7 @@ window.THREE = THREE;
 var epsilon = function ( value ) {
   return Math.abs( value ) < 0.000001 ? 0 : value;
 };
+
 THREE.CSS3DObject = function ( element ) {
 	THREE.Object3D.call( this );
 
@@ -144,23 +296,23 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 		var elements = matrix.elements;
 
 		return 'matrix3d(' +
-			epsilon(elements[ 0 ] ) + ',' +
-			epsilon(elements[ 1 ] ) + ',' +
+			epsilon( -elements[ 0 ] ) + ',' +
+			epsilon(-elements[ 1 ] ) + ',' +
 			epsilon( elements[ 2 ] ) + ',' +
 			epsilon( elements[ 3 ] ) + ',' +
 
-			epsilon( elements[ 4 ] ) + ',' +
-			epsilon(elements[ 5 ] ) + ',' +
+			epsilon( -elements[ 4 ] ) + ',' +
+			epsilon(-elements[ 5 ] ) + ',' +
 			epsilon( elements[ 6 ] ) + ',' +
 			epsilon( elements[ 7 ] ) + ',' +
 
-			epsilon( elements[ 8 ] ) + ',' +
-			epsilon(elements[ 9 ] ) + ',' +
+			epsilon( -elements[ 8 ] ) + ',' +
+			epsilon(-elements[ 9 ] ) + ',' +
 			epsilon( elements[ 10 ] ) + ',' +
 			epsilon( elements[ 11 ] ) + ',' +
 
-			epsilon( elements[ 12 ] ) + ',' +
-			epsilon(elements[ 13 ] ) + ',' +
+			epsilon( -elements[ 12 ] ) + ',' +
+			epsilon(-elements[ 13 ] ) + ',' +
 			epsilon( elements[ 14 ] ) + ',' +
 			epsilon( elements[ 15 ] ) +
 		')';
@@ -309,8 +461,21 @@ var HomeView = Backbone.View.extend({
     var $scene = this.$('#scene');
     var $camera = this.$('#camera');
     var $window = $(window);
-    true && (function () {
+    var WW;
+    function setWW() {
+      WW = $window.width();
+    }
+    setWW();
+    $window.resize(setWW);
 
+    var WH = $window.height();
+    function setWH() {
+      WH = $window.height();
+    }
+    setWH();
+    $window.resize(setWH);
+
+    true && (function () {
       // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
       function distw(width, fov, aspect) {
         //return 2*height/Math.tan(2*fov/(180 /Math.PI))
@@ -360,37 +525,62 @@ var HomeView = Backbone.View.extend({
           }).start();
         }).call(this);
       }
-      
-      var WW;
-      function setWW() {
-        WW = $window.width();
-      }
-      setWW();
-      $window.resize(setWW);
+      function moveAndLookAtElement(camera, el, options) {
+        options || (options = {
+          duration: 300,
+          distance: undefined
+        });
 
-      var WH = $window.height();
-      function setWH() {
-        WH = $window.height();
+        var v = computeVertexData(el);
+        /*for (k in v) {
+          $('<b>').css({
+            display:'block',width:'0px',height:'0px', boxShadow:'0 0 0 1px lime',
+            position:'absolute',left:'0px',top:'0px', transform:'translate3d(' + v[k].x + 'px,' + v[k].y + 'px, ' + v[k].z + 'px)'
+          }).appendTo('#scene'); // !important so <b> is subjected to perspective
+        }*/
+
+        var ac = new THREE.Vector3().subVectors(v.c, v.a);
+        var ab = new THREE.Vector3().subVectors(v.b, v.a);
+
+        var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2)
+        var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
+
+        if (typeof options.distance === 'undefined' || options.distance === null) {
+          var w = ac.x;
+          var h = ac.y;
+
+          /*if (camera.aspect > w/h) {
+            distance = distw(w, camera.fov, camera.aspect);
+          } else {
+            distance = disth(h, camera.fov, camera.aspect);
+          }*/
+          distance = distw(w, camera.fov, camera.aspect);
+        }
+
+        console.log(v.a, w)
+        console.log(v.a.x+faceCenter.x)
+        
+        var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
+        var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
+        moveAndLookAt(camera, dstpos, dstlookat, options);
       }
-      setWH();
-      $window.resize(setWH);
 
       var camera = new THREE.PerspectiveCamera(30, WW/WH, -1000, 1000);
       window.camera = camera;
 
 
-      var lookAt = new THREE.Vector3(WW/2,WH/2,0);
-      //camera.up.set(0, -1, 0);
-      /*camera.position.set(WW/2, WH/2, distw(WW, camera.fov, camera.aspect)); // camera.position.z === -perspective
+      var lookAt = new THREE.Vector3(WW/2,WH/2,1);
+      camera.up.set(0, -1, 0);
+      camera.position.set(WW/2, WH/2, distw(WW, camera.fov, camera.aspect)); // camera.position.z === -perspective
       
       window.lookAt = lookAt;
-      camera.lookAt(lookAt);*/
-      moveAndLookAt(
+      camera.lookAt(lookAt);
+      /*moveAndLookAt(
         camera,
         new THREE.Vector3(WW/2, WH/2, distw(WW, camera.fov, camera.aspect)),
         lookAt,
         {duration: 0}
-      );
+      );*/
 
       var renderer = new THREE.CSS3DRenderer($scene[0], $camera[0]);
       window.renderer = renderer;
@@ -440,166 +630,6 @@ var HomeView = Backbone.View.extend({
       var renderlight;
       var lightpos;
       (function () {
-
-        //
-        // http://keithclark.co.uk/articles/calculating-element-vertex-data-from-css-transforms/demo6/
-        //
-
-        /* Returns A, B, C and D vertices of an element
-        ---------------------------------------------------------------- */
-
-        function computeVertexData(el) {
-          function parseMatrix (matrixString) {
-            var c = matrixString.split(/\s*[(),]\s*/).slice(1,-1);
-            var matrix;
-
-            if (c.length === 6) {
-                // 'matrix()' (3x2)
-                matrix = new THREE.Matrix4().set(
-                  c[0],  +c[2], 0, +c[4],
-                  +c[1], +c[3], 0, +c[5],
-                  0,     0,     1, 0,
-                  0,     0,     0, 1
-                );
-            } else if (c.length === 16) {
-                // matrix3d() (4x4)
-                matrix = new THREE.Matrix4().set(
-                    +c[0], +c[4], +c[8],  +c[12],
-                    +c[1], +c[5], +c[9],  +c[13],
-                    +c[2], +c[6], +c[10], +c[14],
-                    +c[3], +c[7], +c[11], +c[15]
-                );
-
-            } else {
-                // handle 'none' or invalid values.
-                matrix = new THREE.Matrix4().identity();
-            }
-            
-            return matrix;
-          }
-
-          var w = el.offsetWidth;
-          var h = el.offsetHeight;
-          var v = {
-              a: new THREE.Vector3().set(0, 0, 0), // top left corner
-              b: new THREE.Vector3().set(w, 0, 0), // top right corner
-              c: new THREE.Vector3().set(w, h, 0), // bottom right corner
-              d: new THREE.Vector3().set(0, h, 0)  // bottom left corner
-          };  
-          //console.log(v);
-
-          var elem = el;
-
-          var matrices = [];
-          while (elem.nodeType === 1) {(function () {
-            var computedStyle = getComputedStyle(elem, null);
-
-            //
-            // P(0->1) : position (ie: translation)
-            //
-
-            var P01;
-            (function () {
-              var x = 0;
-              var y = 0;
-              var parent = elem.parentNode;
-              if (parent && parent.nodeType === 1) {
-                var parentComputedStyle = getComputedStyle(parent, null);
-
-                var offsetLeft = elem.offsetLeft;
-                var offsetTop = elem.offsetTop;
-                if (parentComputedStyle.position === 'static') {
-                  offsetLeft -= parent.offsetLeft;
-                  offsetTop -= parent.offsetTop;
-                }
-                x = offsetLeft - elem.scrollLeft + elem.clientLeft;
-                y = offsetTop - elem.scrollTop + elem.clientTop;
-              }
-
-              /*P01 = new THREE.Matrix4().set(
-                1, 0, x, 0,
-                0, 1, y, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-              );*/
-              P01 = new THREE.Matrix4().makeTranslation(x, y, 0);
-            }).call(this);
-
-            //
-            // P(1->2) : transform-origin (ie: translation)
-            //
-
-            var P12;
-            (function () {
-              var transformOrigin = computedStyle.transformOrigin || computedStyle.webkitTransformOrigin || computedStyle.MozTransformOrigin || computedStyle.msTransformOrigin;
-              transformOrigin = transformOrigin.split(' ');
-              var x = parseFloat(transformOrigin[0], 10);
-              var y = parseFloat(transformOrigin[1], 10);
-
-              /*P12 = new THREE.Matrix4().set(
-                1, 0, x, 0,
-                0, 1, y, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-              );*/
-              P12 = new THREE.Matrix4().makeTranslation(x, y, 0);
-            }).call(this);
-
-            //
-            // P(2->3) : transform
-            //
-
-            var P23;
-            (function () {
-              var transform = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
-              
-              P23 = parseMatrix(transform);
-            }).call(this);
-
-            //
-            // P(0->3) = P(0->1) . P(1->2) . P(2->3)
-            //
-
-            //console.log(P01.elements);
-            //console.log(P12.elements);
-            //console.log(P23.elements);
-
-            var P10 = new THREE.Matrix4().getInverse(P01);
-            var P21 = new THREE.Matrix4().getInverse(P12);
-            var P32 = new THREE.Matrix4().getInverse(P23);
-
-            //console.log(P10.elements);
-            //console.log(P21.elements);
-            //console.log(P32.elements);
-
-            var P03 = new THREE.Matrix4().identity();
-            /*P03.multiply(P01);
-            P03.multiply(P12);
-            P03.multiply(P23);*/
-            P03.multiply(P01);
-            P03.multiply(P12);
-            P03.multiply(P23);
-            P03.multiply(P21);
-
-            //var P30 = new THREE.Matrix4().getInverse(P03);
-            //var P30 = P03;
-
-            matrices.push(P03);
-
-            elem = elem.parentNode;
-          }())}
-
-          matrices.forEach(function (m) {
-            v.a = v.a.applyMatrix4(m);
-            v.b = v.b.applyMatrix4(m);
-            v.c = v.c.applyMatrix4(m);
-            v.d = v.d.applyMatrix4(m);
-          });
-
-          return v;
-        }
-
-
         /* Returns the rotation and translation components of an element
         ---------------------------------------------------------------- */
 
@@ -898,8 +928,8 @@ var HomeView = Backbone.View.extend({
               $(normalEl).css('transform', 'translate3d(' + Vect3.add(vertices.a, faceCenter).x + 'px,' + Vect3.add(vertices.a, faceCenter).y + 'px, ' + Vect3.add(vertices.a, faceCenter).z + 'px)');
             }*/
 
-            //var direction = Vect3.normalize(Vect3.sub(lightPosition, faceCenter));
-            var direction = Vect3.sub(lightPosition, faceCenter);
+            var direction = Vect3.normalize(Vect3.sub(lightPosition, faceCenter));
+            //var direction = Vect3.sub(lightPosition, faceCenter);
             var amount = .5* (1 - Math.max(0, Vect3.dot(faceNormal, direction)));
 
             if (!$el.data('orig-bgimg')) {
@@ -996,12 +1026,8 @@ var HomeView = Backbone.View.extend({
           //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
         
           var theta = 60*Math.PI/180;
-          var d = disth(WH*Math.cos(theta), camera.fov, camera.aspect);
-          moveAndLookAt(
-            camera,
-            new THREE.Vector3(WW/2, WH/2 + d*Math.sin(theta), d),
-            new THREE.Vector3(WW/2, WH/2, 0)
-          );
+          var d = -disth(WH*Math.cos(theta), camera.fov, camera.aspect);
+          moveAndLookAtElement(camera, $mba.find('.display')[0]);
 
         } else {
           

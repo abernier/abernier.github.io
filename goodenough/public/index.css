@@ -131,11 +131,11 @@
   position: relative;
   -webkit-box-shadow: inset 0 0 1.5em #000;
   box-shadow: inset 0 0 1.5em #000;
-  -webkit-transform: rotateY(180deg) translateZ(-1px);
-  -moz-transform: rotateY(180deg) translateZ(-1px);
-  -o-transform: rotateY(180deg) translateZ(-1px);
-  -ms-transform: rotateY(180deg) translateZ(-1px);
-  transform: rotateY(180deg) translateZ(-1px);
+  -webkit-transform: rotateY(0deg) translateZ(1px);
+  -moz-transform: rotateY(0deg) translateZ(1px);
+  -o-transform: rotateY(0deg) translateZ(1px);
+  -ms-transform: rotateY(0deg) translateZ(1px);
+  transform: rotateY(0deg) translateZ(1px);
 }
 .macbook .screen .face-one .display .shade {
   position: absolute;
@@ -143,11 +143,11 @@
   top: 0;
   width: 131em;
   height: 77em;
-  background: -webkit-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
-  background: -moz-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
-  background: -o-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
-  background: -ms-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
-  background: linear-gradient(-135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 47%, rgba(255,255,255,0) 48%);
+  background: -webkit-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 47%, rgba(255,255,255,0) 48%);
+  background: -moz-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 47%, rgba(255,255,255,0) 48%);
+  background: -o-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 47%, rgba(255,255,255,0) 48%);
+  background: -ms-linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 47%, rgba(255,255,255,0) 48%);
+  background: linear-gradient(-135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 47%, rgba(255,255,255,0) 48%);
   -webkit-background-size: 300em 200em;
   -moz-background-size: 300em 200em;
   background-size: 300em 200em;
@@ -641,6 +641,24 @@ section .macbook {
   section .macbook {
     font-size: 21%;
   }
+}
+section .macbook1 .screen .face-one .display {
+  background: url("http://abernier.name/images/bpwww-altaglio-desktop.png") left top no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+}
+section .macbook2 .screen .face-one .display {
+  background: url("http://abernier.name/images/bpwww-ccc-desktop.png") left top no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+}
+section .macbook3 .screen .face-one .display {
+  background: url("http://abernier.name/images/bpwww-thekase-desktop.png") left top no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
 }
 section .sheet {
   display: block;
