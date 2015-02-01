@@ -40,6 +40,13 @@ var Router = Backbone.Router.extend({
     initialize: function (options) {
       this.options = options;
 
+      //
+      // debug
+      //
+      if (window.location.search.indexOf('?debug') !== -1) {
+        $('html').addClass('debug');
+      }
+
       $(function () {
         // DOM ready
         $('html').addClass('domready');

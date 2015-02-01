@@ -179,7 +179,9 @@ input
 
 .h {line-height:1.2;}
 
-html,body,#scene,#camera,#scroller {height:100%;}
+html.debug #camera * {box-shadow:none!important;}
+
+html,body,#scene,#camera,.pages,.page,.scroller {height:100%;}
 .ftscroller_container,
 .ftscroller_x, .ftscroller_y {overflow:visible;}
 //.ftscroller_y {transform:none!important;}
@@ -208,7 +210,11 @@ body {
   background-color:#9BC1C4;
 }
 
-#body {
+.pages {white-space:nowrap;}
+.pages >* {white-space:normal;}
+.page {display:inline-block;vertical-align:top; width:100%;}
+
+.body {
   //height:100vh;
   cf();
 
@@ -254,7 +260,7 @@ section
       transform:rotateX(120deg) translateZ(-1px);*/
   
   .macbook1
-    //transform:rotateZ(183deg)
+    //transform:rotateZ(3deg)
     .screen .face-one .display
       background:url("http://abernier.name/images/bpwww-altaglio-desktop.png") left top no-repeat; background-size:cover;
   

@@ -9,21 +9,7 @@ require('velocity-animate');
 
 var FTScroller = require('ftscroller');
 
-$.fn.offsetRelative = function offsetRelative(selector) {
-  var $el = this;
-  var $parent = $el.parent();
-  if (selector) {
-    $parent = $parent.closest(selector);
-  }
-
-  var elOffset     = $el.offset();
-  var parentOffset = $parent.offset();
-
-  return {
-    left: elOffset.left - parentOffset.left,
-    top: elOffset.top - parentOffset.top
-  };
-};
+var CarouselView = require('carouselview');
 
 function computeVertexData(el) {
   function parseMatrix (matrixString) {
@@ -487,7 +473,8 @@ var HomeView = Backbone.View.extend({
       }
 
       function moveAndLookAt(camera, dstpos, dstlookat, options) {
-        options || (options = {duration: 300});
+        options || (options = {});
+        _.defaults(options, {duration: 300});
 
         var origpos = new THREE.Vector3().copy(camera.position); // original position
         var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
@@ -526,9 +513,11 @@ var HomeView = Backbone.View.extend({
         }).call(this);
       }
       function moveAndLookAtElement(camera, el, options) {
-        options || (options = {
+        options || (options = {});
+        _.defaults(options, {
           duration: 300,
-          distance: undefined
+          distance: undefined,
+          distanceTolerance: 0/100
         });
 
         var v = computeVertexData(el);
@@ -543,22 +532,37 @@ var HomeView = Backbone.View.extend({
         var ab = new THREE.Vector3().subVectors(v.b, v.a);
 
         var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2)
+        console.log('faceCenter', faceCenter);
         var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
+        console.log('faceNormal', faceNormal);
+
+        //
+        // Auto-distance (to fit width/height)
+        //
 
         if (typeof options.distance === 'undefined' || options.distance === null) {
-          var w = ac.x;
-          var h = ac.y;
+          var ad = new THREE.Vector3().subVectors(v.d, v.a);
 
-          /*if (camera.aspect > w/h) {
-            distance = distw(w, camera.fov, camera.aspect);
+          var w = new THREE.Vector3().copy(ab).cross(faceNormal).length();
+          var h = new THREE.Vector3().copy(ad).cross(faceNormal).length();
+          //console.log(w, h);
+
+          var tolerance = 0/100;
+          if (camera.aspect > w/h) { // camera larger than element
+            if (w>h) {
+              distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);
+            } else {
+              distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);  
+            }
           } else {
-            distance = disth(h, camera.fov, camera.aspect);
-          }*/
-          distance = distw(w+w*.2, camera.fov, camera.aspect);
+            if (w>h) {
+              distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);
+            } else {
+              distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);  
+            }
+          }
+          
         }
-
-        console.log(v.a, w)
-        console.log(v.a.x+faceCenter.x)
         
         var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
         var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
@@ -1019,7 +1023,6 @@ var HomeView = Backbone.View.extend({
 
         if (activeMacbook !== $mba[0]) {
           activeMacbook = $mba[0];
-
           
           //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
         
@@ -1040,6 +1043,10 @@ var HomeView = Backbone.View.extend({
           activeMacbook = undefined;
         }
         
+      });
+
+      this.$('.sheets').on('click', function (e) {
+        moveAndLookAtElement(camera, $('#page-2')[0]);
       });
 
       
@@ -1085,17 +1092,19 @@ var HomeView = Backbone.View.extend({
     // Scroller
     //
 
-    var $scroller = this.$('#scroller');
+    var $scroller = this.$('.scroller');
     $('html, body').css('overflow', 'hidden');
-    var ftscroller = new FTScroller($scroller[0], {
-      bouncing: false,
-      scrollbars: false,
-      scrollingX: false,
-      //contentHeight: undefined,
-      updateOnWindowResize: true
-    });
-    ftscroller.addEventListener('scroll', function () {
-      console.log('scroll', ftscroller.scrollTop);
+    $scroller.each(function (i, el) {
+      var ftscroller = new FTScroller(el, {
+        bouncing: false,
+        scrollbars: false,
+        scrollingX: false,
+        //contentHeight: undefined,
+        updateOnWindowResize: true
+      });
+      ftscroller.addEventListener('scroll', function () {
+        console.log('scroll', ftscroller.scrollTop);
+      });
     });
 
   }

@@ -277,7 +277,7 @@ function computeVertexData (elem) {
     elem = elem.parentNode;
   }())}
 
-  console.log(matrices);
+  /*console.log(matrices);
   matrices.forEach(function (m) {
     console.log(getTransform({
         m11: m.elements[0], m21: m.elements[1], m31: m.elements[2], m41: m.elements[3],
@@ -290,7 +290,7 @@ function computeVertexData (elem) {
   matrices.forEach(function (m) {
     globalmatrix = globalmatrix.multiply(m);
   });
-  var globalmatrixinverse = globalmatrix.getInverse(globalmatrix);
+  var globalmatrixinverse = globalmatrix.getInverse(globalmatrix);*/
 
   //v.a = addVectors(v.a, t.a);
   v.a = addVectors(v.a, p.a);
