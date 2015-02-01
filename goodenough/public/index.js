@@ -869,9 +869,7 @@ var HomeView = Backbone.View.extend({
         ---------------------------------------------------------------- */
 
         console.log('toto');
-        renderlight = function (startTime) {
-          startTime || (startTime = performance.now());
-
+        renderlight = function () {
           light.style[transformProp] = "translateY(" + lightpos.y + "px) translateX(" + lightpos.x + "px) translateZ(" + lightpos.z + "px)";
           // Get the light position
           var lightVertices = computeVertexData(light)
