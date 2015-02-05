@@ -290,145 +290,169 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 
 };
 
+var $window = $(window);
+var $document = $(document);
+var $html = $('html');
+var $body = $('body');
+
+var CameraView = Backbone.View.extend({
+  initialize: function (options) {
+    this.options = options;
+
+    this.camera = new THREE.PerspectiveCamera(30, options.width/options.height, -1000, 1000);
+  },
+  moveAndLookAt: function (dstpos, dstlookat, options) {
+    var camera = this.camera;
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300,
+      up: camera.up
+    });
+
+    var origpos = new THREE.Vector3().copy(camera.position); // original position
+    var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
+
+    camera.position.set(dstpos.x, dstpos.y, dstpos.z);
+    camera.up.set(options.up.x, options.up.y, options.up.z);
+    camera.lookAt(dstlookat);
+    var dstrot = new THREE.Euler().copy(camera.rotation)
+
+    // reset original position and rotation
+    camera.position.set(origpos.x, origpos.y, origpos.z);
+    camera.rotation.set(origrot.x, origrot.y, origrot.z);
+
+    //
+    // Tweening
+    //
+
+    // position
+    new TWEEN.Tween(camera.position).to({
+      x: dstpos.x,
+      y: dstpos.y,
+      z: dstpos.z
+    }, options.duration).start();;
+
+    // rotation (using slerp)
+    (function () {
+      var qa = new THREE.Quaternion().copy(camera.quaternion); // src quaternion
+      var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
+      var qm = new THREE.Quaternion();
+      //camera.quaternion = qm;
+
+      var o = {t: 0};
+      new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
+        THREE.Quaternion.slerp(qa, qb, qm, o.t);
+        camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
+      }).start();
+    }).call(this);
+  },
+  moveAndLookAtElement: function (el, options) {
+    var camera = this.camera;
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300,
+      distance: undefined,
+      distanceTolerance: 0/100
+    });
+
+    // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+    function distw(width, fov, aspect) {
+      //return 2*height/Math.tan(2*fov/(180 /Math.PI))
+      //return 2*height / Math.tan(fov*(180/Math.PI)/2);
+      return ((width/aspect)/Math.tan((fov/2)/(180/Math.PI)))/2;
+    }
+    function disth(height, fov, aspect) {
+      return (height/Math.tan((fov/(180/Math.PI))/2))/2;
+    }
+
+    var v = $(el).domvertices().data('v');
+
+    var ac = new THREE.Vector3().subVectors(v.c, v.a);
+    var ab = new THREE.Vector3().subVectors(v.b, v.a);
+    var ad = new THREE.Vector3().subVectors(v.d, v.a);
+
+    var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2)
+    console.log('faceCenter', faceCenter);
+    var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
+    console.log('faceNormal', faceNormal);
+
+    //
+    // Auto-distance (to fit width/height)
+    //
+
+    if (typeof options.distance === 'undefined' || options.distance === null) {
+      var w = new THREE.Vector3().copy(ab).cross(faceNormal).length();
+      var h = new THREE.Vector3().copy(ad).cross(faceNormal).length();
+      //console.log(w, h);
+
+      var tolerance = 0/100;
+      if (camera.aspect > w/h) { // camera larger than element
+        if (w>h) {
+          distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);
+        } else {
+          distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);  
+        }
+      } else {
+        if (w>h) {
+          distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);
+        } else {
+          distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);  
+        }
+      }
+      
+    }
+    
+    var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
+    var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
+    this.moveAndLookAt(dstpos, dstlookat, {
+      duration: options.duration,
+      up: new THREE.Vector3().copy(ad).negate() // set lookAt
+    });
+  }
+});
+
 var HomeView = Backbone.View.extend({
   initialize: function (options) {
     this.options = options;
 
-    console.log('homeView');
+    //console.log('homeView');
 
     var $scene = this.$('#scene');
-    var $camera = this.$('#camera');
-    var $window = $(window);
+    
     var WW;
     function setWW() {
       WW = $window.width();
     }
-    setWW();
-    $window.resize(setWW);
-
     var WH = $window.height();
     function setWH() {
       WH = $window.height();
     }
-    setWH();
-    $window.resize(setWH);
+    function setWWH() {
+      setWW();
+      setWH();
+
+      $document.trigger('setwwh');
+    }
+    setWWH();
+    $window.resize(setWWH);
 
     $.fn.domvertices.defaults.traceAppendEl = $scene;
 
+    //
+    // Camera view
+    //
+
     true && (function () {
-      // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
-      function distw(width, fov, aspect) {
-        //return 2*height/Math.tan(2*fov/(180 /Math.PI))
-        //return 2*height / Math.tan(fov*(180/Math.PI)/2);
-        return ((width/aspect)/Math.tan((fov/2)/(180/Math.PI)))/2;
-      }
-      function disth(height, fov, aspect) {
-        return (height/Math.tan((fov/(180/Math.PI))/2))/2;
-      }
+      this.cameraView = new CameraView({
+        el: this.$('#camera'),
+        width: WW,
+        height: WH
+      });
+      this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
 
-      function moveAndLookAt(camera, dstpos, dstlookat, options) {
-        options || (options = {});
-        _.defaults(options, {
-          duration: 300,
-          up: camera.up
-        });
-
-        var origpos = new THREE.Vector3().copy(camera.position); // original position
-        var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
-
-        camera.position.set(dstpos.x, dstpos.y, dstpos.z);
-        camera.up.set(options.up.x, options.up.y, options.up.z);
-        camera.lookAt(dstlookat);
-        var dstrot = new THREE.Euler().copy(camera.rotation)
-
-        // reset original position and rotation
-        camera.position.set(origpos.x, origpos.y, origpos.z);
-        camera.rotation.set(origrot.x, origrot.y, origrot.z);
-
-        //
-        // Tweening
-        //
-
-        // position
-        new TWEEN.Tween(camera.position).to({
-          x: dstpos.x,
-          y: dstpos.y,
-          z: dstpos.z
-        }, options.duration).start();;
-
-        // rotation (using slerp)
-        (function () {
-          var qa = new THREE.Quaternion().copy(camera.quaternion); // src quaternion
-          var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
-          var qm = new THREE.Quaternion();
-          //camera.quaternion = qm;
-
-          var o = {t: 0};
-          new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
-            THREE.Quaternion.slerp(qa, qb, qm, o.t);
-            camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
-          }).start();
-        }).call(this);
-      }
-      function moveAndLookAtElement(camera, el, options) {
-        options || (options = {});
-        _.defaults(options, {
-          duration: 300,
-          distance: undefined,
-          distanceTolerance: 0/100
-        });
-
-        var v = $(el).domvertices().data('v');
-
-        var ac = new THREE.Vector3().subVectors(v.c, v.a);
-        var ab = new THREE.Vector3().subVectors(v.b, v.a);
-        var ad = new THREE.Vector3().subVectors(v.d, v.a);
-
-        var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2)
-        console.log('faceCenter', faceCenter);
-        var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
-        console.log('faceNormal', faceNormal);
-
-        //
-        // Auto-distance (to fit width/height)
-        //
-
-        if (typeof options.distance === 'undefined' || options.distance === null) {
-          var w = new THREE.Vector3().copy(ab).cross(faceNormal).length();
-          var h = new THREE.Vector3().copy(ad).cross(faceNormal).length();
-          //console.log(w, h);
-
-          var tolerance = 0/100;
-          if (camera.aspect > w/h) { // camera larger than element
-            if (w>h) {
-              distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);
-            } else {
-              distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);  
-            }
-          } else {
-            if (w>h) {
-              distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);
-            } else {
-              distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);  
-            }
-          }
-          
-        }
-        
-        var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
-        var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
-        moveAndLookAt(camera, dstpos, dstlookat, {
-          duration: options.duration,
-          up: new THREE.Vector3().copy(ad).negate() // set lookAt
-        });
-      }
-      window.moveAndLookAtElement = moveAndLookAtElement;
-
-      var camera = new THREE.PerspectiveCamera(30, WW/WH, -1000, 1000);
-      window.camera = camera;
-      moveAndLookAtElement(camera, $('#scene')[0], {duration: 0});
-
-      var renderer = new THREE.CSS3DRenderer($scene[0], $camera[0]);
+      var renderer = new THREE.CSS3DRenderer($scene[0], this.cameraView.el);
       window.renderer = renderer;
       //renderer.domElement.style.position = 'absolute';
 
@@ -448,24 +472,26 @@ var HomeView = Backbone.View.extend({
         scene.add(obj);
       });
 
-
-      function onresize() {
-        camera.aspect = WW/WH;
-        camera.updateProjectionMatrix();
+      function onsetwwh() {
+        this.cameraView.camera.aspect = WW/WH;
+        this.cameraView.camera.updateProjectionMatrix();
 
         renderer.setSize(WW, WH);
       }
-      onresize();
-      $window.resize(onresize);
+      onsetwwh = onsetwwh.bind(this);
+      onsetwwh();
+      $document.on('setwwh', onsetwwh);
 
       function update() {
-        camera.updateProjectionMatrix();
+        this.cameraView.camera.updateProjectionMatrix();
       }
+      update = update.bind(this);
       function draw() {
-        camera.updateProjectionMatrix();
+        this.cameraView.camera.updateProjectionMatrix();
         
-        renderer.render(scene, camera);
+        renderer.render(scene, this.cameraView.camera);
       }
+      draw = draw.bind(this);
       window.draw = draw;
       draw();
 
@@ -544,12 +570,45 @@ var HomeView = Backbone.View.extend({
       renderLoop.start();
       renderlight();
 
+      // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+
+      var activeMacbook;
+      this.$('.macbook').on('click', function (e) {
+        console.log('click');
+      	var $mba = $(e.currentTarget);
+
+        var css3dobject = $mba.data('css3dobject');
+
+        if (activeMacbook !== $mba[0]) {
+          activeMacbook = $mba[0];
+          
+          //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
+        
+          this.cameraView.moveAndLookAtElement($mba.find('.display')[0]);
+
+        } else {
+          
+          //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
+
+          this.cameraView.moveAndLookAtElement($('#scene')[0]);
+
+          activeMacbook = undefined;
+        }
+        
+      }.bind(this));
+
+      this.$('.sheets').on('click', function (e) {
+        this.cameraView.moveAndLookAtElement($('#page-2')[0]);
+      });
+
       //
       // dat.gui controls (debug)
       //
 
       (function () {
-        if ($('html').is('.debug')) {
+        var camera = this.cameraView.camera;
+        
+        if ($html.is('.debug')) {
           var dat = require('dat-gui');
           var gui = new dat.GUI();
           gui.close();
@@ -588,41 +647,6 @@ var HomeView = Backbone.View.extend({
           f4.add(lightpos, 'z', -2000, 2000);
         }
       }).call(this);
-
-      // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
-
-      var activeMacbook;
-      this.$('.macbook').on('click', function (e) {
-        console.log('click');
-      	var $mba = $(this);
-
-        var css3dobject = $mba.data('css3dobject');
-
-        if (activeMacbook !== $mba[0]) {
-          activeMacbook = $mba[0];
-          
-          //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
-        
-          var theta = 60*Math.PI/180;
-          var d = -disth(WH*Math.cos(theta), camera.fov, camera.aspect);
-          moveAndLookAtElement(camera, $mba.find('.display')[0]);
-
-        } else {
-          
-          //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
-
-          moveAndLookAtElement(camera, $('#scene')[0]);
-
-          activeMacbook = undefined;
-        }
-        
-      });
-
-      this.$('.sheets').on('click', function (e) {
-        moveAndLookAtElement(camera, $('#page-2')[0]);
-      });
-
-      
 
     }).call(this);
 
