@@ -3,10 +3,10 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
 
-require('jquery-waypoints');
-require('jquery-waypoints-sticky');
+//require('jquery-waypoints');
+//require('jquery-waypoints-sticky');
 require('jquery-hammer');
-require('velocity-animate');
+//require('velocity-animate');
 
 var FTScroller = require('ftscroller');
 
@@ -301,6 +301,9 @@ var CameraView = Backbone.View.extend({
     this.options = options;
 
     this.camera = new THREE.PerspectiveCamera(30, options.width/options.height, -1000, 1000);
+
+    this.moveAndLookAt = this.moveAndLookAt.bind(this);
+    this.moveAndLookAtElement = this.moveAndLookAtElement.bind(this);
   },
   moveAndLookAt: function (dstpos, dstlookat, options) {
     var camera = this.camera;
@@ -369,6 +372,7 @@ var CameraView = Backbone.View.extend({
     }
 
     var v = $(el).domvertices().data('v');
+    console.log('v.a', v.a);
 
     var ac = new THREE.Vector3().subVectors(v.c, v.a);
     var ab = new THREE.Vector3().subVectors(v.b, v.a);
@@ -407,9 +411,12 @@ var CameraView = Backbone.View.extend({
     
     var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
     var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
+
+    console.log('dstlookat', dstlookat, 'dstpos', dstpos);
+
     this.moveAndLookAt(dstpos, dstlookat, {
       duration: options.duration,
-      up: new THREE.Vector3().copy(ad).negate() // set lookAt
+      up: new THREE.Vector3().copy(ad).negate()
     });
   }
 });
@@ -421,6 +428,7 @@ var HomeView = Backbone.View.extend({
     //console.log('homeView');
 
     var $scene = this.$('#scene');
+    var $camera = this.$('#camera');
     
     var WW;
     function setWW() {
@@ -447,11 +455,14 @@ var HomeView = Backbone.View.extend({
 
     true && (function () {
       this.cameraView = new CameraView({
-        el: this.$('#camera'),
+        el: $camera,
         width: WW,
         height: WH
       });
+      $.fn.domvertices.defaults.lastParent = $camera[0];
+      window.camera = this.cameraView.camera;
       this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
+      window.moveAndLookAtElement = this.cameraView.moveAndLookAtElement;
 
       var renderer = new THREE.CSS3DRenderer($scene[0], this.cameraView.el);
       window.renderer = renderer;
@@ -591,7 +602,7 @@ var HomeView = Backbone.View.extend({
           
           //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
 
-          this.cameraView.moveAndLookAtElement($('#scene')[0]);
+          this.cameraView.moveAndLookAtElement($scene[0]);
 
           activeMacbook = undefined;
         }
@@ -618,29 +629,11 @@ var HomeView = Backbone.View.extend({
           var px = f1.add(camera.position, 'x', -1000, 1000);
           var py = f1.add(camera.position, 'y', -1000, 3000);
           var pz = f1.add(camera.position, 'z', -5000, 5000);
-          px.onChange(function (val) {
-            draw();
-          });
-          py.onChange(function (val) {
-            draw();
-          });
-          pz.onChange(function (val) {
-            draw();
-          });
 
           var f2 = gui.addFolder('camera.rotation');
           var rx = f2.add(camera.rotation, 'x', 0, 2*Math.PI);
           var ry = f2.add(camera.rotation, 'y', 0, 2*Math.PI);
           var rz = f2.add(camera.rotation, 'z', 0, 2*Math.PI);
-          rx.onChange(function (val) {
-            draw();
-          });
-          ry.onChange(function (val) {
-            draw();
-          });
-          rz.onChange(function (val) {
-            draw();
-          });
 
           var f4 = gui.addFolder('lightpos');
           f4.add(lightpos, 'x', -5000, 5000);
@@ -650,41 +643,6 @@ var HomeView = Backbone.View.extend({
       }).call(this);
 
     }).call(this);
-
-    //
-    // scale
-    //
-
-    /*(function () {
-      var SCALE = 2;
-
-      $('.scale').each(function (i, el) {
-        var $scale = $(el);
-        var $in = $scale.find('>.in');
-        var $obj = $in.find('>*').eq(0);
-
-        var dims = {
-          w: $obj.width(),
-          h: $obj.height(),
-          margin: {
-            left: parseInt($obj.css('margin-left'), 10),
-            top: parseInt($obj.css('margin-top'), 10),
-            right: parseInt($obj.css('margin-right'), 10),
-            bottom: parseInt($obj.css('margin-bottom'), 10)
-          }
-        };
-
-        $in.css('font-size', (100*SCALE)+'%');
-        $scale.css({
-          transform: 'scale(' + (1/SCALE) + ')',
-          marginTop: (dims.margin.top - ((dims.h*SCALE - dims.h)/2)),
-          marginBottom: (dims.margin.bottom - ((dims.h*SCALE - dims.h)/2)),
-          marginLeft: (dims.margin.left - ((dims.w*SCALE - dims.w)/2)),
-          marginRight: (dims.margin.right - ((dims.w*SCALE - dims.w)/2))
-        });
-
-      });
-    }).call(this);*/
 
     //
     // Scroller
@@ -709,7 +667,7 @@ var HomeView = Backbone.View.extend({
 });
 
 module.exports = HomeView;
-},{"backbone":"backbone","carouselview":"carouselview","dat-gui":"dat-gui","domvertices":"domvertices","ftscroller":"ftscroller","jquery":"jquery","jquery-domvertices":"jquery-domvertices","jquery-hammer":"jquery-hammer","jquery-waypoints":"jquery-waypoints","jquery-waypoints-sticky":"jquery-waypoints-sticky","loop":"loop","three":"three","tween":"tween","underscore":"underscore","velocity-animate":"velocity-animate"}],"Goodenough":[function(require,module,exports){
+},{"backbone":"backbone","carouselview":"carouselview","dat-gui":"dat-gui","domvertices":"domvertices","ftscroller":"ftscroller","jquery":"jquery","jquery-domvertices":"jquery-domvertices","jquery-hammer":"jquery-hammer","loop":"loop","three":"three","tween":"tween","underscore":"underscore"}],"Goodenough":[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');

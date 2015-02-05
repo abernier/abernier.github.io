@@ -6379,6 +6379,7 @@ module.exports.color = require('./vendor/dat.color')
 },{"./vendor/dat.color":1,"./vendor/dat.gui":2}],"domvertices":[function(require,module,exports){
 (function () {
   var THREE = this.THREE || require('three');
+  var _ = this._ || require('underscore');
 
   //
   // Normalize 4x4 matrix from string, ie: 'matrix()' or 'matrix3d()' or 'none'
@@ -6429,7 +6430,13 @@ module.exports.color = require('./vendor/dat.color')
     return parent;
   }
 
-  function domvertices(el) {
+  function domvertices(el, options) {
+    options || (options = {});
+
+    _.defaults(options, {
+      lastParent: document.body.parentNode // <html> element by default
+    });
+
     //
     // a                b
     //  +--------------+
@@ -6453,7 +6460,7 @@ module.exports.color = require('./vendor/dat.color')
     //
 
     var matrices = [];
-    while (el.nodeType === 1) {(function () {
+    while (el.nodeType === 1 && el !== options.lastParent) {(function () {
       var nextParent = el.parentNode;
 
       var computedStyle = getComputedStyle(el, null);
@@ -6555,7 +6562,7 @@ module.exports.color = require('./vendor/dat.color')
     module.exports = this.domvertices;
   }
 }).call(this);
-},{"three":undefined}],"ftscroller":[function(require,module,exports){
+},{"three":undefined,"underscore":undefined}],"ftscroller":[function(require,module,exports){
 /**
  * FTScroller: touch and mouse-based scrolling for DOM elements larger than their containers.
  *
@@ -11958,7 +11965,7 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 		this.update();
 	}
 	V.prototype.update = function () {
-		var v = domvertices(this.el);
+		var v = domvertices(this.el, {lastParent: this.options.lastParent});
 
 		this.a = v.a;
 		this.b = v.b;
@@ -12016,7 +12023,8 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 
 
   $.fn.domvertices.defaults = {
-    traceAppendEl: document.body
+    traceAppendEl: document.body,
+    lastParent: document.body.parentNode
   };
 }).call(this);
 },{"domvertices":undefined,"jquery":undefined}],"jquery-hammer":[function(require,module,exports){
