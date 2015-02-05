@@ -301,8 +301,11 @@ var CameraView = Backbone.View.extend({
 
     this.camera = new THREE.PerspectiveCamera(30, options.width/options.height, -1000, 1000);
 
+    this.$target = undefined;
+
     this.moveAndLookAt = this.moveAndLookAt.bind(this);
     this.moveAndLookAtElement = this.moveAndLookAtElement.bind(this);
+    this.recenter = this.recenter.bind(this);
   },
   moveAndLookAt: function (dstpos, dstlookat, options) {
     var camera = this.camera;
@@ -352,6 +355,8 @@ var CameraView = Backbone.View.extend({
   },
   moveAndLookAtElement: function (el, options) {
     var camera = this.camera;
+    var $el = $(el);
+    el = $el[0];
 
     options || (options = {});
     _.defaults(options, {
@@ -370,17 +375,16 @@ var CameraView = Backbone.View.extend({
       return (height/Math.tan((fov/(180/Math.PI))/2))/2;
     }
 
-    var v = $(el).domvertices().data('v');
-    console.log('v.a', v.a);
+    var v = $el.domvertices().data('v');
 
     var ac = new THREE.Vector3().subVectors(v.c, v.a);
     var ab = new THREE.Vector3().subVectors(v.b, v.a);
     var ad = new THREE.Vector3().subVectors(v.d, v.a);
 
     var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2)
-    console.log('faceCenter', faceCenter);
+    //console.log('faceCenter', faceCenter);
     var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
-    console.log('faceNormal', faceNormal);
+    //console.log('faceNormal', faceNormal);
 
     //
     // Auto-distance (to fit width/height)
@@ -411,12 +415,19 @@ var CameraView = Backbone.View.extend({
     var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
     var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
 
-    console.log('dstlookat', dstlookat, 'dstpos', dstpos);
-
     this.moveAndLookAt(dstpos, dstlookat, {
       duration: options.duration,
       up: new THREE.Vector3().copy(ad).negate()
     });
+
+    this.$target = $el;
+  },
+  recenter: function () {
+    if (this.$target && this.$target.length) {
+      this.moveAndLookAtElement(this.$target, {duration: 0});
+    }
+
+    return this;
   }
 });
 
@@ -483,14 +494,15 @@ var HomeView = Backbone.View.extend({
         scene.add(obj);
       });
 
-      function onsetwwh() {
+      function onsetwwh(first) {
         this.cameraView.camera.aspect = WW/WH;
         this.cameraView.camera.updateProjectionMatrix();
+        if (first !== true) {this.cameraView.recenter();}
 
         renderer.setSize(WW, WH);
       }
       onsetwwh = onsetwwh.bind(this);
-      onsetwwh();
+      onsetwwh(true);
       $document.on('setwwh', onsetwwh);
 
       function update() {
@@ -610,7 +622,7 @@ var HomeView = Backbone.View.extend({
 
       this.$('.sheets').on('click', function (e) {
         this.cameraView.moveAndLookAtElement($('#page-2')[0]);
-      });
+      }.bind(this));
 
       //
       // dat.gui controls (debug)
