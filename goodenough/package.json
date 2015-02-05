@@ -23,6 +23,7 @@
     "underscore": "^1.6.0",
     "velocity-animate": "^0.10.0",
     "jquery.offsetRelative": "https://gist.github.com/abernier/3191472/download",
-    "ftscroller": "^0.5.1"
+    "ftscroller": "^0.5.1",
+    "domvertices": "https://gist.github.com/abernier/97a5fb8c1bebacd1958e/download"
   }
 }

@@ -6320,7 +6320,8 @@ if (typeof module !== "undefined" && module !== null) {
 
       this.$items = options.items && this.$(options.items) || this.$el.find('>*');
 
-      this.l = this.$items.length;
+      this.l = options.max || this.$items.length;
+      this.step = options.step || 1;
 
       var currentIndex = (this.$items.index('.active') - 1);
       if (currentIndex < 0) {currentIndex = 0;}
@@ -6338,10 +6339,10 @@ if (typeof module !== "undefined" && module !== null) {
       return this.$items.eq(Math.abs(this.l+index)%this.l);
     },
     prev: function prev() {
-      this.go(this.currentIndex-1);
+      this.go(this.currentIndex-this.step);
     },
     next: function next() {
-      this.go(this.currentIndex+1);
+      this.go(this.currentIndex+this.step);
     },
     go: function go(index) {
       var dir;
@@ -6353,9 +6354,10 @@ if (typeof module !== "undefined" && module !== null) {
 
       if (this.options.noloop === true) {
         index = Math.max(0, index);
-        index = Math.min((this.$items.length - 1), index);
+        index = Math.min((this.l - 1), index);
       }
       this.currentIndex = index%this.l;
+      console.log('currentIndex', this.currentIndex, this)
 
       this.$el.removeClass('forward backward').addClass(dir > 0 ? 'forward' : 'backward');
 
@@ -6374,7 +6376,186 @@ if (typeof module !== "undefined" && module !== null) {
 },{"backbone":undefined,"jquery":undefined,"underscore":undefined}],"dat-gui":[function(require,module,exports){
 module.exports = require('./vendor/dat.gui')
 module.exports.color = require('./vendor/dat.color')
-},{"./vendor/dat.color":1,"./vendor/dat.gui":2}],"ftscroller":[function(require,module,exports){
+},{"./vendor/dat.color":1,"./vendor/dat.gui":2}],"domvertices":[function(require,module,exports){
+(function () {
+  var THREE = this.THREE || require('three');
+
+  //
+  // Normalize 4x4 matrix from string, ie: 'matrix()' or 'matrix3d()' or 'none'
+  //
+  function normalizeMatrix (matrixString) {
+    var c = matrixString.split(/\s*[(),]\s*/).slice(1,-1);
+    var matrix;
+
+    if (c.length === 6) {
+        // 'matrix()' (3x2)
+        matrix = new THREE.Matrix4().set(
+          c[0],  +c[2], 0, +c[4],
+          +c[1], +c[3], 0, +c[5],
+          0,     0,     1, 0,
+          0,     0,     0, 1
+        );
+    } else if (c.length === 16) {
+        // matrix3d() (4x4)
+        matrix = new THREE.Matrix4().set(
+          +c[0], +c[4], +c[8],  +c[12],
+          +c[1], +c[5], +c[9],  +c[13],
+          +c[2], +c[6], +c[10], +c[14],
+          +c[3], +c[7], +c[11], +c[15]
+        );
+    } else {
+        // handle 'none' or invalid values.
+        matrix = new THREE.Matrix4().identity();
+    }
+    
+    return matrix;
+  }
+
+  function relAbsOrFixedPositionnedAncestor(el) {
+    var parent = el.parentNode;
+    var parentComputedStyle = getComputedStyle(parent, null);
+
+    while (parent && parent.nodeType === 1) { // walk up
+      if (parentComputedStyle.position === 'relative' || parentComputedStyle.position === 'absolute' || parentComputedStyle.position === 'fixed') {  
+        break; // stop
+      }
+
+      parent = parent.parentNode;
+      parentComputedStyle = getComputedStyle(parent, null);
+    }
+
+    if (parent === document) return document.body; // html is the last element before document
+
+    return parent;
+  }
+
+  function domvertices(el) {
+    //
+    // a                b
+    //  +--------------+
+    //  |              |
+    //  |      el      |
+    //  |              |
+    //  +--------------+
+    // d                c
+    //
+    var w = el.offsetWidth;
+    var h = el.offsetHeight;
+    var v = {
+        a: new THREE.Vector3().set(0, 0, 0), // top left corner
+        b: new THREE.Vector3().set(w, 0, 0), // top right corner
+        c: new THREE.Vector3().set(w, h, 0), // bottom right corner
+        d: new THREE.Vector3().set(0, h, 0)  // bottom left corner
+    };
+
+    //
+    // Walk the DOM up, and extract 
+    //
+
+    var matrices = [];
+    while (el.nodeType === 1) {(function () {
+      var nextParent = el.parentNode;
+
+      var computedStyle = getComputedStyle(el, null);
+
+      //
+      // P(0->1) : relative position (to parent)
+      //
+      var P01;
+      (function () {
+        var offsetLeft = el.offsetLeft;
+        var offsetTop = el.offsetTop;
+
+        var position = computedStyle.position;
+        if (position === 'absolute' || position === 'fixed') {
+          // nothing
+        } else if (position === 'static' || position === 'relative') {
+          var closestPositionedParent = relAbsOrFixedPositionnedAncestor(el);
+
+          if (closestPositionedParent === el.parentNode) {
+            // nothing
+          } else {
+            var parent = el.parentNode;
+            if (parent && parent.nodeType === 1) {
+              offsetLeft -= parent.offsetLeft;
+              offsetTop -= parent.offsetTop;
+            }
+          }
+        }
+        //console.log(offsetLeft, offsetTop);
+
+        x = offsetLeft + el.clientLeft;
+        y = offsetTop + el.clientTop;
+
+        if (el !== document.body) {
+          x -= el.scrollLeft;
+          y -= el.scrollTop;
+        }
+        
+
+        P01 = new THREE.Matrix4().makeTranslation(x, y, 0);
+      }).call(this);
+
+      //
+      // P(1->2) : transform-origin
+      //
+      var P12;
+      (function () {
+        var transformOrigin = computedStyle.transformOrigin || computedStyle.webkitTransformOrigin || computedStyle.MozTransformOrigin || computedStyle.msTransformOrigin;
+        transformOrigin = transformOrigin.split(' ');
+        var x = parseFloat(transformOrigin[0], 10);
+        var y = parseFloat(transformOrigin[1], 10);
+
+        P12 = new THREE.Matrix4().makeTranslation(x, y, 0);
+      }).call(this);
+
+      //
+      // P(2->3) : transform
+      //
+      var P23;
+      (function () {
+        var transform = computedStyle.transform || computedStyle.webkitTransform || computedStyle.MozTransform || computedStyle.msTransform;
+        
+        P23 = normalizeMatrix(transform);
+      }).call(this);
+
+      //
+      // P(0->3) = P(0->1) . P(1->2) . P(2->3)
+      //
+      var P21 = new THREE.Matrix4().getInverse(P12);
+
+      var P03 = new THREE.Matrix4().identity();
+      P03.multiply(P01); // (1): translate position
+      P03.multiply(P12); // (2): translate transform-origin
+      P03.multiply(P23); // (3): transform
+      P03.multiply(P21); // (4): inverse of (2)
+
+      matrices.push(P03);
+
+      el = nextParent;
+    }())}
+
+    //
+    // apply changes of basis (in reverse order)
+    //
+
+    for (var i=0; i<matrices.length; i++) {
+      v.a = v.a.applyMatrix4(matrices[i]);
+      v.b = v.b.applyMatrix4(matrices[i]);
+      v.c = v.c.applyMatrix4(matrices[i]);
+      v.d = v.d.applyMatrix4(matrices[i]);
+    }
+
+    return v;
+  }
+
+  // Exports
+  this.domvertices = domvertices;
+  if (typeof module !== "undefined" && module !== null) {
+    module.exports = this.domvertices;
+  }
+}).call(this);
+},{"three":undefined}],"ftscroller":[function(require,module,exports){
 /**
  * FTScroller: touch and mouse-based scrolling for DOM elements larger than their containers.
  *
@@ -11761,7 +11942,84 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 
 })(window, document, 'Hammer');
 
-},{}],"jquery-hammer":[function(require,module,exports){
+},{}],"jquery-domvertices":[function(require,module,exports){
+(function () {
+	var $ = this.jQuery || require('jquery');
+	var domvertices = this.domvertices || require('domvertices');
+
+	function V(el, options) {
+    options || (options = {});
+
+    this.options = $.extend({}, $.fn.domvertices.defaults, options);
+
+    this.$el = $(el);
+    this.el = this.$el[0];
+
+		this.update();
+	}
+	V.prototype.update = function () {
+		var v = domvertices(this.el);
+
+		this.a = v.a;
+		this.b = v.b;
+		this.c = v.c;
+		this.d = v.d;
+
+    return this;
+	};
+  V.prototype.trace = function () {
+    var position = {
+      display:'block',width:'0px',height:'0px', boxShadow:'0 0 0 3px lime',
+      position:'absolute',left:'0px',top:'0px'
+    };
+    this.$a || (this.$a = $('<div>').appendTo(this.options.traceAppendEl).css(position));
+    this.$b || (this.$b = $('<div>').appendTo(this.options.traceAppendEl).css(position));
+    this.$c || (this.$c = $('<div>').appendTo(this.options.traceAppendEl).css(position));
+    this.$d || (this.$d = $('<div>').appendTo(this.options.traceAppendEl).css(position));
+
+    var v = {
+      a: this.a,
+      b: this.b,
+      c: this.c,
+      d: this.d
+    };
+    for (k in v) {
+      this['$'+k].css({transform:'translate3d(' + v[k].x + 'px,' + v[k].y + 'px, ' + v[k].z + 'px)'});
+    }
+
+    return this;
+  };
+  V.prototype.erase = function () {
+    this.$a.remove();
+    this.$b.remove();
+    this.$c.remove();
+    this.$d.remove();
+
+    this.$a = undefined;
+    this.$b = undefined;
+    this.$c = undefined;
+    this.$d = undefined;
+
+    return this;
+  };
+
+  var arr = [];
+	$.fn.domvertices = function (options) {
+		return this.each(function (i, el) {
+			var v = new V(el, options);
+      arr.push(v);
+
+			$(el).data('v', v);
+		});
+	};
+  $.fn.domvertices.v = arr;
+
+
+  $.fn.domvertices.defaults = {
+    traceAppendEl: document.body
+  };
+}).call(this);
+},{"domvertices":undefined,"jquery":undefined}],"jquery-hammer":[function(require,module,exports){
 var $ = jQuery = require('jquery');
 var Hammer = require('hammerjs');
 
