@@ -568,10 +568,10 @@ body,
 .ftscroller_y {
   overflow: visible;
 }
-.ftscroller_container {
+html.debug .ftscroller_container {
   position: relative;
 }
-.ftscroller_container:before {
+html.debug .ftscroller_container:before {
   content: "";
   display: block;
   position: absolute;
@@ -587,7 +587,7 @@ body,
   -ms-transform: translateZ(-1px);
   transform: translateZ(-1px);
 }
-.ftscroller_container:after {
+html.debug .ftscroller_container:after {
   content: ".ftscroller_container";
   display: inline-block;
   position: absolute;
@@ -608,6 +608,18 @@ body,
   -o-transform-style: preserve-3d;
   -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
+}
+html.debug .light {
+  width: 10px;
+  height: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #ff0;
+  -webkit-transform: translateZ(-1000px);
+  -moz-transform: translateZ(-1000px);
+  -o-transform: translateZ(-1000px);
+  -ms-transform: translateZ(-1000px);
+  transform: translateZ(-1000px);
 }
 body {
   text-align: center;

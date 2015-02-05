@@ -185,7 +185,7 @@ html,body,#scene,#camera,.pages,.page,.scroller {height:100%;}
 .ftscroller_container,
 .ftscroller_x, .ftscroller_y {overflow:visible;}
 //.ftscroller_y {transform:none!important;}
-.ftscroller_container {
+html.debug .ftscroller_container {
   position:relative;
   &:before {
     content:"";display:block;position:absolute;left:0;right:0;top:0;bottom:0;
@@ -204,6 +204,7 @@ html,body,#scene,#camera,.pages,.page,.scroller {height:100%;}
   //transition:transform 3s;
 #camera, #camera * {transform-style:preserve-3d;}
 
+html.debug .light {width:10px;height:10px;border-radius:10px; background:yellow; transform:translateZ(-1000px);}
 
 body {
   text-align:center;

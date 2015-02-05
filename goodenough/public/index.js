@@ -525,6 +525,10 @@ var HomeView = Backbone.View.extend({
         }
       }).call(this);
 
+      //
+      // Render loop
+      //
+
       var clock = new THREE.Clock();
       var renderLoop = new Loop(function (t, t0) {
         //update(clock.getDelta());
@@ -537,50 +541,54 @@ var HomeView = Backbone.View.extend({
         }*/
 
         //renderlight();
-        
-        /*var l = faces.length;
-        while (l--) {
-          faces[l].render(light, true, true);
-        }*/
       });
       renderLoop.start();
       renderlight();
 
-      var dat = require('dat-gui');
-      var gui = new dat.GUI();
-      gui.close();
-      var f1 = gui.addFolder('camera.position');
-      var px = f1.add(camera.position, 'x', -1000, 1000);
-      var py = f1.add(camera.position, 'y', -1000, 3000);
-      var pz = f1.add(camera.position, 'z', -5000, 5000);
-      px.onChange(function (val) {
-        draw();
-      });
-      py.onChange(function (val) {
-        draw();
-      });
-      pz.onChange(function (val) {
-        draw();
-      });
+      //
+      // dat.gui controls (debug)
+      //
 
-      var f2 = gui.addFolder('camera.rotation');
-      var rx = f2.add(camera.rotation, 'x', 0, 2*Math.PI);
-      var ry = f2.add(camera.rotation, 'y', 0, 2*Math.PI);
-      var rz = f2.add(camera.rotation, 'z', 0, 2*Math.PI);
-      rx.onChange(function (val) {
-        draw();
-      });
-      ry.onChange(function (val) {
-        draw();
-      });
-      rz.onChange(function (val) {
-        draw();
-      });
+      (function () {
+        if ($('html').is('.debug')) {
+          var dat = require('dat-gui');
+          var gui = new dat.GUI();
+          gui.close();
 
-      var f4 = gui.addFolder('lightpos');
-      f4.add(lightpos, 'x', -5000, 5000);
-      f4.add(lightpos, 'y', -5000, 5000);
-      f4.add(lightpos, 'z', -2000, 2000);
+          var f1 = gui.addFolder('camera.position');
+          var px = f1.add(camera.position, 'x', -1000, 1000);
+          var py = f1.add(camera.position, 'y', -1000, 3000);
+          var pz = f1.add(camera.position, 'z', -5000, 5000);
+          px.onChange(function (val) {
+            draw();
+          });
+          py.onChange(function (val) {
+            draw();
+          });
+          pz.onChange(function (val) {
+            draw();
+          });
+
+          var f2 = gui.addFolder('camera.rotation');
+          var rx = f2.add(camera.rotation, 'x', 0, 2*Math.PI);
+          var ry = f2.add(camera.rotation, 'y', 0, 2*Math.PI);
+          var rz = f2.add(camera.rotation, 'z', 0, 2*Math.PI);
+          rx.onChange(function (val) {
+            draw();
+          });
+          ry.onChange(function (val) {
+            draw();
+          });
+          rz.onChange(function (val) {
+            draw();
+          });
+
+          var f4 = gui.addFolder('lightpos');
+          f4.add(lightpos, 'x', -5000, 5000);
+          f4.add(lightpos, 'y', -5000, 5000);
+          f4.add(lightpos, 'z', -2000, 2000);
+        }
+      }).call(this);
 
       // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
 
