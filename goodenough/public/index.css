@@ -599,7 +599,7 @@ html.debug .ftscroller_container:after {
   -ms-transform: translateZ(-1px);
   transform: translateZ(-1px);
 }
-#camera {
+#camera html.debug {
   -webkit-box-shadow: 0 0 0px 1px #000 inset;
   box-shadow: 0 0 0px 1px #000 inset;
 }
@@ -633,6 +633,9 @@ canvas.debugDraw {
 .pages {
   white-space: nowrap;
   display: inline-block;
+  background-image: url("http://www.transparenttextures.com/patterns/french-stucco.png");
+}
+html.debug .pages {
   border: 1px solid;
 }
 .pages >* {
@@ -642,6 +645,21 @@ canvas.debugDraw {
   display: inline-block;
   vertical-align: top;
   width: 100vw;
+}
+html.debug .page {
+  border: 1px solid #ff0;
+}
+.page2 {
+  -webkit-transform-origin: left top;
+  -moz-transform-origin: left top;
+  -o-transform-origin: left top;
+  -ms-transform-origin: left top;
+  transform-origin: left top;
+  -webkit-transform: rotate(-30deg);
+  -moz-transform: rotate(-30deg);
+  -o-transform: rotate(-30deg);
+  -ms-transform: rotate(-30deg);
+  transform: rotate(-30deg);
 }
 .body {
   color: #fff;

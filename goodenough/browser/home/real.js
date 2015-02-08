@@ -428,6 +428,36 @@
   };
   Real.Friction = Friction;
 
+  function Prismatic(real, bodyA, bodyB, options) {
+    if (!bodyA || !bodyB) {
+      return;
+    }
+
+    options || (options = {});
+    _.defaults(options, {
+    });
+
+    //
+    // Prismatic (http://www.iforce2d.net/b2dtut/joints-prismatic)
+    //
+
+    var prismaticJointDef = new b2PrismaticJointDef();
+    prismaticJointDef.bodyA = bodyA;
+    prismaticJointDef.bodyB = bodyB;
+    prismaticJointDef.localAxisA.Set(0,1);
+    prismaticJointDef.localAxisA.Normalize();
+    prismaticJointDef.localAnchorA = bodyB.GetPosition();
+    prismaticJointDef.localAnchorB.SetZero();
+    //prismaticJointDef.collideConnected = true;
+    //prismaticJointDef.enableLimit = true;
+    //prismaticJointDef.lowerTranslation = -($body.outerHeight() - $window.outerHeight()) / SCALE;
+    //prismaticJointDef.upperTranslation = $window.outerHeight() / SCALE;
+
+    return real.world.CreateJoint(prismaticJointDef);
+  };
+  Real.Prismatic = Prismatic;
+  
+
   // Exports
   this.Real = Real;
   if (typeof module !== "undefined" && module !== null) {

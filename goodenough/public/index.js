@@ -335,6 +335,7 @@ var HomeView = Backbone.View.extend({
     // Box2D
     //
 
+    this.scrollEl;
     (function () {
       var real = new Real({
         gravity: 0,
@@ -345,7 +346,7 @@ var HomeView = Backbone.View.extend({
       });
       window.real = real;
        
-      real.addElement(new Real.Element($('.pages'), real));
+      this.scrollEl = real.addElement(new Real.Element($('.pages'), real));
        
       //
       // MouseJoint
@@ -426,6 +427,8 @@ var HomeView = Backbone.View.extend({
 
       console.log('toto');
       new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+
+      //new Real.Prismatic(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
 
       // 
       real.start();
@@ -1007,6 +1010,36 @@ module.exports = HomeView;
     return real.world.CreateJoint(frictionJointDef);
   };
   Real.Friction = Friction;
+
+  function Prismatic(real, bodyA, bodyB, options) {
+    if (!bodyA || !bodyB) {
+      return;
+    }
+
+    options || (options = {});
+    _.defaults(options, {
+    });
+
+    //
+    // Prismatic (http://www.iforce2d.net/b2dtut/joints-prismatic)
+    //
+
+    var prismaticJointDef = new b2PrismaticJointDef();
+    prismaticJointDef.bodyA = bodyA;
+    prismaticJointDef.bodyB = bodyB;
+    prismaticJointDef.localAxisA.Set(0,1);
+    prismaticJointDef.localAxisA.Normalize();
+    prismaticJointDef.localAnchorA = bodyB.GetPosition();
+    prismaticJointDef.localAnchorB.SetZero();
+    //prismaticJointDef.collideConnected = true;
+    //prismaticJointDef.enableLimit = true;
+    //prismaticJointDef.lowerTranslation = -($body.outerHeight() - $window.outerHeight()) / SCALE;
+    //prismaticJointDef.upperTranslation = $window.outerHeight() / SCALE;
+
+    return real.world.CreateJoint(prismaticJointDef);
+  };
+  Real.Prismatic = Prismatic;
+  
 
   // Exports
   this.Real = Real;

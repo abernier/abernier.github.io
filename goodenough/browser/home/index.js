@@ -334,6 +334,7 @@ var HomeView = Backbone.View.extend({
     // Box2D
     //
 
+    this.scrollEl;
     (function () {
       var real = new Real({
         gravity: 0,
@@ -344,7 +345,7 @@ var HomeView = Backbone.View.extend({
       });
       window.real = real;
        
-      real.addElement(new Real.Element($('.pages'), real));
+      this.scrollEl = real.addElement(new Real.Element($('.pages'), real));
        
       //
       // MouseJoint
@@ -425,6 +426,8 @@ var HomeView = Backbone.View.extend({
 
       console.log('toto');
       new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+
+      //new Real.Prismatic(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
 
       // 
       real.start();

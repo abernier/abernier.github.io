@@ -202,7 +202,8 @@ html.debug .ftscroller_container {
 #camera
   //background:url("https://dl.dropbox.com/s/sw0qqg0j0qq8xng/grid.png?dl=1");
   //transition:transform 3s;
-  box-shadow:0 0 0px 1px black inset;
+  html.debug
+    box-shadow:0 0 0px 1px black inset;
     
 #camera, #camera * {transform-style:preserve-3d;}
 
@@ -215,9 +216,20 @@ body {
 
 canvas.debugDraw {background:rgba(0,0,0,.1);}
 
-.pages {white-space:nowrap; display:inline-block; border:1px solid;}
+.pages {
+  white-space:nowrap; display:inline-block;
+  background-image:url(http://www.transparenttextures.com/patterns/french-stucco.png);
+  //background-image:url(http://www.transparenttextures.com/patterns/mooning.png);
+  html.debug & {border:1px solid;}
+}
 .pages >* {white-space:normal;}
-.page {display:inline-block;vertical-align:top; width:100vw;}
+.page {
+  display:inline-block;vertical-align:top; width:100vw;
+  html.debug & {border:1px solid yellow;}
+
+}
+
+.page2 {transform-origin:left top; transform:rotate(-30deg);}
 
 .body {
   //height:100vh;
