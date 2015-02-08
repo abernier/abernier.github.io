@@ -362,10 +362,28 @@ var HomeView = Backbone.View.extend({
       function setMouse(e) {
         e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
         
+        //
+        // project mouse into 3d space
+        //
+
+        var camera = this.cameraView.camera;
+        // http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
+        var mouse3d = new THREE.Vector3();
+        mouse3d.set(
+          -(e.pageX/WW)*2 + 1, // modified!
+          -(e.pageY/WH)*2 + 1,
+        0.5);
+        mouse3d.unproject(camera);
+
+        var dir = mouse3d.sub(camera.position).normalize();
+        var distance = -camera.position.z/dir.z;
+
+        var pos = camera.position.clone().add(dir.multiplyScalar(distance));
+
         var v = $camera.domvertices().data('v');
         mouse.Set(
-          (e.pageX - v.a.x)/real.SCALE,
-          (e.pageY - v.a.y)/real.SCALE
+          (pos.x - v.a.x)/real.SCALE,
+          (pos.y - v.a.y)/real.SCALE
         );
       }
       function mousedown(e) {
