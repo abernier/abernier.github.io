@@ -425,7 +425,7 @@ var HomeView = Backbone.View.extend({
       //
 
       console.log('toto');
-      //new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+      new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
 
       // 
       real.start();
@@ -904,7 +904,7 @@ module.exports = HomeView;
     };
     bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
     bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
-    //bodyDef.fixedRotation = true;
+    bodyDef.fixedRotation = true;
    
     // Add to world
     this.body = real.world.CreateBody(bodyDef);
@@ -993,7 +993,7 @@ module.exports = HomeView;
 
     options || (options = {});
     _.defaults(options, {
-      maxForce: 300*bodyB.GetMass()
+      maxForce: 5*bodyB.GetMass()
     });
 
     var frictionJointDef = new b2FrictionJointDef();

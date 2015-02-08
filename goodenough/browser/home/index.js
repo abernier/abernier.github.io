@@ -424,7 +424,7 @@ var HomeView = Backbone.View.extend({
       //
 
       console.log('toto');
-      //new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+      new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
 
       // 
       real.start();
