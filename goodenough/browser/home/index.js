@@ -1,11 +1,14 @@
 var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
-
-//require('jquery-waypoints');
-//require('jquery-waypoints-sticky');
 require('jquery-hammer');
-//require('velocity-animate');
+
+var THREE = require('three'); window.THREE = THREE;
+require('./three.css3d.js');
+
+var Real = require('./real');
+
+require('jquery-mousewheel');
 
 var FTScroller = require('ftscroller');
 
@@ -19,281 +22,27 @@ var Loop = require('loop');
 var TWEEN = require('tween');
 window.TWEEN = TWEEN;
 
-var THREE = require('three');
-window.THREE = THREE;
-
-var epsilon = function ( value ) {
-  return Math.abs( value ) < 0.000001 ? 0 : value;
-};
-
-THREE.CSS3DObject = function ( element ) {
-	THREE.Object3D.call( this );
-
-	this.element = element;
-  var $el = $(this.element);
-
-  var offset = $el.offset();
-  this.position.set(offset.left, offset.top, 0);
-  this.dims = {
-    w: $el.width(),
-    h: $el.height()
-  };
-  /*var elements = this.matrixWorld.elements;
-  this.rotation.set(epsilon(Math.asin(elements[5])), epsilon(Math.acos(elements[0])));*/
-  
-	//this.element.style.position = 'absolute';
-  $el.parentsUntil('#scene').andSelf().each(function (i, el) {
-    if ($el.css('position') === 'static') {
-      //$el.css('position', 'relative');
-    }
-     
-    if ($el.css('transform-style') !== 'preserve-3d') {
-      $el.css('transform-style', 'preserve-3d');
-    }
-    if ($el.css('overflow') !== 'visible') {
-      $el.css('overflow', 'visible');
-    }
-   });
-  
-   /*this.element.style.WebkitTransformStyle = 'preserve-3d';
-	this.element.style.MozTransformStyle = 'preserve-3d';
-	this.element.style.oTransformStyle = 'preserve-3d';
-	this.element.style.transformStyle = 'preserve-3d';*/
-
-	this.addEventListener( 'removed', function ( event ) {
-
-		if ( this.element.parentNode !== null ) {
-
-			this.element.parentNode.removeChild( this.element );
-
-		}
-
-	} );
-
-};
-THREE.CSS3DObject.prototype = Object.create( THREE.Object3D.prototype );
-//
-THREE.CSS3DRenderer = function (domElement, cameraElement) {
-
-	console.log( 'THREE.CSS3DRenderer', THREE.REVISION );
-
-	var _width, _height;
-	var _widthHalf, _heightHalf;
-
-	var matrix = new THREE.Matrix4();
-	
-	var cache = {
-		camera: { fov: 0, style: '' },
-		objects: {}
-	};
-
-	var domElement = domElement || document.createElement( 'div' );
-	this.domElement = domElement;
-
-	domElement.style.overflow = 'hidden';
-
-	domElement.style.WebkitTransformStyle = 'preserve-3d';
-	domElement.style.MozTransformStyle = 'preserve-3d';
-	domElement.style.oTransformStyle = 'preserve-3d';
-	domElement.style.transformStyle = 'preserve-3d';
-
-	var cameraElement = cameraElement || document.createElement( 'div' ) && domElement.appendChild(cameraElement);
-  $(cameraElement).addClass('cam3d');
-
-	cameraElement.style.WebkitTransformStyle = 'preserve-3d';
-	cameraElement.style.MozTransformStyle = 'preserve-3d';
-	cameraElement.style.oTransformStyle = 'preserve-3d';
-	cameraElement.style.transformStyle = 'preserve-3d';
-
-	if ($(cameraElement).css('position') === 'static') {
-     $(cameraElement).css('position', 'relative');
-   }
-  
-   this.setClearColor = function () {
-
-	};
-
-	this.setSize = function ( width, height ) {
-
-		_width = width;
-		_height = height;
-
-		_widthHalf = _width / 2;
-		_heightHalf = _height / 2;
-
-		domElement.style.width = width + 'px';
-		domElement.style.height = height + 'px';
-
-		cameraElement.style.width = width + 'px';
-		cameraElement.style.height = height + 'px';
-
-	};
-
-	var getCameraCSSMatrix = function ( matrix ) {
-
-		var elements = matrix.elements;
-
-		return 'matrix3d(' +
-			epsilon( -elements[ 0 ] ) + ',' +
-			epsilon(-elements[ 1 ] ) + ',' +
-			epsilon( elements[ 2 ] ) + ',' +
-			epsilon( elements[ 3 ] ) + ',' +
-
-			epsilon( -elements[ 4 ] ) + ',' +
-			epsilon(-elements[ 5 ] ) + ',' +
-			epsilon( elements[ 6 ] ) + ',' +
-			epsilon( elements[ 7 ] ) + ',' +
-
-			epsilon( -elements[ 8 ] ) + ',' +
-			epsilon(-elements[ 9 ] ) + ',' +
-			epsilon( elements[ 10 ] ) + ',' +
-			epsilon( elements[ 11 ] ) + ',' +
-
-			epsilon( -elements[ 12 ] ) + ',' +
-			epsilon(-elements[ 13 ] ) + ',' +
-			epsilon( elements[ 14 ] ) + ',' +
-			epsilon( elements[ 15 ] ) +
-		')';
-
-	};
-
-	var getObjectCSSMatrix = function (object, matrix ) {
-
-		var elements = matrix.elements;
-
-      var t = '';
-    
-      if (object.element.parentNode === cameraElement) {
-        t = 'translate3d(-50%,-50%,0)';
-      }
-    
-      var el = object.element;
-      var $el = $(el);
-      if (!$el.data('original-transform')) {
-        $el.data('original-transform', $el.css('transform'));
-      }
-    
-      var originalTransform = $el.data('original-transform');
-      if (originalTransform === 'none') {
-        originalTransform = '';
-      }
-      t += ' ' + originalTransform;
-    
-      t += ' matrix3d(' +
-			epsilon( elements[ 0 ] ) + ',' +
-			epsilon( elements[ 1 ] ) + ',' +
-			epsilon( elements[ 2 ] ) + ',' +
-			epsilon( elements[ 3 ] ) + ',' +
-			epsilon( elements[ 4 ] ) + ',' +
-			epsilon( elements[ 5 ] ) + ',' +
-			epsilon( elements[ 6 ] ) + ',' +
-			epsilon( elements[ 7 ] ) + ',' +
-			epsilon( elements[ 8 ] ) + ',' +
-			epsilon( elements[ 9 ] ) + ',' +
-			epsilon( elements[ 10 ] ) + ',' +
-			epsilon( elements[ 11 ] ) + ',' +
-			epsilon( elements[ 12 ] - object.position.x ) + ',' +
-			epsilon( elements[ 13 ] - object.position.y ) + ',' +
-			epsilon( elements[ 14 ] ) + ',' +
-			epsilon( elements[ 15 ] ) +
-		')';
-    
-    return t;
-
-	};
-
-	var renderObject = function ( object, camera ) {
-
-		if ( object instanceof THREE.CSS3DObject ) {
-
-			var style;
-
-			var t = [];
-      $(object.element).parentsUntil('#camera').each(function (i,el) {
-        var _t = $(el).css('transform');
-        if (_t !== 'none') {
-          //t.push(_t);
-        }
-      });
-      style = t.reverse().join(' ') + ' ' + getObjectCSSMatrix(object,  object.matrixWorld );
-
-			var element = object.element;
-			var cachedStyle = cache.objects[ object.id ];
-
-			if ( cachedStyle === undefined || cachedStyle !== style ) {
-
-				element.style.WebkitTransform = style;
-				element.style.MozTransform = style;
-				element.style.oTransform = style;
-				element.style.transform = style;
-
-				cache.objects[ object.id ] = style;
-
-			}
-
-			if ( element.parentNode !== cameraElement ) {
-
-				//cameraElement.appendChild( element );
-
-			}
-
-		}
-
-		for ( var i = 0, l = object.children.length; i < l; i ++ ) {
-
-			renderObject( object.children[ i ], camera );
-
-		}
-
-	};
-
-	this.render = function ( scene, camera ) {
-
-		var fov = 0.5 / Math.tan( THREE.Math.degToRad( camera.fov * 0.5 ) ) * _height;
-
-		if ( cache.camera.fov !== fov ) {
-
-			domElement.style.WebkitPerspective = fov + "px";
-			domElement.style.MozPerspective = fov + "px";
-			domElement.style.oPerspective = fov + "px";
-			domElement.style.perspective = fov + "px";
-      console.log('changing camera perspective');
-
-			cache.camera.fov = fov;
-
-		}
-
-		scene.updateMatrixWorld();
-
-		if ( camera.parent === undefined ) camera.updateMatrixWorld();
-
-		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
-
-		var style = "translate3d(0,0," + fov + "px)" + getCameraCSSMatrix( camera.matrixWorldInverse ) +
-			" translate3d(" + _widthHalf + "px," + _heightHalf + "px, 0) ";
-
-		if ( cache.camera.style !== style ) {
-
-			cameraElement.style.WebkitTransform = style;
-			cameraElement.style.MozTransform = style;
-			cameraElement.style.oTransform = style;
-			cameraElement.style.transform = style;
-      console.log('changing camera transform');
-			
-			cache.camera.style = style;
-
-		}
-
-		renderObject( scene, camera );
-
-	};
-
-};
-
 var $window = $(window);
 var $document = $(document);
 var $html = $('html');
 var $body = $('body');
+
+var WW;
+function setWW() {
+  WW = $window.width();
+}
+var WH = $window.height();
+function setWH() {
+  WH = $window.height();
+}
+function setWWH() {
+  setWW();
+  setWH();
+
+  $document.trigger('setwwh');
+}
+setWWH();
+$window.resize(setWWH);
 
 var CameraView = Backbone.View.extend({
   initialize: function (options) {
@@ -306,6 +55,37 @@ var CameraView = Backbone.View.extend({
     this.moveAndLookAt = this.moveAndLookAt.bind(this);
     this.moveAndLookAtElement = this.moveAndLookAtElement.bind(this);
     this.recenter = this.recenter.bind(this);
+  },
+  panTo: function (dstpos, options) {
+    var camera = this.camera;
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300
+    });
+
+    //
+    // Tweening
+    //
+
+    // position
+    new TWEEN.Tween(camera.position).to({
+      x: dstpos.x,
+      y: dstpos.y,
+      z: dstpos.z
+    }, options.duration).start();
+  },
+  panBy: function (vec, options) {
+    var camera = this.camera;
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300
+    });
+
+    var dstpos = new THREE.Vector3().copy(camera.position).add(vec);
+
+    this.panTo(dstpos, options);
   },
   moveAndLookAt: function (dstpos, dstlookat, options) {
     var camera = this.camera;
@@ -332,12 +112,7 @@ var CameraView = Backbone.View.extend({
     // Tweening
     //
 
-    // position
-    new TWEEN.Tween(camera.position).to({
-      x: dstpos.x,
-      y: dstpos.y,
-      z: dstpos.z
-    }, options.duration).start();;
+    this.panTo(dstpos, options);
 
     // rotation (using slerp)
     (function () {
@@ -431,6 +206,119 @@ var CameraView = Backbone.View.extend({
   }
 });
 
+var SceneView = Backbone.View.extend({
+  initialize: function (options) {
+    this.options = options;
+
+    var $scene = this.$el;
+    var $camera = this.$el.children(':first');
+
+    this.update = this.update.bind(this);
+    this.draw = this.draw.bind(this);
+    this.renderlight = this.renderlight.bind(this);
+
+    this.cameraView = new CameraView({
+      el: $camera,
+      width: WW,
+      height: WH
+    });
+    $.fn.domvertices.defaults.lastParent = $camera[0];
+    window.cameraView = this.cameraView;
+    this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
+
+    this.renderer = new THREE.CSS3DRenderer($scene[0], this.cameraView.el);
+    window.renderer = this.renderer;
+    //renderer.domElement.style.position = 'absolute';
+
+    this.scene = new THREE.Scene();
+    window.scene = this.scene;
+
+    $('.obj').each(function (i, el) {
+      var $el = $(el);
+
+      var obj = new THREE.CSS3DObject(el);
+      $el.data('css3dobject', obj);
+
+      //var offset = $el.offset();
+      //obj.position.set(offset.left,offset.top,0);
+
+      console.log('obj', obj.getWorldPosition());
+      this.scene.add(obj);
+    }.bind(this));
+
+    function onsetwwh(first) {
+      this.cameraView.camera.aspect = WW/WH;
+      this.cameraView.camera.updateProjectionMatrix();
+      if (first !== true) {this.cameraView.recenter();} // do NOT recenter the first-time
+
+      this.renderer.setSize(WW, WH);
+    }
+    onsetwwh = onsetwwh.bind(this);
+    onsetwwh(true);
+    $document.on('setwwh', onsetwwh);
+
+    
+    this.draw();
+
+    //
+    // shading
+    //
+
+    // Define the light source
+    this.$light = $(".light");
+    this.light = this.$light[0];
+
+    this.lightposModel = new (Backbone.Model.extend())({
+      x: 0,
+      y: 0,
+      z: -1000
+    });
+    window.lightposModel = this.lightposModel;
+    this.lightposModel.on('change', this.renderlight);
+  },
+  update: function () {
+    this.cameraView.camera.updateProjectionMatrix();
+  },
+  draw: function () {
+    this.cameraView.camera.updateProjectionMatrix();
+    
+    this.renderer.render(this.scene, this.cameraView.camera);
+  },
+  renderlight: function () {
+    console.log('renderlight');
+
+    // Determine the vendor prefixed transform property
+    var transformProp = ["transform", "webkitTransform", "MozTransform", "msTransform"].filter(function (prop) {
+      return prop in document.documentElement.style;
+    })[0];
+
+    this.light.style[transformProp] = "translateY(" + this.lightposModel.get('y') + "px) translateX(" + this.lightposModel.get('x') + "px) translateZ(" + this.lightposModel.get('z') + "px)";
+    // Get the light position
+    var lightVertices = this.$light.domvertices().data('v');
+    var lightPosition = lightVertices.a;
+
+    // Light each face
+    [].slice.call(document.querySelectorAll(".stabilo .f, .stabilo .h, .cube .face")).forEach(function (face, i) {
+      var $el = $(face);
+      var vertices = $el.domvertices().data('v');
+
+      var ac = new THREE.Vector3().subVectors(vertices.c, vertices.a);
+      var ab = new THREE.Vector3().subVectors(vertices.b, vertices.a)
+
+      var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2);
+      var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
+
+      var direction = new THREE.Vector3().subVectors(lightPosition, faceCenter).normalize();
+      var amount = .5* (1 - Math.max(0, faceNormal.dot(direction)));
+
+      if (!$el.data('orig-bgimg')) {
+        $el.data('orig-bgimg', $el.css('background-image'));
+      }
+      face.style.backgroundImage = $el.data('orig-bgimg') + ", linear-gradient(rgba(0,0,0," + amount.toFixed(3) + "), rgba(0,0,0," + amount.toFixed(3) + "))";
+    });
+  }
+});
+
 var HomeView = Backbone.View.extend({
   initialize: function (options) {
     this.options = options;
@@ -439,164 +327,129 @@ var HomeView = Backbone.View.extend({
 
     var $scene = this.$('#scene');
     var $camera = this.$('#camera');
-    
-    var WW;
-    function setWW() {
-      WW = $window.width();
-    }
-    var WH = $window.height();
-    function setWH() {
-      WH = $window.height();
-    }
-    function setWWH() {
-      setWW();
-      setWH();
-
-      $document.trigger('setwwh');
-    }
-    setWWH();
-    $window.resize(setWWH);
 
     $.fn.domvertices.defaults.traceAppendEl = $scene;
+
+    //
+    // Box2D
+    //
+
+    (function () {
+      var real = new Real({
+        gravity: 0,
+        debug: {
+          enabled: $html.is('.debug'),
+          appendEl: $camera
+        }
+      });
+      window.real = real;
+       
+      real.addElement(new Real.Element($('.pages'), real));
+       
+      //
+      // MouseJoint
+      //
+      
+      var mouse = new b2Vec2();
+      window.mouse = mouse;
+      var mouseJointDef = new b2MouseJointDef();
+      mouseJointDef.target = mouse;
+      mouseJointDef.bodyA = real.world.GetGroundBody();
+      mouseJointDef.collideConnected = true;
+       
+      var mouseJoint;
+
+      function setMouse(e) {
+        e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
+        
+        var v = $camera.domvertices().data('v');
+        mouse.Set(
+          (e.pageX - v.a.x)/real.SCALE,
+          (e.pageY - v.a.y)/real.SCALE
+        );
+      }
+      function mousedown(e) {
+        setMouse(e);
+       
+        $(document.body).undelegate('.element', 'mousedown touchstart', mousedown);
+        $(window).one('mouseup touchend', mouseup);
+       
+        var element = real.findElement(this);
+        var body = element && element.body;
+       
+        mouseJointDef.bodyB = body;
+        mouseJointDef.maxForce = 100 * body.GetMass();
+       
+        mouseJoint = real.world.CreateJoint(mouseJointDef);
+        mouseJoint.SetTarget(mouse);
+       
+        $(document).on('mousemove touchmove', mousemove);
+      }
+      function mouseup(e) {
+        if (mouseJoint) {
+          real.world.DestroyJoint(mouseJoint);
+        }
+        
+        $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+        $(window).off('mousemove touchmove', mousemove);
+      }
+      function mousemove(e) {
+        e.preventDefault(); // http://stackoverflow.com/questions/11204460/the-touchmove-event-on-android-system-transformer-prime
+       
+        setMouse(e);
+        mouseJointDef.bodyB.SetAwake(true);
+      }
+      $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+      
+      //
+      // Friction joint
+      //
+
+      console.log('toto');
+      //new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+
+      // 
+      real.start();
+     
+      /*if (window.DeviceMotionEvent) {
+        real.world.m_allowSleep = false;
+        function ondevicemotion(e) {
+          real.world.SetGravity(new b2Vec2(-e.accelerationIncludingGravity.x, e.accelerationIncludingGravity.y));
+        }
+        window.addEventListener('devicemotion', ondevicemotion, false);
+      }*/
+     
+      // prevent scroll
+      document.ontouchstart = function(e){ 
+          e.preventDefault(); // http://stackoverflow.com/questions/2890361/disable-scrolling-in-an-iphone-web-application#answer-2890530
+      }
+
+
+    }).call(this);
 
     //
     // Camera view
     //
 
     true && (function () {
-      this.cameraView = new CameraView({
-        el: $camera,
-        width: WW,
-        height: WH
-      });
-      $.fn.domvertices.defaults.lastParent = $camera[0];
-      window.camera = this.cameraView.camera;
-      this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
-      window.moveAndLookAtElement = this.cameraView.moveAndLookAtElement;
-
-      var renderer = new THREE.CSS3DRenderer($scene[0], this.cameraView.el);
-      window.renderer = renderer;
-      //renderer.domElement.style.position = 'absolute';
-
-      var scene = new THREE.Scene();
-      window.scene = scene;
-
-      $('.obj').each(function (i, el) {
-        var $el = $(el);
-
-        var obj = new THREE.CSS3DObject(el);
-        $el.data('css3dobject', obj);
-
-        //var offset = $el.offset();
-        //obj.position.set(offset.left,offset.top,0);
-
-        console.log('obj', obj.getWorldPosition());
-        scene.add(obj);
-      });
-
-      function onsetwwh(first) {
-        this.cameraView.camera.aspect = WW/WH;
-        this.cameraView.camera.updateProjectionMatrix();
-        if (first !== true) {this.cameraView.recenter();}
-
-        renderer.setSize(WW, WH);
-      }
-      onsetwwh = onsetwwh.bind(this);
-      onsetwwh(true);
-      $document.on('setwwh', onsetwwh);
-
-      function update() {
-        this.cameraView.camera.updateProjectionMatrix();
-      }
-      update = update.bind(this);
-      function draw() {
-        this.cameraView.camera.updateProjectionMatrix();
-        
-        renderer.render(scene, this.cameraView.camera);
-      }
-      draw = draw.bind(this);
-      window.draw = draw;
-      draw();
-
-      //
-      // shading
-      //
-
-      var renderlight;
-      var lightpos;
-      (function () {
-        // Determine the vendor prefixed transform property
-        var transformProp = ["transform", "webkitTransform", "MozTransform", "msTransform"].filter(function (prop) {
-            return prop in document.documentElement.style;
-        })[0];
-
-
-        // Default positions
-        lightpos = {
-          x: 0,
-          y: 0,
-          z: -1000
-        };
-        // Define the light source
-        var $light = $(".light");
-        var light = $light[0];
-        
-
-        /* Render
-        ---------------------------------------------------------------- */
-
-        renderlight = function () {
-          light.style[transformProp] = "translateY(" + lightpos.y + "px) translateX(" + lightpos.x + "px) translateZ(" + lightpos.z + "px)";
-          // Get the light position
-          var lightVertices = $light.domvertices().data('v');
-          var lightPosition = lightVertices.a;
-
-          // Light each face
-          [].slice.call(document.querySelectorAll(".stabilo .f, .stabilo .h, .cube .face")).forEach(function (face, i) {
-            var $el = $(face);
-            var vertices = $el.domvertices().data('v');
-
-            var ac = new THREE.Vector3().subVectors(vertices.c, vertices.a);
-            var ab = new THREE.Vector3().subVectors(vertices.b, vertices.a)
-
-            var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2);
-            var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
-
-            var direction = new THREE.Vector3().subVectors(lightPosition, faceCenter).normalize();
-            var amount = .5* (1 - Math.max(0, faceNormal.dot(direction)));
-
-            if (!$el.data('orig-bgimg')) {
-              $el.data('orig-bgimg', $el.css('background-image'));
-            }
-            face.style.backgroundImage = $el.data('orig-bgimg') + ", linear-gradient(rgba(0,0,0," + amount.toFixed(3) + "), rgba(0,0,0," + amount.toFixed(3) + "))";
-          });
-        }
-      }).call(this);
+      
+      this.sceneView = new SceneView({el: $scene});
 
       //
       // Render loop
       //
 
-      var clock = new THREE.Clock();
-      var renderLoop = new Loop(function (t, t0) {
-        //update(clock.getDelta());
-        draw();
-        TWEEN.update(t);
+      this.renderloop = this.renderloop.bind(this);
 
-        /*var l = $.fn.domvertices.v.length;
-        while (l--) {
-          $.fn.domvertices.v[l].update().trace();
-        }*/
-
-        //renderlight();
-      });
+      //var clock = new THREE.Clock();
+      var renderLoop = new Loop(this.renderloop);
       renderLoop.start();
-      renderlight();
+      this.sceneView.renderlight();
 
       // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
 
       var activeMacbook;
-      this.$('.macbook').on('click', function (e) {
+      this.$('.macbook').hammer().on('tap', function (e) {
         console.log('click');
       	var $mba = $(e.currentTarget);
 
@@ -607,13 +460,13 @@ var HomeView = Backbone.View.extend({
           
           //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
         
-          this.cameraView.moveAndLookAtElement($mba.find('.display')[0]);
+          this.sceneView.cameraView.moveAndLookAtElement($mba.find('.display')[0]);
 
         } else {
           
           //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
 
-          this.cameraView.moveAndLookAtElement($scene[0]);
+          this.sceneView.cameraView.moveAndLookAtElement($scene[0]);
 
           activeMacbook = undefined;
         }
@@ -629,7 +482,7 @@ var HomeView = Backbone.View.extend({
       //
 
       (function () {
-        var camera = this.cameraView.camera;
+        var camera = this.sceneView.cameraView.camera;
         
         if ($html.is('.debug')) {
           var dat = require('dat-gui');
@@ -639,17 +492,32 @@ var HomeView = Backbone.View.extend({
           var f1 = gui.addFolder('camera.position');
           var px = f1.add(camera.position, 'x', -1000, 1000);
           var py = f1.add(camera.position, 'y', -1000, 3000);
-          var pz = f1.add(camera.position, 'z', -5000, 5000);
+          var pz = f1.add(camera.position, 'z', -5000, 15000);
 
           var f2 = gui.addFolder('camera.rotation');
           var rx = f2.add(camera.rotation, 'x', 0, 2*Math.PI);
           var ry = f2.add(camera.rotation, 'y', 0, 2*Math.PI);
           var rz = f2.add(camera.rotation, 'z', 0, 2*Math.PI);
 
-          var f4 = gui.addFolder('lightpos');
-          f4.add(lightpos, 'x', -5000, 5000);
-          f4.add(lightpos, 'y', -5000, 5000);
-          f4.add(lightpos, 'z', -2000, 2000);
+          var f4 = gui.addFolder('lightposModel');
+          var lightpos = {
+            x: lightposModel.get('x'),
+            y: lightposModel.get('y'),
+            z: lightposModel.get('z')
+          };
+          var lx = f4.add(lightpos, 'x', -5000, 5000);
+          var ly = f4.add(lightpos, 'y', -5000, 5000);
+          var lz = f4.add(lightpos, 'z', -2000, 2000);
+          lx.onChange(function(val) {
+            lightposModel.set({x: val});
+          });
+          ly.onChange(function(val) {
+            lightposModel.set({y: val})
+          });
+          lz.onChange(function(val) {
+            lightposModel.set({z: val})
+          });
+
         }
       }).call(this);
 
@@ -659,7 +527,7 @@ var HomeView = Backbone.View.extend({
     // Scroller
     //
 
-    var $scroller = this.$('.scroller');
+    /*var $scroller = this.$('.scroller');
     $('html, body').css('overflow', 'hidden');
     $scroller.each(function (i, el) {
       var ftscroller = new FTScroller(el, {
@@ -672,8 +540,20 @@ var HomeView = Backbone.View.extend({
       ftscroller.addEventListener('scroll', function () {
         console.log('scroll', ftscroller.scrollTop);
       });
-    });
+    });*/
 
+  },
+  renderloop: function (t, t0) {
+    //update(clock.getDelta());
+    this.sceneView.draw();
+    TWEEN.update(t);
+
+    /*var l = $.fn.domvertices.v.length;
+    while (l--) {
+      $.fn.domvertices.v[l].update().trace();
+    }*/
+
+    //renderlight();
   }
 });
 

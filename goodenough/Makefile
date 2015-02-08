@@ -34,6 +34,8 @@ public/vendor.js: ./node_modules/.bin/browserify $(shell find node_modules -type
 	  -r ./vendor/photon.js:photon \
 	  -r domvertices \
 	  -r ./node_modules/domvertices/jquery.domvertices.js:jquery-domvertices \
+	  -r ./vendor/box2dweb.js:box2dweb \
+	  -r ./vendor/jquery.mousewheel.js:jquery-mousewheel \
 	  > $@
 ifeq ($(ENV), production)
 	./node_modules/.bin/uglifyjs $@ -o $@ -m
@@ -62,6 +64,8 @@ public/index.js: ./node_modules/.bin/browserify $(shell find browser -type f -na
 	  -r ./browser/index.js:Goodenough \
 	  -x domvertices \
 	  -x jquery-domvertices \
+	  -x box2dweb \
+	  -x jquery-mousewheel \
 	  > $@
 ifeq ($(ENV), production)
 	./node_modules/.bin/uglifyjs $@ -o $@ -m

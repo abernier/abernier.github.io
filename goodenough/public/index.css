@@ -558,8 +558,6 @@ html,
 body,
 #scene,
 #camera,
-.pages,
-.page,
 .scroller {
   height: 100%;
 }
@@ -601,6 +599,10 @@ html.debug .ftscroller_container:after {
   -ms-transform: translateZ(-1px);
   transform: translateZ(-1px);
 }
+#camera {
+  -webkit-box-shadow: 0 0 0px 1px #000 inset;
+  box-shadow: 0 0 0px 1px #000 inset;
+}
 #camera,
 #camera * {
   -webkit-transform-style: preserve-3d;
@@ -625,8 +627,13 @@ body {
   text-align: center;
   background-color: #9bc1c4;
 }
+canvas.debugDraw {
+  background: rgba(0,0,0,0.1);
+}
 .pages {
   white-space: nowrap;
+  display: inline-block;
+  border: 1px solid;
 }
 .pages >* {
   white-space: normal;
@@ -634,7 +641,7 @@ body {
 .page {
   display: inline-block;
   vertical-align: top;
-  width: 100%;
+  width: 100vw;
 }
 .body {
   color: #fff;
@@ -733,11 +740,11 @@ section .stabilo {
   display: inline-block;
   width: 1em;
   height: 1em;
-  -webkit-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
-  -moz-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
-  -o-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
-  -ms-transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
-  transform: scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
+  -webkit-transform: translateZ(5px) scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
+  -moz-transform: translateZ(5px) scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
+  -o-transform: translateZ(5px) scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
+  -ms-transform: translateZ(5px) scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
+  transform: translateZ(5px) scale3d(0.15, 0.15, 0.15) rotateY(-90deg);
 }
 section .stabilo .hexa.bottom,
 section .stabilo .hexa.body,
@@ -1031,11 +1038,11 @@ section .stabilo .hexa.top >.in .strip3 {
 }
 @media (min-width: 1024px) {
   section .stabilo {
-    -webkit-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
-    -moz-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
-    -o-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
-    -ms-transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
-    transform: scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    -webkit-transform: translateZ(5px) scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    -moz-transform: translateZ(5px) scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    -o-transform: translateZ(5px) scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    -ms-transform: translateZ(5px) scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
+    transform: translateZ(5px) scale3d(0.4, 0.4, 0.4) rotateY(-90deg);
   }
 }
 section .stabilo2 {

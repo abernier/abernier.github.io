@@ -181,7 +181,7 @@ input
 
 html.debug #camera * {box-shadow:none!important;}
 
-html,body,#scene,#camera,.pages,.page,.scroller {height:100%;}
+html,body,#scene,#camera,.scroller {height:100%;}
 .ftscroller_container,
 .ftscroller_x, .ftscroller_y {overflow:visible;}
 //.ftscroller_y {transform:none!important;}
@@ -202,6 +202,8 @@ html.debug .ftscroller_container {
 #camera
   //background:url("https://dl.dropbox.com/s/sw0qqg0j0qq8xng/grid.png?dl=1");
   //transition:transform 3s;
+  box-shadow:0 0 0px 1px black inset;
+    
 #camera, #camera * {transform-style:preserve-3d;}
 
 html.debug .light {width:10px;height:10px;border-radius:10px; background:yellow; transform:translateZ(-1000px);}
@@ -211,9 +213,11 @@ body {
   background-color:#9BC1C4;
 }
 
-.pages {white-space:nowrap;}
+canvas.debugDraw {background:rgba(0,0,0,.1);}
+
+.pages {white-space:nowrap; display:inline-block; border:1px solid;}
 .pages >* {white-space:normal;}
-.page {display:inline-block;vertical-align:top; width:100%;}
+.page {display:inline-block;vertical-align:top; width:100vw;}
 
 .body {
   //height:100vh;
@@ -286,9 +290,9 @@ section
   .stabilo
     //position:absolute;top:58vh;left:50%;margin-left:-20em; transform:rotateX(-90deg) scale3d(.5,.5,.5) rotateY(0deg);
     stabilo(topcolor:#9BCB60);
-    transform:scale3d(.15,.15,.15) rotateY(-90deg);
+    transform:translateZ(5px) scale3d(.15,.15,.15) rotateY(-90deg);
     @media (min-width:1024px)
-      transform:scale3d(.4,.4,.4) rotateY(-90deg);
+      transform:translateZ(5px) scale3d(.4,.4,.4) rotateY(-90deg);
         
   .stabilo2
     //position:absolute;top:58vh;left:50%;margin-left:-20em; transform:rotateX(-90deg) scale3d(.5,.5,.5) rotateY(0deg);

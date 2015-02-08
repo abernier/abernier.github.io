@@ -2,11 +2,14 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
-
-//require('jquery-waypoints');
-//require('jquery-waypoints-sticky');
 require('jquery-hammer');
-//require('velocity-animate');
+
+var THREE = require('three'); window.THREE = THREE;
+require('./three.css3d.js');
+
+var Real = require('./real');
+
+require('jquery-mousewheel');
 
 var FTScroller = require('ftscroller');
 
@@ -20,8 +23,983 @@ var Loop = require('loop');
 var TWEEN = require('tween');
 window.TWEEN = TWEEN;
 
+var $window = $(window);
+var $document = $(document);
+var $html = $('html');
+var $body = $('body');
+
+var WW;
+function setWW() {
+  WW = $window.width();
+}
+var WH = $window.height();
+function setWH() {
+  WH = $window.height();
+}
+function setWWH() {
+  setWW();
+  setWH();
+
+  $document.trigger('setwwh');
+}
+setWWH();
+$window.resize(setWWH);
+
+var CameraView = Backbone.View.extend({
+  initialize: function (options) {
+    this.options = options;
+
+    this.camera = new THREE.PerspectiveCamera(30, options.width/options.height, -1000, 1000);
+
+    this.$target = undefined;
+
+    this.moveAndLookAt = this.moveAndLookAt.bind(this);
+    this.moveAndLookAtElement = this.moveAndLookAtElement.bind(this);
+    this.recenter = this.recenter.bind(this);
+  },
+  panTo: function (dstpos, options) {
+    var camera = this.camera;
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300
+    });
+
+    //
+    // Tweening
+    //
+
+    // position
+    new TWEEN.Tween(camera.position).to({
+      x: dstpos.x,
+      y: dstpos.y,
+      z: dstpos.z
+    }, options.duration).start();
+  },
+  panBy: function (vec, options) {
+    var camera = this.camera;
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300
+    });
+
+    var dstpos = new THREE.Vector3().copy(camera.position).add(vec);
+
+    this.panTo(dstpos, options);
+  },
+  moveAndLookAt: function (dstpos, dstlookat, options) {
+    var camera = this.camera;
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300,
+      up: camera.up
+    });
+
+    var origpos = new THREE.Vector3().copy(camera.position); // original position
+    var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
+
+    camera.position.set(dstpos.x, dstpos.y, dstpos.z);
+    camera.up.set(options.up.x, options.up.y, options.up.z);
+    camera.lookAt(dstlookat);
+    var dstrot = new THREE.Euler().copy(camera.rotation)
+
+    // reset original position and rotation
+    camera.position.set(origpos.x, origpos.y, origpos.z);
+    camera.rotation.set(origrot.x, origrot.y, origrot.z);
+
+    //
+    // Tweening
+    //
+
+    this.panTo(dstpos, options);
+
+    // rotation (using slerp)
+    (function () {
+      var qa = new THREE.Quaternion().copy(camera.quaternion); // src quaternion
+      var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
+      var qm = new THREE.Quaternion();
+      //camera.quaternion = qm;
+
+      var o = {t: 0};
+      new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
+        THREE.Quaternion.slerp(qa, qb, qm, o.t);
+        camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
+      }).start();
+    }).call(this);
+  },
+  moveAndLookAtElement: function (el, options) {
+    var camera = this.camera;
+    var $el = $(el);
+    el = $el[0];
+
+    options || (options = {});
+    _.defaults(options, {
+      duration: 300,
+      distance: undefined,
+      distanceTolerance: 0/100
+    });
+
+    // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+    function distw(width, fov, aspect) {
+      //return 2*height/Math.tan(2*fov/(180 /Math.PI))
+      //return 2*height / Math.tan(fov*(180/Math.PI)/2);
+      return ((width/aspect)/Math.tan((fov/2)/(180/Math.PI)))/2;
+    }
+    function disth(height, fov, aspect) {
+      return (height/Math.tan((fov/(180/Math.PI))/2))/2;
+    }
+
+    var v = $el.domvertices().data('v');
+
+    var ac = new THREE.Vector3().subVectors(v.c, v.a);
+    var ab = new THREE.Vector3().subVectors(v.b, v.a);
+    var ad = new THREE.Vector3().subVectors(v.d, v.a);
+
+    var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2)
+    //console.log('faceCenter', faceCenter);
+    var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
+    //console.log('faceNormal', faceNormal);
+
+    //
+    // Auto-distance (to fit width/height)
+    //
+
+    if (typeof options.distance === 'undefined' || options.distance === null) {
+      var w = new THREE.Vector3().copy(ab).cross(faceNormal).length();
+      var h = new THREE.Vector3().copy(ad).cross(faceNormal).length();
+      //console.log(w, h);
+
+      var tolerance = 0/100;
+      if (camera.aspect > w/h) { // camera larger than element
+        if (w>h) {
+          distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);
+        } else {
+          distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);  
+        }
+      } else {
+        if (w>h) {
+          distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);
+        } else {
+          distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);  
+        }
+      }
+      
+    }
+    
+    var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
+    var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
+
+    this.moveAndLookAt(dstpos, dstlookat, {
+      duration: options.duration,
+      up: new THREE.Vector3().copy(ad).negate()
+    });
+
+    this.$target = $el;
+  },
+  recenter: function () {
+    if (this.$target && this.$target.length) {
+      this.moveAndLookAtElement(this.$target, {duration: 0});
+    }
+
+    return this;
+  }
+});
+
+var SceneView = Backbone.View.extend({
+  initialize: function (options) {
+    this.options = options;
+
+    var $scene = this.$el;
+    var $camera = this.$el.children(':first');
+
+    this.update = this.update.bind(this);
+    this.draw = this.draw.bind(this);
+    this.renderlight = this.renderlight.bind(this);
+
+    this.cameraView = new CameraView({
+      el: $camera,
+      width: WW,
+      height: WH
+    });
+    $.fn.domvertices.defaults.lastParent = $camera[0];
+    window.cameraView = this.cameraView;
+    this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
+
+    this.renderer = new THREE.CSS3DRenderer($scene[0], this.cameraView.el);
+    window.renderer = this.renderer;
+    //renderer.domElement.style.position = 'absolute';
+
+    this.scene = new THREE.Scene();
+    window.scene = this.scene;
+
+    $('.obj').each(function (i, el) {
+      var $el = $(el);
+
+      var obj = new THREE.CSS3DObject(el);
+      $el.data('css3dobject', obj);
+
+      //var offset = $el.offset();
+      //obj.position.set(offset.left,offset.top,0);
+
+      console.log('obj', obj.getWorldPosition());
+      this.scene.add(obj);
+    }.bind(this));
+
+    function onsetwwh(first) {
+      this.cameraView.camera.aspect = WW/WH;
+      this.cameraView.camera.updateProjectionMatrix();
+      if (first !== true) {this.cameraView.recenter();} // do NOT recenter the first-time
+
+      this.renderer.setSize(WW, WH);
+    }
+    onsetwwh = onsetwwh.bind(this);
+    onsetwwh(true);
+    $document.on('setwwh', onsetwwh);
+
+    
+    this.draw();
+
+    //
+    // shading
+    //
+
+    // Define the light source
+    this.$light = $(".light");
+    this.light = this.$light[0];
+
+    this.lightposModel = new (Backbone.Model.extend())({
+      x: 0,
+      y: 0,
+      z: -1000
+    });
+    window.lightposModel = this.lightposModel;
+    this.lightposModel.on('change', this.renderlight);
+  },
+  update: function () {
+    this.cameraView.camera.updateProjectionMatrix();
+  },
+  draw: function () {
+    this.cameraView.camera.updateProjectionMatrix();
+    
+    this.renderer.render(this.scene, this.cameraView.camera);
+  },
+  renderlight: function () {
+    console.log('renderlight');
+
+    // Determine the vendor prefixed transform property
+    var transformProp = ["transform", "webkitTransform", "MozTransform", "msTransform"].filter(function (prop) {
+      return prop in document.documentElement.style;
+    })[0];
+
+    this.light.style[transformProp] = "translateY(" + this.lightposModel.get('y') + "px) translateX(" + this.lightposModel.get('x') + "px) translateZ(" + this.lightposModel.get('z') + "px)";
+    // Get the light position
+    var lightVertices = this.$light.domvertices().data('v');
+    var lightPosition = lightVertices.a;
+
+    // Light each face
+    [].slice.call(document.querySelectorAll(".stabilo .f, .stabilo .h, .cube .face")).forEach(function (face, i) {
+      var $el = $(face);
+      var vertices = $el.domvertices().data('v');
+
+      var ac = new THREE.Vector3().subVectors(vertices.c, vertices.a);
+      var ab = new THREE.Vector3().subVectors(vertices.b, vertices.a)
+
+      var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2);
+      var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
+
+      var direction = new THREE.Vector3().subVectors(lightPosition, faceCenter).normalize();
+      var amount = .5* (1 - Math.max(0, faceNormal.dot(direction)));
+
+      if (!$el.data('orig-bgimg')) {
+        $el.data('orig-bgimg', $el.css('background-image'));
+      }
+      face.style.backgroundImage = $el.data('orig-bgimg') + ", linear-gradient(rgba(0,0,0," + amount.toFixed(3) + "), rgba(0,0,0," + amount.toFixed(3) + "))";
+    });
+  }
+});
+
+var HomeView = Backbone.View.extend({
+  initialize: function (options) {
+    this.options = options;
+
+    //console.log('homeView');
+
+    var $scene = this.$('#scene');
+    var $camera = this.$('#camera');
+
+    $.fn.domvertices.defaults.traceAppendEl = $scene;
+
+    //
+    // Box2D
+    //
+
+    (function () {
+      var real = new Real({
+        gravity: 0,
+        debug: {
+          enabled: $html.is('.debug'),
+          appendEl: $camera
+        }
+      });
+      window.real = real;
+       
+      real.addElement(new Real.Element($('.pages'), real));
+       
+      //
+      // MouseJoint
+      //
+      
+      var mouse = new b2Vec2();
+      window.mouse = mouse;
+      var mouseJointDef = new b2MouseJointDef();
+      mouseJointDef.target = mouse;
+      mouseJointDef.bodyA = real.world.GetGroundBody();
+      mouseJointDef.collideConnected = true;
+       
+      var mouseJoint;
+
+      function setMouse(e) {
+        e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
+        
+        var v = $camera.domvertices().data('v');
+        mouse.Set(
+          (e.pageX - v.a.x)/real.SCALE,
+          (e.pageY - v.a.y)/real.SCALE
+        );
+      }
+      function mousedown(e) {
+        setMouse(e);
+       
+        $(document.body).undelegate('.element', 'mousedown touchstart', mousedown);
+        $(window).one('mouseup touchend', mouseup);
+       
+        var element = real.findElement(this);
+        var body = element && element.body;
+       
+        mouseJointDef.bodyB = body;
+        mouseJointDef.maxForce = 100 * body.GetMass();
+       
+        mouseJoint = real.world.CreateJoint(mouseJointDef);
+        mouseJoint.SetTarget(mouse);
+       
+        $(document).on('mousemove touchmove', mousemove);
+      }
+      function mouseup(e) {
+        if (mouseJoint) {
+          real.world.DestroyJoint(mouseJoint);
+        }
+        
+        $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+        $(window).off('mousemove touchmove', mousemove);
+      }
+      function mousemove(e) {
+        e.preventDefault(); // http://stackoverflow.com/questions/11204460/the-touchmove-event-on-android-system-transformer-prime
+       
+        setMouse(e);
+        mouseJointDef.bodyB.SetAwake(true);
+      }
+      $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+      
+      //
+      // Friction joint
+      //
+
+      console.log('toto');
+      //new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+
+      // 
+      real.start();
+     
+      /*if (window.DeviceMotionEvent) {
+        real.world.m_allowSleep = false;
+        function ondevicemotion(e) {
+          real.world.SetGravity(new b2Vec2(-e.accelerationIncludingGravity.x, e.accelerationIncludingGravity.y));
+        }
+        window.addEventListener('devicemotion', ondevicemotion, false);
+      }*/
+     
+      // prevent scroll
+      document.ontouchstart = function(e){ 
+          e.preventDefault(); // http://stackoverflow.com/questions/2890361/disable-scrolling-in-an-iphone-web-application#answer-2890530
+      }
+
+
+    }).call(this);
+
+    //
+    // Camera view
+    //
+
+    true && (function () {
+      
+      this.sceneView = new SceneView({el: $scene});
+
+      //
+      // Render loop
+      //
+
+      this.renderloop = this.renderloop.bind(this);
+
+      //var clock = new THREE.Clock();
+      var renderLoop = new Loop(this.renderloop);
+      renderLoop.start();
+      this.sceneView.renderlight();
+
+      // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+
+      var activeMacbook;
+      this.$('.macbook').hammer().on('tap', function (e) {
+        console.log('click');
+      	var $mba = $(e.currentTarget);
+
+        var css3dobject = $mba.data('css3dobject');
+
+        if (activeMacbook !== $mba[0]) {
+          activeMacbook = $mba[0];
+          
+          //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
+        
+          this.sceneView.cameraView.moveAndLookAtElement($mba.find('.display')[0]);
+
+        } else {
+          
+          //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
+
+          this.sceneView.cameraView.moveAndLookAtElement($scene[0]);
+
+          activeMacbook = undefined;
+        }
+        
+      }.bind(this));
+
+      this.$('.sheets').on('click', function (e) {
+        this.cameraView.moveAndLookAtElement($('#page-2')[0]);
+      }.bind(this));
+
+      //
+      // dat.gui controls (debug)
+      //
+
+      (function () {
+        var camera = this.sceneView.cameraView.camera;
+        
+        if ($html.is('.debug')) {
+          var dat = require('dat-gui');
+          var gui = new dat.GUI();
+          gui.close();
+
+          var f1 = gui.addFolder('camera.position');
+          var px = f1.add(camera.position, 'x', -1000, 1000);
+          var py = f1.add(camera.position, 'y', -1000, 3000);
+          var pz = f1.add(camera.position, 'z', -5000, 15000);
+
+          var f2 = gui.addFolder('camera.rotation');
+          var rx = f2.add(camera.rotation, 'x', 0, 2*Math.PI);
+          var ry = f2.add(camera.rotation, 'y', 0, 2*Math.PI);
+          var rz = f2.add(camera.rotation, 'z', 0, 2*Math.PI);
+
+          var f4 = gui.addFolder('lightposModel');
+          var lightpos = {
+            x: lightposModel.get('x'),
+            y: lightposModel.get('y'),
+            z: lightposModel.get('z')
+          };
+          var lx = f4.add(lightpos, 'x', -5000, 5000);
+          var ly = f4.add(lightpos, 'y', -5000, 5000);
+          var lz = f4.add(lightpos, 'z', -2000, 2000);
+          lx.onChange(function(val) {
+            lightposModel.set({x: val});
+          });
+          ly.onChange(function(val) {
+            lightposModel.set({y: val})
+          });
+          lz.onChange(function(val) {
+            lightposModel.set({z: val})
+          });
+
+        }
+      }).call(this);
+
+    }).call(this);
+
+    //
+    // Scroller
+    //
+
+    /*var $scroller = this.$('.scroller');
+    $('html, body').css('overflow', 'hidden');
+    $scroller.each(function (i, el) {
+      var ftscroller = new FTScroller(el, {
+        bouncing: false,
+        scrollbars: false,
+        scrollingX: false,
+        //contentHeight: undefined,
+        updateOnWindowResize: true
+      });
+      ftscroller.addEventListener('scroll', function () {
+        console.log('scroll', ftscroller.scrollTop);
+      });
+    });*/
+
+  },
+  renderloop: function (t, t0) {
+    //update(clock.getDelta());
+    this.sceneView.draw();
+    TWEEN.update(t);
+
+    /*var l = $.fn.domvertices.v.length;
+    while (l--) {
+      $.fn.domvertices.v[l].update().trace();
+    }*/
+
+    //renderlight();
+  }
+});
+
+module.exports = HomeView;
+},{"./real":2,"./three.css3d.js":3,"backbone":"backbone","carouselview":"carouselview","dat-gui":"dat-gui","domvertices":"domvertices","ftscroller":"ftscroller","jquery":"jquery","jquery-domvertices":"jquery-domvertices","jquery-hammer":"jquery-hammer","jquery-mousewheel":"jquery-mousewheel","loop":"loop","three":"three","tween":"tween","underscore":"underscore"}],2:[function(require,module,exports){
+(function () {
+  //
+  // Real
+  //
+
+  var Box2D = require('box2dweb');
+  var Loop = require('loop');
+  var $ = require('jquery');
+  var _ = require('underscore');
+  var domvertices = require('domvertices');
+  require('jquery-domvertices');
+  var THREE = require('three');
+ 
+(function ($) {
+  "use strict";
+
+  $.fn.offsetRelative = $.fn.offsetRelative || function (el) {
+    var $el = $(el);
+
+    var elOffset = this.offset();
+
+    var $parent = this.parent().closest($el);
+    if (!$parent.length) {
+      return elOffset;
+    }
+    var parentOffset = $parent.offset();
+
+    return {
+      left: elOffset.left - parentOffset.left,
+      top: elOffset.top - parentOffset.top
+    };
+  };
+}(jQuery));
+
+  // Flatten Box2d (ugly but handy!)
+  (function b2(o) {
+    for (k in o) {
+      if (o.hasOwnProperty(k)) {
+        if ($.isPlainObject(o[k])) {
+          b2(o[k]);
+        } else if (/^b2/.test(k)) {
+          window[k] = o[k];
+        }
+      }
+    }
+  }(Box2D));
+   
+  // Inheritance utility (see: http://coffeescript.org/#try:class%20A%0Aclass%20B%20extends%20A)
+  function inherit(child, parent) {
+    for (var key in parent) {
+      if (parent.hasOwnProperty(key)) {
+        child[key] = parent[key];
+      }
+    }
+   
+    function ctor() {this.constructor = child;}
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+    child.uber = parent.prototype;
+   
+    return child;
+  };
+   
+  //
+  // TODO Shims (to add)
+  //
+  // Function.prototype.bind
+  // Array.prototype.indexOf
+   
+   
+  var SCALE;
+  function Real(options) {
+    options || (options = {});
+   
+    options = $.extend(true, {
+      debug: false,
+      gravity: 9.81,
+      SCALE: 150
+    }, options);
+    
+    this.SCALE = options.SCALE;
+    SCALE = this.SCALE;
+
+    this.clock = new Real.Timer();
+    this.world = new b2World(
+      new b2Vec2(0, options.gravity), // gravity
+      true                            // allow sleep
+    );
+   
+    this.loop = new Loop(this.loop.bind(this)/*, 1000/10*/);
+    //this.drawLoop = new Loop(this.drawLoop.bind(this));
+   
+    this.elements = [];
+   
+    // debug
+    this.debug = options.debug && options.debug.enabled;
+    if (this.debug) {
+      this.setDebugDraw(options.debug);
+    }
+   
+    //this.updatePerf = new Stats();
+    //$('body').append(this.updatePerf.domElement);
+   
+    //this.drawPerf = new Stats();
+    //$('body').append(this.drawPerf.domElement);
+  }
+  Real.prototype.setDebugDraw = function (options) {
+    if ($('canvas.debugDraw').length > 0) return;
+   
+    var $window = $('html');
+    var $append = $(options.appendEl) || $('body');
+
+    var debugDraw = new b2DebugDraw();
+    this.debugDraw = debugDraw;
+    var $canvas = $('<canvas class="debugDraw" width="' + ($window.width()) + '" height="' + ($window.height()) + '"/>').css({
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: -1
+    }).appendTo($append);
+    debugDraw.SetSprite($canvas.get(0).getContext("2d"));
+    debugDraw.SetDrawScale(SCALE);
+    debugDraw.SetFillAlpha(0.8);
+    debugDraw.SetLineThickness(0.5);
+    debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit | b2DebugDraw.e_centerOfMassBit);
+    this.world.SetDebugDraw(debugDraw);
+  };
+  Real.prototype.unsetDebugDraw = function () {
+    real.world.SetDebugDraw(null);
+    $('canvas.debugDraw').remove();
+  };
+  Real.prototype.step = function (dt) {
+    //this.updatePerf.begin();
+   
+    this.world.Step(
+      dt / 1000, //frame-rate
+      8,   //velocity iterations
+      3    //position iterations
+    );
+   
+    if (this.debug) {
+      this.world.DrawDebugData();
+    }
+   
+    var i = this.elements.length;
+    while (i--) {
+      this.elements[i].update();
+    }
+   
+    //this.updatePerf.end();
+  };
+  Real.prototype.draw = function (smooth) {
+    //this.drawPerf.begin();
+   
+    var i = this.elements.length;
+    while (i--) {
+      this.elements[i].draw(smooth);
+    }
+   
+    //this.drawPerf.end();
+  };
+  Real.prototype.start = function () {
+    this.clock.start();
+    this.loop.start();
+    //this.drawLoop.start();
+  };
+  Real.prototype.loop = function () {
+    // http://gafferongames.com/game-physics/fix-your-timestep/
+    // http://www.koonsolo.com/news/dewitters-gameloop/
+    // http://www.unagames.com/blog/daniele/2010/06/fixed-time-step-implementation-box2d
+    // http://codeincomplete.com/posts/2011/10/25/javascript_boulderdash/
+    // http://actionsnippet.com/swfs/qbox_FRIM.html
+    // http://gamesfromwithin.com/casey-and-the-clearly-deterministic-contraptions
+    
+    this.clock.tick();
+    while (this.clock.accumulator >= this.clock.dt) {
+   
+      //console.log('update');
+      this.step(this.clock.dt);
+      this.clock.subtick();
+    }
+    this.world.ClearForces();
+    
+    this.draw(true);
+  };
+  Real.prototype.stop = function () {
+    this.loop.stop();
+    this.clock.stop();
+    //this.drawLoop.stop();
+  };
+  Real.prototype.addElement = function (element) {
+    this.elements.push(element);
+   
+    return element;
+  };
+  Real.prototype.removeElement = function (element) {
+    this.world.DestroyBody(this.elements[i].body);
+    this.elements.splice(this.element.indexOf(element), 1);
+  };
+  Real.prototype.findElement = function (el) {
+    var $el = $(el);
+    el = $el[0];
+
+    var i = this.elements.length;
+    while (i--) {
+      if (this.elements[i].el === el) {
+        return this.elements[i];
+      }
+    }
+  };
+   
+  function Timer() {
+    this.t = 0;
+    this.dt = 1000/60; // Max FPS
+   
+    this.currentTime = void 0;
+    this.accumulator = void 0;
+   
+    this.dtMax = 1000/4; // Min FPS
+  }
+  Timer.prototype.start = function () {
+    if (this.currentTime) {
+      return;
+    }
+    this.currentTime = new Date().getTime();
+    this.accumulator = 0;
+   
+    return this;
+  };
+  Timer.prototype.stop = function () {
+    if (!this.currentTime) {
+      return;
+    }
+    this.currentTime = void 0;
+    this.accumulator = void 0;
+   
+    return this;
+  };
+  Timer.prototype.tick = function () {
+    if (!this.currentTime) {
+      throw "Timer not started!";
+    }
+    var newTime = new Date().getTime();
+   
+    var frameTime = newTime - this.currentTime;
+    frameTime = Math.min(frameTime, this.dtMax);
+   
+    this.currentTime = newTime;
+    
+    this.accumulator += frameTime;
+   
+    return this;
+  };
+  Timer.prototype.subtick = function () {
+    this.t           += this.dt;
+    this.accumulator -= this.dt;
+  };
+  Real.Timer = Timer;
+   
+   
+  function State() {
+    this.set.apply(this, arguments);
+  }
+  State.prototype.set = function (x, y, a) {
+    this.x = x;
+    this.y = y;
+    this.a = a;
+   
+    return this;
+  };
+   
+  function Element(el, real, options) {
+    options || (options = {});
+   
+    this.$el = $(el);
+    this.el = this.$el[0];
+
+    //var v = $el.domvertices().data('v');
+   
+    // Defaults
+    options = $.extend(true, {
+      body: {
+        type: b2Body.b2_dynamicBody,
+      },
+      fixture: {
+        density: 1,
+        friction: 0,
+        restitution: 0,
+        shape: b2PolygonShape
+      }
+    }, options);
+   
+    this.$el.addClass('element');
+   
+    this.real = real;
+   
+    // Fixture
+    var fixDef = new b2FixtureDef;
+    fixDef.density = options.fixture.density;
+    fixDef.friction = options.fixture.friction;
+    fixDef.restitution = options.fixture.restitution;
+    // Shape
+    if (options.fixture.shape === b2PolygonShape) {
+      fixDef.shape = new b2PolygonShape;
+      fixDef.shape.SetAsBox(
+        this.$el.outerWidth() / 2 / SCALE, //half width
+        this.$el.outerHeight() / 2 / SCALE  //half height
+      );
+    } else {
+      fixDef.shape = new b2CircleShape(this.$el.outerWidth() / 2 / SCALE);
+    }
+   
+    // Body
+    var $relative = $('#scene');
+    var bodyDef = new b2BodyDef;
+    bodyDef.type = options.body.type;
+    this.origPos = {
+      left: this.$el.offsetRelative($relative).left,
+      top: this.$el.offsetRelative($relative).top,
+      width: this.$el.outerWidth(),
+      height: this.$el.outerHeight()
+    };
+    bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
+    bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
+    bodyDef.fixedRotation = true;
+   
+    // Add to world
+    this.body = real.world.CreateBody(bodyDef);
+    this.body.CreateFixture(fixDef);
+   
+    var pos = this.body.GetPosition();
+    var ang = this.body.GetAngle();
+    this.state = new State(pos.x, pos.y, ang);
+  }
+  Element.prototype.update = function () {
+    var pos = this.body.GetPosition();
+    var ang = this.body.GetAngle();
+   
+    var x = pos.x;
+    var y = pos.y;
+    var a = ang;
+   
+    this.previousState = this.state; // backup previous state
+    this.state = new State(x, y, a);
+  };
+  Element.prototype.draw = function (smooth) {
+    if (this.body.GetType() === b2Body.b2_staticBody) {
+      return;
+    }
+   
+    var state;
+   
+    // Interpolate with previous state
+    if (false && smooth && this.previousState) {
+      /*var accumulator = this.real.clock.accumulator/1000
+
+      var v = this.body.GetLinearVelocity();
+      var w = this.body.GetAngularVelocity();
+
+      x += v.x * accumulator;
+      y += v.y * accumulator;
+      a += w * accumulator;*/
+   
+      var fixedTimestepAccumulatorRatio = this.real.clock.accumulator / this.real.clock.dt;
+      var oneMinusRatio = 1 - fixedTimestepAccumulatorRatio;
+   
+      var x = this.state.x * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.x;
+      var y = this.state.y * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.y;
+      var a = this.state.a * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.a;
+   
+      state = new State(x, y, a);
+    } else {
+      state = this.state;
+    }
+   
+    var origPos = this.origPos;
+   
+    this.$el.css('transform', 'translate3d(' + ~~(state.x*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.y*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + ~~(state.a * 180 / Math.PI) + 'deg)');
+    //this.el.style.webkitTransform = 'translate3d(' + ~~(state.x*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.y*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + ~~(state.a * 180 / Math.PI) + 'deg)';
+  };
+  Real.Element = Element;
+   
+  /*function Spring(real, bodyA, bodyB, options) {
+    if (!bodyA || !bodyB) {
+      return;
+    }
+   
+    var springDef;
+    springDef = new b2DistanceJointDef();
+    springDef.bodyA = bodyA;
+    springDef.bodyB = bodyB;
+    springDef.localAnchorA = springDef.bodyA.GetLocalCenter();
+    springDef.localAnchorB = springDef.bodyB.GetLocalCenter();
+    springDef.collideConnected = true;
+    //springDef.dampingRatio = .2;
+    //springDef.frequencyHz = .5
+    springDef.length = (function () {
+      var v = springDef.bodyB.GetWorldPoint(springDef.localAnchorB);
+      v.Subtract(springDef.bodyA.GetWorldPoint(springDef.localAnchorA))
+      return v.Length();
+    }());
+   
+    return real.world.CreateJoint(springDef);
+  };
+  Real.Spring = Spring;*/
+
+  function Friction(real, bodyA, bodyB, options) {
+    if (!bodyA || !bodyB) {
+      return;
+    }
+
+    options || (options = {});
+    _.defaults(options, {
+      maxForce: 300*bodyB.GetMass()
+    });
+
+    var frictionJointDef = new b2FrictionJointDef();
+    frictionJointDef.localAnchorA.SetZero();
+    frictionJointDef.localAnchorB.SetZero();
+    //frictionJointDef.collideConnected = true;
+    frictionJointDef.maxForce = options.maxForce;
+    frictionJointDef.bodyA = bodyA;
+    frictionJointDef.bodyB = bodyB;
+   
+    return real.world.CreateJoint(frictionJointDef);
+  };
+  Real.Friction = Friction;
+
+  // Exports
+  this.Real = Real;
+  if (typeof module !== "undefined" && module !== null) {
+    module.exports = this.Real;
+  }
+ 
+}).call(this);
+},{"box2dweb":"box2dweb","domvertices":"domvertices","jquery":"jquery","jquery-domvertices":"jquery-domvertices","loop":"loop","three":"three","underscore":"underscore"}],3:[function(require,module,exports){
 var THREE = require('three');
-window.THREE = THREE;
+var $ = require('jquery');
 
 var epsilon = function ( value ) {
   return Math.abs( value ) < 0.000001 ? 0 : value;
@@ -99,7 +1077,6 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 	domElement.style.transformStyle = 'preserve-3d';
 
 	var cameraElement = cameraElement || document.createElement( 'div' ) && domElement.appendChild(cameraElement);
-  $(cameraElement).addClass('cam3d');
 
 	cameraElement.style.WebkitTransformStyle = 'preserve-3d';
 	cameraElement.style.MozTransformStyle = 'preserve-3d';
@@ -210,12 +1187,12 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 			var style;
 
 			var t = [];
-      $(object.element).parentsUntil('#camera').each(function (i,el) {
+      /*$(object.element).parentsUntil('#camera').each(function (i,el) {
         var _t = $(el).css('transform');
         if (_t !== 'none') {
-          //t.push(_t);
+          t.push(_t);
         }
-      });
+      });*/
       style = t.reverse().join(' ') + ' ' + getObjectCSSMatrix(object,  object.matrixWorld );
 
 			var element = object.element;
@@ -290,396 +1267,7 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 	};
 
 };
-
-var $window = $(window);
-var $document = $(document);
-var $html = $('html');
-var $body = $('body');
-
-var CameraView = Backbone.View.extend({
-  initialize: function (options) {
-    this.options = options;
-
-    this.camera = new THREE.PerspectiveCamera(30, options.width/options.height, -1000, 1000);
-
-    this.$target = undefined;
-
-    this.moveAndLookAt = this.moveAndLookAt.bind(this);
-    this.moveAndLookAtElement = this.moveAndLookAtElement.bind(this);
-    this.recenter = this.recenter.bind(this);
-  },
-  moveAndLookAt: function (dstpos, dstlookat, options) {
-    var camera = this.camera;
-
-    options || (options = {});
-    _.defaults(options, {
-      duration: 300,
-      up: camera.up
-    });
-
-    var origpos = new THREE.Vector3().copy(camera.position); // original position
-    var origrot = new THREE.Euler().copy(camera.rotation); // original rotation
-
-    camera.position.set(dstpos.x, dstpos.y, dstpos.z);
-    camera.up.set(options.up.x, options.up.y, options.up.z);
-    camera.lookAt(dstlookat);
-    var dstrot = new THREE.Euler().copy(camera.rotation)
-
-    // reset original position and rotation
-    camera.position.set(origpos.x, origpos.y, origpos.z);
-    camera.rotation.set(origrot.x, origrot.y, origrot.z);
-
-    //
-    // Tweening
-    //
-
-    // position
-    new TWEEN.Tween(camera.position).to({
-      x: dstpos.x,
-      y: dstpos.y,
-      z: dstpos.z
-    }, options.duration).start();;
-
-    // rotation (using slerp)
-    (function () {
-      var qa = new THREE.Quaternion().copy(camera.quaternion); // src quaternion
-      var qb = new THREE.Quaternion().setFromEuler(dstrot); // dst quaternion
-      var qm = new THREE.Quaternion();
-      //camera.quaternion = qm;
-
-      var o = {t: 0};
-      new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
-        THREE.Quaternion.slerp(qa, qb, qm, o.t);
-        camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
-      }).start();
-    }).call(this);
-  },
-  moveAndLookAtElement: function (el, options) {
-    var camera = this.camera;
-    var $el = $(el);
-    el = $el[0];
-
-    options || (options = {});
-    _.defaults(options, {
-      duration: 300,
-      distance: undefined,
-      distanceTolerance: 0/100
-    });
-
-    // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
-    function distw(width, fov, aspect) {
-      //return 2*height/Math.tan(2*fov/(180 /Math.PI))
-      //return 2*height / Math.tan(fov*(180/Math.PI)/2);
-      return ((width/aspect)/Math.tan((fov/2)/(180/Math.PI)))/2;
-    }
-    function disth(height, fov, aspect) {
-      return (height/Math.tan((fov/(180/Math.PI))/2))/2;
-    }
-
-    var v = $el.domvertices().data('v');
-
-    var ac = new THREE.Vector3().subVectors(v.c, v.a);
-    var ab = new THREE.Vector3().subVectors(v.b, v.a);
-    var ad = new THREE.Vector3().subVectors(v.d, v.a);
-
-    var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2)
-    //console.log('faceCenter', faceCenter);
-    var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
-    //console.log('faceNormal', faceNormal);
-
-    //
-    // Auto-distance (to fit width/height)
-    //
-
-    if (typeof options.distance === 'undefined' || options.distance === null) {
-      var w = new THREE.Vector3().copy(ab).cross(faceNormal).length();
-      var h = new THREE.Vector3().copy(ad).cross(faceNormal).length();
-      //console.log(w, h);
-
-      var tolerance = 0/100;
-      if (camera.aspect > w/h) { // camera larger than element
-        if (w>h) {
-          distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);
-        } else {
-          distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);  
-        }
-      } else {
-        if (w>h) {
-          distance = distw(w+w*options.distanceTolerance, camera.fov, camera.aspect);
-        } else {
-          distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);  
-        }
-      }
-      
-    }
-    
-    var dstlookat = new THREE.Vector3().copy(faceCenter).add(v.a);
-    var dstpos = new THREE.Vector3().copy(faceNormal).setLength(distance).add(dstlookat);
-
-    this.moveAndLookAt(dstpos, dstlookat, {
-      duration: options.duration,
-      up: new THREE.Vector3().copy(ad).negate()
-    });
-
-    this.$target = $el;
-  },
-  recenter: function () {
-    if (this.$target && this.$target.length) {
-      this.moveAndLookAtElement(this.$target, {duration: 0});
-    }
-
-    return this;
-  }
-});
-
-var HomeView = Backbone.View.extend({
-  initialize: function (options) {
-    this.options = options;
-
-    //console.log('homeView');
-
-    var $scene = this.$('#scene');
-    var $camera = this.$('#camera');
-    
-    var WW;
-    function setWW() {
-      WW = $window.width();
-    }
-    var WH = $window.height();
-    function setWH() {
-      WH = $window.height();
-    }
-    function setWWH() {
-      setWW();
-      setWH();
-
-      $document.trigger('setwwh');
-    }
-    setWWH();
-    $window.resize(setWWH);
-
-    $.fn.domvertices.defaults.traceAppendEl = $scene;
-
-    //
-    // Camera view
-    //
-
-    true && (function () {
-      this.cameraView = new CameraView({
-        el: $camera,
-        width: WW,
-        height: WH
-      });
-      $.fn.domvertices.defaults.lastParent = $camera[0];
-      window.camera = this.cameraView.camera;
-      this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
-      window.moveAndLookAtElement = this.cameraView.moveAndLookAtElement;
-
-      var renderer = new THREE.CSS3DRenderer($scene[0], this.cameraView.el);
-      window.renderer = renderer;
-      //renderer.domElement.style.position = 'absolute';
-
-      var scene = new THREE.Scene();
-      window.scene = scene;
-
-      $('.obj').each(function (i, el) {
-        var $el = $(el);
-
-        var obj = new THREE.CSS3DObject(el);
-        $el.data('css3dobject', obj);
-
-        //var offset = $el.offset();
-        //obj.position.set(offset.left,offset.top,0);
-
-        console.log('obj', obj.getWorldPosition());
-        scene.add(obj);
-      });
-
-      function onsetwwh(first) {
-        this.cameraView.camera.aspect = WW/WH;
-        this.cameraView.camera.updateProjectionMatrix();
-        if (first !== true) {this.cameraView.recenter();}
-
-        renderer.setSize(WW, WH);
-      }
-      onsetwwh = onsetwwh.bind(this);
-      onsetwwh(true);
-      $document.on('setwwh', onsetwwh);
-
-      function update() {
-        this.cameraView.camera.updateProjectionMatrix();
-      }
-      update = update.bind(this);
-      function draw() {
-        this.cameraView.camera.updateProjectionMatrix();
-        
-        renderer.render(scene, this.cameraView.camera);
-      }
-      draw = draw.bind(this);
-      window.draw = draw;
-      draw();
-
-      //
-      // shading
-      //
-
-      var renderlight;
-      var lightpos;
-      (function () {
-        // Determine the vendor prefixed transform property
-        var transformProp = ["transform", "webkitTransform", "MozTransform", "msTransform"].filter(function (prop) {
-            return prop in document.documentElement.style;
-        })[0];
-
-
-        // Default positions
-        lightpos = {
-          x: 0,
-          y: 0,
-          z: -1000
-        };
-        // Define the light source
-        var $light = $(".light");
-        var light = $light[0];
-        
-
-        /* Render
-        ---------------------------------------------------------------- */
-
-        renderlight = function () {
-          light.style[transformProp] = "translateY(" + lightpos.y + "px) translateX(" + lightpos.x + "px) translateZ(" + lightpos.z + "px)";
-          // Get the light position
-          var lightVertices = $light.domvertices().data('v');
-          var lightPosition = lightVertices.a;
-
-          // Light each face
-          [].slice.call(document.querySelectorAll(".stabilo .f, .stabilo .h, .cube .face")).forEach(function (face, i) {
-            var $el = $(face);
-            var vertices = $el.domvertices().data('v');
-
-            var ac = new THREE.Vector3().subVectors(vertices.c, vertices.a);
-            var ab = new THREE.Vector3().subVectors(vertices.b, vertices.a)
-
-            var faceCenter = new THREE.Vector3().copy(ac).divideScalar(2);
-            var faceNormal = new THREE.Vector3().copy(ab).cross(ac).normalize();
-
-            var direction = new THREE.Vector3().subVectors(lightPosition, faceCenter).normalize();
-            var amount = .5* (1 - Math.max(0, faceNormal.dot(direction)));
-
-            if (!$el.data('orig-bgimg')) {
-              $el.data('orig-bgimg', $el.css('background-image'));
-            }
-            face.style.backgroundImage = $el.data('orig-bgimg') + ", linear-gradient(rgba(0,0,0," + amount.toFixed(3) + "), rgba(0,0,0," + amount.toFixed(3) + "))";
-          });
-        }
-      }).call(this);
-
-      //
-      // Render loop
-      //
-
-      var clock = new THREE.Clock();
-      var renderLoop = new Loop(function (t, t0) {
-        //update(clock.getDelta());
-        draw();
-        TWEEN.update(t);
-
-        /*var l = $.fn.domvertices.v.length;
-        while (l--) {
-          $.fn.domvertices.v[l].update().trace();
-        }*/
-
-        //renderlight();
-      });
-      renderLoop.start();
-      renderlight();
-
-      // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
-
-      var activeMacbook;
-      this.$('.macbook').on('click', function (e) {
-        console.log('click');
-      	var $mba = $(e.currentTarget);
-
-        var css3dobject = $mba.data('css3dobject');
-
-        if (activeMacbook !== $mba[0]) {
-          activeMacbook = $mba[0];
-          
-          //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
-        
-          this.cameraView.moveAndLookAtElement($mba.find('.display')[0]);
-
-        } else {
-          
-          //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
-
-          this.cameraView.moveAndLookAtElement($scene[0]);
-
-          activeMacbook = undefined;
-        }
-        
-      }.bind(this));
-
-      this.$('.sheets').on('click', function (e) {
-        this.cameraView.moveAndLookAtElement($('#page-2')[0]);
-      }.bind(this));
-
-      //
-      // dat.gui controls (debug)
-      //
-
-      (function () {
-        var camera = this.cameraView.camera;
-        
-        if ($html.is('.debug')) {
-          var dat = require('dat-gui');
-          var gui = new dat.GUI();
-          gui.close();
-
-          var f1 = gui.addFolder('camera.position');
-          var px = f1.add(camera.position, 'x', -1000, 1000);
-          var py = f1.add(camera.position, 'y', -1000, 3000);
-          var pz = f1.add(camera.position, 'z', -5000, 5000);
-
-          var f2 = gui.addFolder('camera.rotation');
-          var rx = f2.add(camera.rotation, 'x', 0, 2*Math.PI);
-          var ry = f2.add(camera.rotation, 'y', 0, 2*Math.PI);
-          var rz = f2.add(camera.rotation, 'z', 0, 2*Math.PI);
-
-          var f4 = gui.addFolder('lightpos');
-          f4.add(lightpos, 'x', -5000, 5000);
-          f4.add(lightpos, 'y', -5000, 5000);
-          f4.add(lightpos, 'z', -2000, 2000);
-        }
-      }).call(this);
-
-    }).call(this);
-
-    //
-    // Scroller
-    //
-
-    var $scroller = this.$('.scroller');
-    $('html, body').css('overflow', 'hidden');
-    $scroller.each(function (i, el) {
-      var ftscroller = new FTScroller(el, {
-        bouncing: false,
-        scrollbars: false,
-        scrollingX: false,
-        //contentHeight: undefined,
-        updateOnWindowResize: true
-      });
-      ftscroller.addEventListener('scroll', function () {
-        console.log('scroll', ftscroller.scrollTop);
-      });
-    });
-
-  }
-});
-
-module.exports = HomeView;
-},{"backbone":"backbone","carouselview":"carouselview","dat-gui":"dat-gui","domvertices":"domvertices","ftscroller":"ftscroller","jquery":"jquery","jquery-domvertices":"jquery-domvertices","jquery-hammer":"jquery-hammer","loop":"loop","three":"three","tween":"tween","underscore":"underscore"}],"Goodenough":[function(require,module,exports){
+},{"jquery":"jquery","three":"three"}],"Goodenough":[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
