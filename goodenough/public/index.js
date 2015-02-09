@@ -351,75 +351,177 @@ var HomeView = Backbone.View.extend({
       //
       // MouseJoint
       //
+
+      (function () {
+        var mouse = new b2Vec2();
       
-      var mouse = new b2Vec2();
-      window.mouse = mouse;
-      var mouseJointDef = new b2MouseJointDef();
-      mouseJointDef.target = mouse;
-      mouseJointDef.bodyA = real.world.GetGroundBody();
-      mouseJointDef.collideConnected = true;
-       
-      var mouseJoint;
+        var mouseJointDef = new b2MouseJointDef();
+        mouseJointDef.bodyA = real.world.GetGroundBody();
+        mouseJointDef.collideConnected = true;
+         
+        var mouseJoint;
 
-      function setMouse(e) {
-        e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
-        
-        //
-        // project mouse into 3d space
-        //
+        function projectMouse(mouse2d) {
+          //
+          // project mouse into 3d space
+          //
 
-        var camera = this.cameraView.camera;
-        // http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
-        var mouse3d = new THREE.Vector3();
-        mouse3d.set(
-          -(e.pageX/WW)*2 + 1, // modified!
-          -(e.pageY/WH)*2 + 1,
-        0.5);
-        mouse3d.unproject(camera);
+          var camera = this.cameraView.camera;
+          // http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
+          var mouse3d = new THREE.Vector3();
+          mouse3d.set(
+            -(mouse2d.x/WW)*2 + 1, // modified!
+            -(mouse2d.y/WH)*2 + 1,
+          0.5);
+          mouse3d.unproject(camera);
 
-        var dir = mouse3d.sub(camera.position).normalize();
-        var distance = -camera.position.z/dir.z;
+          var dir = mouse3d.sub(camera.position).normalize();
+          var distance = -camera.position.z/dir.z;
 
-        var pos = camera.position.clone().add(dir.multiplyScalar(distance));
+          var pos = camera.position.clone().add(dir.multiplyScalar(distance));
 
-        var v = $camera.domvertices().data('v');
-        mouse.Set(
-          (pos.x - v.a.x)/real.SCALE,
-          (pos.y - v.a.y)/real.SCALE
-        );
-      }
-      function mousedown(e) {
-        setMouse(e);
-       
-        $(document.body).undelegate('.element', 'mousedown touchstart', mousedown);
-        $(window).one('mouseup touchend', mouseup);
-       
-        var element = real.findElement(this);
-        var body = element && element.body;
-       
-        mouseJointDef.bodyB = body;
-        mouseJointDef.maxForce = 100 * body.GetMass();
-       
-        mouseJoint = real.world.CreateJoint(mouseJointDef);
-        mouseJoint.SetTarget(mouse);
-       
-        $(document).on('mousemove touchmove', mousemove);
-      }
-      function mouseup(e) {
-        if (mouseJoint) {
-          real.world.DestroyJoint(mouseJoint);
+          var v = $camera.domvertices().data('v');
+          mouse2d.Set(
+            (pos.x - v.a.x)/real.SCALE,
+            (pos.y - v.a.y)/real.SCALE
+          );
         }
-        
+
+        //
+        // Mouse + touch
+        //
+
+        function setMouse(e) {
+          e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
+          
+          mouse.Set(e.pageX, e.pageY);
+          projectMouse(mouse);
+        }
+        function mousedown(e) {
+          console.log('mousedown');
+          setMouse(e);
+         
+          $(document.body).undelegate('.element', 'mousedown touchstart', mousedown);
+          $(window).one('mouseup touchend', mouseup);
+         
+          var element = real.findElement(this);
+          var body = element && element.body;
+         
+          mouseJointDef.target = mouse;
+          mouseJointDef.bodyB = body;
+          mouseJointDef.maxForce = 100 * body.GetMass();
+         
+          mouseJoint = real.world.CreateJoint(mouseJointDef);
+          mouseJoint.SetTarget(mouse);
+         
+          $(document).on('mousemove touchmove', mousemove);
+        }
+        function mouseup(e) {
+          console.log('mouseup');
+
+          if (mouseJoint) {
+            real.world.DestroyJoint(mouseJoint);
+          }
+          
+          $(document).off('mousemove touchmove', mousemove);
+          $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+        }
+        function mousemove(e) {
+          console.log('mousemove');
+          e.preventDefault(); // http://stackoverflow.com/questions/11204460/the-touchmove-event-on-android-system-transformer-prime
+         
+          setMouse(e);
+          mouseJointDef.bodyB.SetAwake(true);
+        }
         $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
-        $(window).off('mousemove touchmove', mousemove);
-      }
-      function mousemove(e) {
-        e.preventDefault(); // http://stackoverflow.com/questions/11204460/the-touchmove-event-on-android-system-transformer-prime
-       
-        setMouse(e);
-        mouseJointDef.bodyB.SetAwake(true);
-      }
-      $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+
+        //
+        // scrollwheel
+        //
+
+        /*var fakemouse = new b2Vec2();
+        (function () {
+
+          $('html, body').css('overflow', 'hidden');
+
+          var WHEELTIMEOUT = 50;
+
+
+          var wheeldelta = {
+            x: 0,
+            y: 0
+          };
+
+          var fakemouseini = {
+            x: 0,
+            y: 0
+          };
+
+          // http://stackoverflow.com/questions/3515446/jquery-mousewheel-detecting-when-the-wheel-stops/28371047#28371047
+          var wheelint;
+          $window.on('mousewheel', function (e) {
+            // START
+            if (!wheelint) {
+              console.log('start wheeling!');
+
+              //console.log(e.pageX, e.pageY);
+
+              fakemouseini.x = e.pageX;
+              fakemouseini.y = e.pageY;
+
+              fakemouse.Set(fakemouseini.x, fakemouseini.y);
+              console.log(fakemouse);
+              projectMouse(fakemouse);
+              console.log(fakemouse);
+
+              var body = this.scrollEl.body;
+
+              mouseJointDef.target = fakemouse;
+              mouseJointDef.bodyB = body;
+              mouseJointDef.maxForce = 100 * body.GetMass(); // Peut déplacer 300x son poids (sans friction)!
+
+              mouseJoint = real.world.CreateJoint(mouseJointDef);
+              mouseJoint.SetTarget(fakemouse);
+            }
+
+            // STOP
+            clearTimeout(wheelint);
+            wheelint = setTimeout(function() {
+              console.log('stop wheeling!');
+              wheelint = undefined;
+
+              // reset wheeldelta
+              wheeldelta.x = 0;
+              wheeldelta.y = 0;
+
+              console.log('stopwheeling');
+              if (mouseJoint) {
+                real.world.DestroyJoint(mouseJoint);
+                console.log('joint destroyed')
+              }
+            }, WHEELTIMEOUT);
+
+            // WHEELING
+            if (!wheelint) return;
+            setTimeout(function () {
+              console.log('wheel ing');
+              mouseJointDef.bodyB.SetAwake(true);
+
+              wheeldelta.x += e.deltaFactor * e.deltaX;
+              wheeldelta.y += e.deltaFactor * e.deltaY;
+              console.log(wheeldelta);
+
+              fakemouse.Set(fakemouseini.x - wheeldelta.x, fakemouseini.y + wheeldelta.y);
+              console.log(fakemouse);
+              projectMouse(fakemouse);
+              console.log(fakemouse);
+            }, WHEELTIMEOUT+1)
+            
+          }.bind(this));
+
+        }).call(this);*/
+
+      }).call(this);
       
       //
       // Friction joint

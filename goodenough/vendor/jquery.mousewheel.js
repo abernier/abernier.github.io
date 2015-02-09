@@ -6,18 +6,9 @@
  * http://jquery.org/license
  */
 
-(function (factory) {
-    if ( typeof define === 'function' && define.amd ) {
-        // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
-    } else if (typeof exports === 'object') {
-        // Node/CommonJS style for Browserify
-        module.exports = factory;
-    } else {
-        // Browser globals
-        factory(jQuery);
-    }
-}(function ($) {
+var $ = this.jQuery || require('jquery');
+
+(function () {
 
     var toFix  = ['wheel', 'mousewheel', 'DOMMouseScroll', 'MozMousePixelScroll'],
         toBind = ( 'onwheel' in document || document.documentMode >= 9 ) ?
@@ -218,4 +209,4 @@
         return special.settings.adjustOldDeltas && orgEvent.type === 'mousewheel' && absDelta % 120 === 0;
     }
 
-}));
+}).call(this);

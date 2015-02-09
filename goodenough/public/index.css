@@ -633,6 +633,8 @@ canvas.debugDraw {
 .pages {
   white-space: nowrap;
   display: inline-block;
+}
+html:not(.debug) .pages {
   background-image: url("http://www.transparenttextures.com/patterns/french-stucco.png");
 }
 html.debug .pages {
