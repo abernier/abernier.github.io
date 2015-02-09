@@ -502,7 +502,7 @@ html.js.domready .no-js {
 }
 body {
   margin: 0;
-  font: 400 100%/1.5 'proximanova', Arial, sans-serif;
+  font: 400 100%/1.5 sans-serif;
   text-rendering: optimizeSpeed;
 }
 a {
