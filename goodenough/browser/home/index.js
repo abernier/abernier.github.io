@@ -361,7 +361,7 @@ var HomeView = Backbone.View.extend({
 
       (function () {
         var body = this.scrollEl.body;
-        
+
         var mouseJointDef = new b2MouseJointDef();
         mouseJointDef.bodyA = real.world.GetGroundBody();
         mouseJointDef.collideConnected = true;

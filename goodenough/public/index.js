@@ -362,7 +362,7 @@ var HomeView = Backbone.View.extend({
 
       (function () {
         var body = this.scrollEl.body;
-        
+
         var mouseJointDef = new b2MouseJointDef();
         mouseJointDef.bodyA = real.world.GetGroundBody();
         mouseJointDef.collideConnected = true;
@@ -641,26 +641,26 @@ module.exports = HomeView;
   require('jquery-domvertices');
   var THREE = require('three');
  
-(function ($) {
-  "use strict";
+  (function ($) {
+    "use strict";
 
-  $.fn.offsetRelative = $.fn.offsetRelative || function (el) {
-    var $el = $(el);
+    $.fn.offsetRelative = $.fn.offsetRelative || function (el) {
+      var $el = $(el);
 
-    var elOffset = this.offset();
+      var elOffset = this.offset();
 
-    var $parent = this.parent().closest($el);
-    if (!$parent.length) {
-      return elOffset;
-    }
-    var parentOffset = $parent.offset();
+      var $parent = this.parent().closest($el);
+      if (!$parent.length) {
+        return elOffset;
+      }
+      var parentOffset = $parent.offset();
 
-    return {
-      left: elOffset.left - parentOffset.left,
-      top: elOffset.top - parentOffset.top
+      return {
+        left: elOffset.left - parentOffset.left,
+        top: elOffset.top - parentOffset.top
+      };
     };
-  };
-}(jQuery));
+  }(jQuery));
 
   // Flatten Box2d (ugly but handy!)
   (function b2(o) {
@@ -1045,7 +1045,7 @@ module.exports = HomeView;
 
     options || (options = {});
     _.defaults(options, {
-      maxForce: 10*bodyB.GetMass()
+      maxForce: 30*bodyB.GetMass()
     });
 
     var frictionJointDef = new b2FrictionJointDef();
