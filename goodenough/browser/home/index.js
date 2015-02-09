@@ -360,13 +360,16 @@ var HomeView = Backbone.View.extend({
       //
 
       (function () {
+        var body = this.scrollEl.body;
+        
         var mouseJointDef = new b2MouseJointDef();
         mouseJointDef.bodyA = real.world.GetGroundBody();
         mouseJointDef.collideConnected = true;
+        mouseJointDef.maxForce = 1000 * body.GetMass();
+        //mouseJointDef.dampingRatio = 0;
+        //mouseJointDef.frequencyHz = 99999;
          
         var mouseJoint;
-
-        var body = this.scrollEl.body;
 
         function project(mouse2d) {
           //
@@ -416,8 +419,6 @@ var HomeView = Backbone.View.extend({
            
             mouseJointDef.target = mouse;
             mouseJointDef.bodyB = body;
-            mouseJointDef.maxForce = 100 * body.GetMass();
-           
             mouseJoint = real.world.CreateJoint(mouseJointDef);
             mouseJoint.SetTarget(mouse);
            
@@ -457,7 +458,6 @@ var HomeView = Backbone.View.extend({
 
           // http://stackoverflow.com/questions/3515446/jquery-mousewheel-detecting-when-the-wheel-stops/28371047#28371047
           var wheelint;
-          var initialFrictionMaxforce = frictionjoint.m_maxForce;
           $window.on('mousewheel', _.throttle(function (e) {
             if (!wheelint) {
               console.log('start wheeling!');
