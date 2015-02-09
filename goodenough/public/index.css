@@ -503,6 +503,7 @@ html.js.domready .no-js {
 body {
   margin: 0;
   font: 400 100%/1.5 sans-serif;
+  -webkit-font-smoothing: none;
   text-rendering: optimizeSpeed;
 }
 a {
