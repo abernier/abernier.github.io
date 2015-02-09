@@ -503,7 +503,6 @@ html.js.domready .no-js {
 body {
   margin: 0;
   font: 400 100%/1.5 'proximanova', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
 }
 a {
   font: inherit;
