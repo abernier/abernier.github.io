@@ -696,7 +696,7 @@ section h1 {
   font-size: 500%;
   font-weight: 100;
   margin-bottom: 0;
-  text-shadow: 0px -1px 0px rgba(0,0,0,0.35);
+/*text-shadow:0px -1px 0px rgba(0,0,0,.35);*/
 }
 section h1+p {
   margin-top: 0;
