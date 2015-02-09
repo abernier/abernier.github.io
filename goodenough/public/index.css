@@ -654,11 +654,11 @@ html.debug .page {
   -o-transform-origin: left top;
   -ms-transform-origin: left top;
   transform-origin: left top;
-  -webkit-transform: rotate3d(1, 1, 1, -30deg);
-  -moz-transform: rotate3d(1, 1, 1, -30deg);
-  -o-transform: rotate3d(1, 1, 1, -30deg);
-  -ms-transform: rotate3d(1, 1, 1, -30deg);
-  transform: rotate3d(1, 1, 1, -30deg);
+  -webkit-transform: rotate3d(0, 0, 1, -30deg);
+  -moz-transform: rotate3d(0, 0, 1, -30deg);
+  -o-transform: rotate3d(0, 0, 1, -30deg);
+  -ms-transform: rotate3d(0, 0, 1, -30deg);
+  transform: rotate3d(0, 0, 1, -30deg);
 }
 .body {
   color: #fff;
