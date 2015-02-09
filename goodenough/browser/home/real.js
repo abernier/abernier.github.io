@@ -277,6 +277,8 @@
     this.$el = $(el);
     this.el = this.$el[0];
 
+    this.$el.data('real', this); // expando
+
     //var v = $el.domvertices().data('v');
    
     // Defaults
@@ -413,7 +415,7 @@
 
     options || (options = {});
     _.defaults(options, {
-      maxForce: 5*bodyB.GetMass()
+      maxForce: 10*bodyB.GetMass()
     });
 
     var frictionJointDef = new b2FrictionJointDef();

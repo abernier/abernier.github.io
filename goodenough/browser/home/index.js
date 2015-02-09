@@ -334,8 +334,7 @@ var HomeView = Backbone.View.extend({
     // Box2D
     //
 
-    this.scrollEl;
-    (function () {
+    true && (function () {
       var real = new Real({
         gravity: 0,
         debug: {
@@ -343,24 +342,33 @@ var HomeView = Backbone.View.extend({
           appendEl: $camera
         }
       });
-      window.real = real;
+      this.real = real;
+      window.real = this.real;
        
       this.scrollEl = real.addElement(new Real.Element($('.pages'), real));
        
+      //
+      // Friction joint
+      //
+
+      var frictionjoint = new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+
+      //new Real.Prismatic(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+
       //
       // MouseJoint
       //
 
       (function () {
-        var mouse = new b2Vec2();
-      
         var mouseJointDef = new b2MouseJointDef();
         mouseJointDef.bodyA = real.world.GetGroundBody();
         mouseJointDef.collideConnected = true;
          
         var mouseJoint;
 
-        function projectMouse(mouse2d) {
+        var body = this.scrollEl.body;
+
+        function project(mouse2d) {
           //
           // project mouse into 3d space
           //
@@ -390,163 +398,94 @@ var HomeView = Backbone.View.extend({
         // Mouse + touch
         //
 
-        function setMouse(e) {
-          e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
-          
-          mouse.Set(e.pageX, e.pageY);
-          projectMouse(mouse);
-        }
-        function mousedown(e) {
-          console.log('mousedown');
-          setMouse(e);
-         
-          $(document.body).undelegate('.element', 'mousedown touchstart', mousedown);
-          $(window).one('mouseup touchend', mouseup);
-         
-          var element = real.findElement(this);
-          var body = element && element.body;
-         
-          mouseJointDef.target = mouse;
-          mouseJointDef.bodyB = body;
-          mouseJointDef.maxForce = 100 * body.GetMass();
-         
-          mouseJoint = real.world.CreateJoint(mouseJointDef);
-          mouseJoint.SetTarget(mouse);
-         
-          $(document).on('mousemove touchmove', mousemove);
-        }
-        function mouseup(e) {
-          console.log('mouseup');
+        (function () {
+          var mouse = new b2Vec2();
 
-          if (mouseJoint) {
-            real.world.DestroyJoint(mouseJoint);
+          function setMouse(e) {
+            e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
+            
+            mouse.Set(e.pageX, e.pageY);
+            project(mouse);
           }
-          
-          $(document).off('mousemove touchmove', mousemove);
+          function mousedown(e) {
+            console.log('mousedown');
+            setMouse(e);
+           
+            $(document.body).undelegate('.element', 'mousedown touchstart', mousedown);
+            $(window).one('mouseup touchend', mouseup);
+           
+            mouseJointDef.target = mouse;
+            mouseJointDef.bodyB = body;
+            mouseJointDef.maxForce = 100 * body.GetMass();
+           
+            mouseJoint = real.world.CreateJoint(mouseJointDef);
+            mouseJoint.SetTarget(mouse);
+           
+            $(document).on('mousemove touchmove', mousemove);
+          }
+          function mouseup(e) {
+            console.log('mouseup');
+
+            if (mouseJoint) {
+              real.world.DestroyJoint(mouseJoint);
+            }
+            
+            $(document).off('mousemove touchmove', mousemove);
+            $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+          }
+          function mousemove(e) {
+            console.log('mousemove');
+            e.preventDefault(); // http://stackoverflow.com/questions/11204460/the-touchmove-event-on-android-system-transformer-prime
+           
+            setMouse(e);
+            mouseJointDef.bodyB.SetAwake(true);
+          }
           $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
-        }
-        function mousemove(e) {
-          console.log('mousemove');
-          e.preventDefault(); // http://stackoverflow.com/questions/11204460/the-touchmove-event-on-android-system-transformer-prime
-         
-          setMouse(e);
-          mouseJointDef.bodyB.SetAwake(true);
-        }
-        $(document.body).delegate('.element', 'mousedown touchstart', mousedown);
+
+          // prevent scroll
+          document.ontouchstart = function(e){ 
+              e.preventDefault(); // http://stackoverflow.com/questions/2890361/disable-scrolling-in-an-iphone-web-application#answer-2890530
+          }
+        }).call(this);
 
         //
         // scrollwheel
         //
 
-        /*var fakemouse = new b2Vec2();
         (function () {
-
           $('html, body').css('overflow', 'hidden');
-
-          var WHEELTIMEOUT = 50;
-
-
-          var wheeldelta = {
-            x: 0,
-            y: 0
-          };
-
-          var fakemouseini = {
-            x: 0,
-            y: 0
-          };
 
           // http://stackoverflow.com/questions/3515446/jquery-mousewheel-detecting-when-the-wheel-stops/28371047#28371047
           var wheelint;
-          $window.on('mousewheel', function (e) {
-            // START
+          var initialFrictionMaxforce = frictionjoint.m_maxForce;
+          $window.on('mousewheel', _.throttle(function (e) {
             if (!wheelint) {
               console.log('start wheeling!');
 
-              //console.log(e.pageX, e.pageY);
-
-              fakemouseini.x = e.pageX;
-              fakemouseini.y = e.pageY;
-
-              fakemouse.Set(fakemouseini.x, fakemouseini.y);
-              console.log(fakemouse);
-              projectMouse(fakemouse);
-              console.log(fakemouse);
-
-              var body = this.scrollEl.body;
-
-              mouseJointDef.target = fakemouse;
-              mouseJointDef.bodyB = body;
-              mouseJointDef.maxForce = 100 * body.GetMass(); // Peut déplacer 300x son poids (sans friction)!
-
-              mouseJoint = real.world.CreateJoint(mouseJointDef);
-              mouseJoint.SetTarget(fakemouse);
             }
 
-            // STOP
             clearTimeout(wheelint);
             wheelint = setTimeout(function() {
               console.log('stop wheeling!');
               wheelint = undefined;
 
-              // reset wheeldelta
-              wheeldelta.x = 0;
-              wheeldelta.y = 0;
+            }, 250);
 
-              console.log('stopwheeling');
-              if (mouseJoint) {
-                real.world.DestroyJoint(mouseJoint);
-                console.log('joint destroyed')
-              }
-            }, WHEELTIMEOUT);
+            var delta = {
+              x: e.deltaFactor * e.deltaX,
+              y: e.deltaFactor * e.deltaY
+            };
 
-            // WHEELING
-            if (!wheelint) return;
-            setTimeout(function () {
-              console.log('wheel ing');
-              mouseJointDef.bodyB.SetAwake(true);
+            var impulse = new b2Vec2(-delta.x*50, delta.y*50);
 
-              wheeldelta.x += e.deltaFactor * e.deltaX;
-              wheeldelta.y += e.deltaFactor * e.deltaY;
-              console.log(wheeldelta);
+            var impulseOrigin = new b2Vec2(e.pageX, e.pageY);
+            project(impulseOrigin);
 
-              fakemouse.Set(fakemouseini.x - wheeldelta.x, fakemouseini.y + wheeldelta.y);
-              console.log(fakemouse);
-              projectMouse(fakemouse);
-              console.log(fakemouse);
-            }, WHEELTIMEOUT+1)
-            
-          }.bind(this));
-
-        }).call(this);*/
+            body.ApplyImpulse(impulse, impulseOrigin);
+          }, 0));
+        }).call(this);
 
       }).call(this);
-      
-      //
-      // Friction joint
-      //
-
-      console.log('toto');
-      new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
-
-      //new Real.Prismatic(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
-
-      // 
-      real.start();
-     
-      /*if (window.DeviceMotionEvent) {
-        real.world.m_allowSleep = false;
-        function ondevicemotion(e) {
-          real.world.SetGravity(new b2Vec2(-e.accelerationIncludingGravity.x, e.accelerationIncludingGravity.y));
-        }
-        window.addEventListener('devicemotion', ondevicemotion, false);
-      }*/
-     
-      // prevent scroll
-      document.ontouchstart = function(e){ 
-          e.preventDefault(); // http://stackoverflow.com/questions/2890361/disable-scrolling-in-an-iphone-web-application#answer-2890530
-      }
-
 
     }).call(this);
 
@@ -669,7 +608,13 @@ var HomeView = Backbone.View.extend({
   renderloop: function (t, t0) {
     //update(clock.getDelta());
     this.sceneView.draw();
+
     TWEEN.update(t);
+
+    // real
+    var dt = t - t0;
+    this.real.step(dt);
+    this.real.draw();
 
     /*var l = $.fn.domvertices.v.length;
     while (l--) {
