@@ -3,6 +3,8 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 require('jquery-hammer');
 
+var Stats = require('stats');
+
 var THREE = require('three'); window.THREE = THREE;
 require('./three.css3d.js');
 
@@ -606,6 +608,7 @@ var HomeView = Backbone.View.extend({
 
   },
   renderloop: function (t, t0) {
+
     //update(clock.getDelta());
     this.sceneView.draw();
 

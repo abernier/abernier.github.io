@@ -4,6 +4,8 @@ var Backbone = require('backbone');
 var $ = require('jquery');
 require('jquery-hammer');
 
+var Stats = require('stats');
+
 var THREE = require('three'); window.THREE = THREE;
 require('./three.css3d.js');
 
@@ -607,6 +609,7 @@ var HomeView = Backbone.View.extend({
 
   },
   renderloop: function (t, t0) {
+
     //update(clock.getDelta());
     this.sceneView.draw();
 
@@ -627,7 +630,7 @@ var HomeView = Backbone.View.extend({
 });
 
 module.exports = HomeView;
-},{"./real":2,"./three.css3d.js":3,"backbone":"backbone","carouselview":"carouselview","dat-gui":"dat-gui","domvertices":"domvertices","ftscroller":"ftscroller","jquery":"jquery","jquery-domvertices":"jquery-domvertices","jquery-hammer":"jquery-hammer","jquery-mousewheel":"jquery-mousewheel","loop":"loop","three":"three","tween":"tween","underscore":"underscore"}],2:[function(require,module,exports){
+},{"./real":2,"./three.css3d.js":3,"backbone":"backbone","carouselview":"carouselview","dat-gui":"dat-gui","domvertices":"domvertices","ftscroller":"ftscroller","jquery":"jquery","jquery-domvertices":"jquery-domvertices","jquery-hammer":"jquery-hammer","jquery-mousewheel":"jquery-mousewheel","loop":"loop","stats":"stats","three":"three","tween":"tween","underscore":"underscore"}],2:[function(require,module,exports){
 (function () {
   //
   // Real
@@ -640,6 +643,7 @@ module.exports = HomeView;
   var domvertices = require('domvertices');
   require('jquery-domvertices');
   var THREE = require('three');
+  var Stats = require('stats');
  
   (function ($) {
     "use strict";
@@ -728,11 +732,14 @@ module.exports = HomeView;
       this.setDebugDraw(options.debug);
     }
    
-    //this.updatePerf = new Stats();
-    //$('body').append(this.updatePerf.domElement);
+    if (this.debug) {
+      this.updatePerf = new Stats();
+      $('body').append($(this.updatePerf.domElement).css({position: 'fixed', left:0, top:0}));
    
-    //this.drawPerf = new Stats();
-    //$('body').append(this.drawPerf.domElement);
+      this.drawPerf = new Stats();
+      $('body').append($(this.drawPerf.domElement).css({position: 'fixed', left:80, top:0}));
+    }
+    
   }
   Real.prototype.setDebugDraw = function (options) {
     if ($('canvas.debugDraw').length > 0) return;
@@ -762,7 +769,7 @@ module.exports = HomeView;
     $('canvas.debugDraw').remove();
   };
   Real.prototype.step = function (dt) {
-    //this.updatePerf.begin();
+    this.debug && this.updatePerf.begin();
    
     this.world.Step(
       dt / 1000, //frame-rate
@@ -779,17 +786,17 @@ module.exports = HomeView;
       this.elements[i].update();
     }
    
-    //this.updatePerf.end();
+    this.debug && this.updatePerf.end();
   };
   Real.prototype.draw = function (smooth) {
-    //this.drawPerf.begin();
+    this.debug && this.drawPerf.begin();
    
     var i = this.elements.length;
     while (i--) {
       this.elements[i].draw(smooth);
     }
    
-    //this.drawPerf.end();
+    this.debug && this.drawPerf.end();
   };
   Real.prototype.start = function () {
     this.clock.start();
@@ -1097,7 +1104,7 @@ module.exports = HomeView;
   }
  
 }).call(this);
-},{"box2dweb":"box2dweb","domvertices":"domvertices","jquery":"jquery","jquery-domvertices":"jquery-domvertices","loop":"loop","three":"three","underscore":"underscore"}],3:[function(require,module,exports){
+},{"box2dweb":"box2dweb","domvertices":"domvertices","jquery":"jquery","jquery-domvertices":"jquery-domvertices","loop":"loop","stats":"stats","three":"three","underscore":"underscore"}],3:[function(require,module,exports){
 var THREE = require('three');
 var $ = require('jquery');
 

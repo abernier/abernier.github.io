@@ -150,9 +150,12 @@ padheight(w, h)
 
 body
   margin:0;
-  font:400 100%/$lh sans-serif;
-  -webkit-font-smoothing:none;
-  text-rendering:optimizeSpeed;
+  font:400 100%/$lh 'proximanova', Arial, sans-serif;
+  
+  -webkit-font-smoothing:antialiased;
+  html.animating &
+    -webkit-font-smoothing:none;
+    //text-rendering:optimizeSpeed;
 
 a
   font:inherit; text-decoration:inherit; color:inherit;

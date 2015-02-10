@@ -502,9 +502,11 @@ html.js.domready .no-js {
 }
 body {
   margin: 0;
-  font: 400 100%/1.5 sans-serif;
+  font: 400 100%/1.5 'proximanova', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+html.animating body {
   -webkit-font-smoothing: none;
-  text-rendering: optimizeSpeed;
 }
 a {
   font: inherit;
