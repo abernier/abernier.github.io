@@ -137,11 +137,11 @@ html:not(.debug) .macbook .screen .face-one {
   position: absolute;
   left: 50%;
   top: 50%;
-  -webkit-transform: translate3d(-50%, -50%, 1px);
-  -moz-transform: translate3d(-50%, -50%, 1px);
-  -o-transform: translate3d(-50%, -50%, 1px);
-  -ms-transform: translate3d(-50%, -50%, 1px);
-  transform: translate3d(-50%, -50%, 1px);
+  -webkit-transform: translate3d(-50%, -50%, 3px);
+  -moz-transform: translate3d(-50%, -50%, 3px);
+  -o-transform: translate3d(-50%, -50%, 3px);
+  -ms-transform: translate3d(-50%, -50%, 3px);
+  transform: translate3d(-50%, -50%, 3px);
 }
 .macbook .screen .face-one .display .shade {
   position: absolute;
@@ -165,11 +165,11 @@ html:not(.debug) .macbook .screen .face-one .display .shade {
   position: absolute;
   bottom: 0;
   left: 50%;
-  -webkit-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
-  -moz-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
-  -o-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
-  -ms-transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
-  transform: translate(-50%, 0) rotateY(180deg) translateZ(-1px);
+  -webkit-transform: translate(-50%, 0) translateZ(3px);
+  -moz-transform: translate(-50%, 0) translateZ(3px);
+  -o-transform: translate(-50%, 0) translateZ(3px);
+  -ms-transform: translate(-50%, 0) translateZ(3px);
+  transform: translate(-50%, 0) translateZ(3px);
   font-size: 3em;
   color: #666;
   margin-bottom: 1em;
@@ -260,11 +260,11 @@ html:not(.debug) .macbook .body .touchpad {
   position: absolute;
   left: 50%;
   top: 42em;
-  -webkit-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
-  -moz-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
-  -o-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
-  -ms-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
-  transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-1px);
+  -webkit-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-3px);
+  -moz-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-3px);
+  -o-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-3px);
+  -ms-transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-3px);
+  transform: translate(-50%, 0) rotateY(180deg) rotateX(180deg) translateZ(-3px);
   -webkit-border-radius: 3em;
   border-radius: 3em;
   -webkit-transform-style: preserve-3d;
@@ -284,7 +284,6 @@ html:not(.debug) .macbook .body .keyboard {
   background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
 }
 .macbook .body .keyboard .key {
-  display: none;
   width: 7.75em;
   height: 8em;
   float: left;
@@ -311,6 +310,27 @@ html:not(.debug) .macbook .body .keyboard {
 .macbook .body .keyboard .key.f {
   height: 5em;
   margin-top: 1.25em;
+}
+.macbook .body .keyboard .keyband {
+  height: 7.51111111111111em;
+  background-image: -webkit-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, transparent 30.5625%, transparent 31.5625%, #444 31.5625%, #444 36.875%, transparent 36.875%, transparent 37.875%, #444 37.875%, #444 43.1875%, transparent 43.1875%, transparent 44.1875%, #444 44.1875%, #444 49.5%, transparent 49.5%, transparent 50.5%, #444 50.5%, #444 55.8125%, transparent 55.8125%, transparent 56.8125%, #444 56.8125%, #444 62.125%, transparent 62.125%, transparent 63.125%, #444 63.125%, #444 68.4375%, transparent 68.4375%, transparent 69.4375%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: -moz-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, transparent 30.5625%, transparent 31.5625%, #444 31.5625%, #444 36.875%, transparent 36.875%, transparent 37.875%, #444 37.875%, #444 43.1875%, transparent 43.1875%, transparent 44.1875%, #444 44.1875%, #444 49.5%, transparent 49.5%, transparent 50.5%, #444 50.5%, #444 55.8125%, transparent 55.8125%, transparent 56.8125%, #444 56.8125%, #444 62.125%, transparent 62.125%, transparent 63.125%, #444 63.125%, #444 68.4375%, transparent 68.4375%, transparent 69.4375%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: -o-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, transparent 30.5625%, transparent 31.5625%, #444 31.5625%, #444 36.875%, transparent 36.875%, transparent 37.875%, #444 37.875%, #444 43.1875%, transparent 43.1875%, transparent 44.1875%, #444 44.1875%, #444 49.5%, transparent 49.5%, transparent 50.5%, #444 50.5%, #444 55.8125%, transparent 55.8125%, transparent 56.8125%, #444 56.8125%, #444 62.125%, transparent 62.125%, transparent 63.125%, #444 63.125%, #444 68.4375%, transparent 68.4375%, transparent 69.4375%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: -ms-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, transparent 30.5625%, transparent 31.5625%, #444 31.5625%, #444 36.875%, transparent 36.875%, transparent 37.875%, #444 37.875%, #444 43.1875%, transparent 43.1875%, transparent 44.1875%, #444 44.1875%, #444 49.5%, transparent 49.5%, transparent 50.5%, #444 50.5%, #444 55.8125%, transparent 55.8125%, transparent 56.8125%, #444 56.8125%, #444 62.125%, transparent 62.125%, transparent 63.125%, #444 63.125%, #444 68.4375%, transparent 68.4375%, transparent 69.4375%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: linear-gradient(90deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, transparent 30.5625%, transparent 31.5625%, #444 31.5625%, #444 36.875%, transparent 36.875%, transparent 37.875%, #444 37.875%, #444 43.1875%, transparent 43.1875%, transparent 44.1875%, #444 44.1875%, #444 49.5%, transparent 49.5%, transparent 50.5%, #444 50.5%, #444 55.8125%, transparent 55.8125%, transparent 56.8125%, #444 56.8125%, #444 62.125%, transparent 62.125%, transparent 63.125%, #444 63.125%, #444 68.4375%, transparent 68.4375%, transparent 69.4375%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+}
+.macbook .body .keyboard .keyband:not(last-child) {
+  margin-bottom: 1.55em;
+}
+.macbook .body .keyboard .keyband.f {
+  height: 3.755555555555555em;
+}
+.macbook .body .keyboard .keyband.space {
+  background-image: -webkit-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: -moz-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: -o-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: -ms-linear-gradient(0deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
+  background-image: linear-gradient(90deg, #444 0%, #444 5.3125%, transparent 5.3125%, transparent 6.3125%, #444 6.3125%, #444 11.625%, transparent 11.625%, transparent 12.625%, #444 12.625%, #444 17.9375%, transparent 17.9375%, transparent 18.9375%, #444 18.9375%, #444 24.25%, transparent 24.25%, transparent 25.25%, #444 25.25%, #444 30.5625%, #444 69.4375%, #444 74.75%, transparent 74.75%, transparent 75.75%, #444 75.75%, #444 81.0625%, transparent 81.0625%, transparent 82.0625%, #444 82.0625%, #444 87.375%, transparent 87.375%, transparent 88.375%, #444 88.375%, #444 93.6875%, transparent 93.6875%, transparent 94.6875%, #444 94.6875%, #444 100%) !important;
 }
 .macbook .body .pad {
   width: 5em;
