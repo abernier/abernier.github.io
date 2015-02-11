@@ -10,7 +10,7 @@
   var domvertices = require('domvertices');
   require('jquery-domvertices');
   var THREE = require('three');
-  var Stats = require('stats');
+  //var Stats = require('stats');
  
   (function ($) {
     "use strict";
@@ -99,13 +99,13 @@
       this.setDebugDraw(options.debug);
     }
    
-    if (this.debug) {
+    /*if (this.debug) {
       this.updatePerf = new Stats();
       $('body').append($(this.updatePerf.domElement).css({position: 'fixed', left:0, top:0}));
    
       this.drawPerf = new Stats();
       $('body').append($(this.drawPerf.domElement).css({position: 'fixed', left:80, top:0}));
-    }
+    }*/
     
   }
   Real.prototype.setDebugDraw = function (options) {
@@ -136,7 +136,7 @@
     $('canvas.debugDraw').remove();
   };
   Real.prototype.step = function (dt) {
-    this.debug && this.updatePerf.begin();
+    //this.debug && this.updatePerf.begin();
    
     this.world.Step(
       dt / 1000, //frame-rate
@@ -153,17 +153,17 @@
       this.elements[i].update();
     }
    
-    this.debug && this.updatePerf.end();
+    //this.debug && this.updatePerf.end();
   };
   Real.prototype.draw = function (smooth) {
-    this.debug && this.drawPerf.begin();
+    //this.debug && this.drawPerf.begin();
    
     var i = this.elements.length;
     while (i--) {
       this.elements[i].draw(smooth);
     }
    
-    this.debug && this.drawPerf.end();
+    //this.debug && this.drawPerf.end();
   };
   Real.prototype.start = function () {
     this.clock.start();

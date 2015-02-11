@@ -19,6 +19,12 @@ summary {
   display: block;
 }
 
+* {
+  box-shadow:none!important;
+  border-radius:0!important;
+  background-image:none!important;
+}
+
 filter()
   vendor('filter', arguments)
 pointer-events()
@@ -286,17 +292,17 @@ section
   .macbook1
     //transform:rotateZ(3deg)
     .screen .face-one .display
-      background:url("http://abernier.name/images/bpwww-altaglio-desktop.png") left top no-repeat; background-size:cover;
+      background-image:url("http://abernier.name/images/bpwww-altaglio-desktop.png");background-position:left top;background-repeat:no-repeat; background-size:cover;
   
   .macbook2
     //transform:rotateZ(177deg)
     .screen .face-one .display
-      background:url("http://abernier.name/images/bpwww-ccc-desktop.png") left top no-repeat; background-size:cover;
+      background-image:url("http://abernier.name/images/bpwww-ccc-desktop.png");background-position:left top;background-repeat:no-repeat; background-size:cover;
   
   .macbook3
     //transform:rotateZ(177deg)
     .screen .face-one .display
-      background:url("http://abernier.name/images/bpwww-thekase-desktop.png") left top no-repeat; background-size:cover;
+      background-image:url("http://abernier.name/images/bpwww-thekase-desktop.png");background-position:left top;background-repeat:no-repeat; background-size:cover;
 
   .sheet
     display:block; width:17em; height:23.8em;
