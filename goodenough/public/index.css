@@ -284,6 +284,7 @@ html:not(.debug) .macbook .body .keyboard {
   background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
 }
 .macbook .body .keyboard .key {
+  display: none;
   width: 7.75em;
   height: 8em;
   float: left;
