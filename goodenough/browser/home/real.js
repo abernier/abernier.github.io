@@ -7,6 +7,7 @@
   var Loop = require('loop');
   var $ = require('jquery');
   var _ = require('underscore');
+  var Backbone = require('backbone');
   var domvertices = require('domvertices');
   require('jquery-domvertices');
   var THREE = require('three');
@@ -263,17 +264,16 @@
   };
   Real.Timer = Timer;
    
-   
-  function State() {
-    this.set.apply(this, arguments);
-  }
-  State.prototype.set = function (x, y, a) {
-    this.x = x;
-    this.y = y;
-    this.a = a;
-   
-    return this;
-  };
+  
+  var State = Backbone.Model.extend({
+    initialize: function (x, y, a) {
+      this.x = x;
+      this.y = y;
+      this.a = a;
+
+      return this;
+    }
+  });
    
   function Element(el, real, options) {
     options || (options = {});
@@ -348,8 +348,8 @@
     var y = pos.y;
     var a = ang;
    
-    this.previousState = this.state; // backup previous state
-    this.state = new State(x, y, a);
+    this.previousState = this.state.clone(); // backup previous state
+    this.state.set({x: x, y: y, a: a});
   };
   Element.prototype.draw = function (smooth) {
     if (this.body.GetType() === b2Body.b2_staticBody) {
@@ -372,23 +372,22 @@
       var fixedTimestepAccumulatorRatio = this.real.clock.accumulator / this.real.clock.dt;
       var oneMinusRatio = 1 - fixedTimestepAccumulatorRatio;
    
-      var x = this.state.x * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.x;
-      var y = this.state.y * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.y;
-      var a = this.state.a * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.a;
+      var x = this.state.get('x') * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.get('x');
+      var y = this.state.get('y') * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.get('y');
+      var a = this.state.get('a') * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.get('a');
    
-      state = new State(x, y, a);
+      state.set({x: x, y: y, a: a});
     } else {
       state = this.state;
     }
    
     var origPos = this.origPos;
    
-    this.$el.css('transform', 'translate3d(' + ~~(state.x*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.y*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + (state.a * 180 / Math.PI) + 'deg)');
-    //this.el.style.webkitTransform = 'translate3d(' + ~~(state.x*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.y*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + ~~(state.a * 180 / Math.PI) + 'deg)';
+    this.$el.css('transform', 'translate3d(' + ~~(state.get('x')*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.get('y')*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + (state.get('a') * 180 / Math.PI) + 'deg)');
   };
   Real.Element = Element;
    
-  /*function Spring(real, bodyA, bodyB, options) {
+  function Spring(real, bodyA, bodyB, options) {
     if (!bodyA || !bodyB) {
       return;
     }
@@ -410,7 +409,7 @@
    
     return real.world.CreateJoint(springDef);
   };
-  Real.Spring = Spring;*/
+  Real.Spring = Spring;
 
   function Friction(real, bodyA, bodyB, options) {
     if (!bodyA || !bodyB) {

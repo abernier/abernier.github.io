@@ -347,14 +347,16 @@ var HomeView = Backbone.View.extend({
       });
       this.real = real;
       window.real = this.real;
+
+      this.$pages = $('.pages');
        
-      this.scrollEl = real.addElement(new Real.Element($('.pages'), real));
+      this.scrollEl = real.addElement(new Real.Element(this.$pages, real));
        
       //
       // Friction joint
       //
 
-      var frictionjoint = new Real.Friction(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
+      var frictionjoint = new Real.Friction(real, real.world.GetGroundBody(), real.findElement(this.$pages).body);
 
       //new Real.Prismatic(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
 
@@ -368,7 +370,7 @@ var HomeView = Backbone.View.extend({
         var mouseJointDef = new b2MouseJointDef();
         mouseJointDef.bodyA = real.world.GetGroundBody();
         mouseJointDef.collideConnected = true;
-        mouseJointDef.maxForce = 1000 * body.GetMass();
+        mouseJointDef.maxForce = 100000 * body.GetMass();
         //mouseJointDef.dampingRatio = 0;
         //mouseJointDef.frequencyHz = 99999;
          
@@ -489,6 +491,93 @@ var HomeView = Backbone.View.extend({
         }).call(this);
 
       }).call(this);
+
+      //
+      // bondage
+      //
+
+      /*(function () {
+
+        var $snap = this.$('.page');
+        
+        // Compute t, r, b, l anchors points
+        $snap.each(function (i, el) {
+          var $el = $(el);
+
+          var v = $el.domvertices().data('v');
+
+          var t = new THREE.Vector3().subVectors(v.b, v.a).divideScalar(2);
+          var r = new THREE.Vector3().subVectors(v.c, v.b).divideScalar(2);
+          var b = new THREE.Vector3().subVectors(v.c, v.d).divideScalar(2);
+          var l = new THREE.Vector3().subVectors(v.d, v.a).divideScalar(2);
+          var m = new THREE.Vector3().subVectors(v.c, v.a).divideScalar(2);
+
+          var w = new THREE.Vector3().subVectors(v.b, v.a).length();
+          var h = new THREE.Vector3().subVectors(v.d, v.a).length();
+
+          var minx = Math.min.apply(Math, [v.a.x, v.b.x, v.c.x, v.d.x]);
+          var maxx = Math.max.apply(Math, [v.a.x, v.b.x, v.c.x, v.d.x]);
+          var miny = Math.min.apply(Math, [v.a.y, v.b.y, v.c.y, v.d.y]);
+          var maxy = Math.max.apply(Math, [v.a.y, v.b.y, v.c.y, v.d.y]);
+
+          $el.data('anchor', {
+            t: t,
+            r: r,
+            b: b,
+            l: l,
+            m: m,
+            bbox: {
+              a: {x: minx, y: miny},
+              b: {x: maxx, y: miny},
+              c: {x: maxx, y: maxy},
+              d: {x: minx, y: maxy}
+            },
+            w: w,
+            h: h
+          });
+        });
+
+        function findClosest($els, point) {
+          return $els.eq(0);
+        }
+
+        var state = this.$pages.data('real').state;
+
+        spring = function (anchor1, anchor2) {
+          var v = this.$pages.data('v') || this.$pages.domvertices().data('v');
+
+          var w = new THREE.Vector3().subVectors(v.b, v.a).length();
+          var h = new THREE.Vector3().subVectors(v.d, v.a).length();
+
+          var springDef;
+          springDef = new b2DistanceJointDef();
+          springDef.bodyA = real.world.GetGroundBody();
+          springDef.bodyB = this.$pages.data('real').body;
+          springDef.localAnchorA = new b2Vec2(anchor1.x / real.SCALE, anchor1.y / real.SCALE);
+          springDef.localAnchorB = new b2Vec2((-w/2 + anchor2.x)/real.SCALE, (-h/2 + anchor2.y) / real.SCALE);
+          springDef.dampingRatio = 1;
+          springDef.frequencyHz = 3; // Spring is created soft: important for darken
+          springDef.length = 0;
+         
+          return real.world.CreateJoint(springDef);
+        }.bind(this)
+
+        var $closest = findClosest($snap, {x: 0, y: 0});
+        var anchor = $closest.data('anchor');
+
+        var anchor1 = {x: 0, y: WH/2};
+        var anchor2 = {x: 0, y: WH/2};
+        var s = spring(anchor1, anchor2);
+
+        
+        sy = s.m_localAnchor2.y;
+        state.on('change', function () {
+          console.log('chhhange', state.get('x'), state.get('y'));
+
+          //s.m_localAnchor2.y = sy - state.get('y');
+        });
+
+      }).call(this);*/
 
     }).call(this);
 
@@ -640,6 +729,7 @@ module.exports = HomeView;
   var Loop = require('loop');
   var $ = require('jquery');
   var _ = require('underscore');
+  var Backbone = require('backbone');
   var domvertices = require('domvertices');
   require('jquery-domvertices');
   var THREE = require('three');
@@ -896,17 +986,16 @@ module.exports = HomeView;
   };
   Real.Timer = Timer;
    
-   
-  function State() {
-    this.set.apply(this, arguments);
-  }
-  State.prototype.set = function (x, y, a) {
-    this.x = x;
-    this.y = y;
-    this.a = a;
-   
-    return this;
-  };
+  
+  var State = Backbone.Model.extend({
+    initialize: function (x, y, a) {
+      this.x = x;
+      this.y = y;
+      this.a = a;
+
+      return this;
+    }
+  });
    
   function Element(el, real, options) {
     options || (options = {});
@@ -981,8 +1070,8 @@ module.exports = HomeView;
     var y = pos.y;
     var a = ang;
    
-    this.previousState = this.state; // backup previous state
-    this.state = new State(x, y, a);
+    this.previousState = this.state.clone(); // backup previous state
+    this.state.set({x: x, y: y, a: a});
   };
   Element.prototype.draw = function (smooth) {
     if (this.body.GetType() === b2Body.b2_staticBody) {
@@ -1005,23 +1094,22 @@ module.exports = HomeView;
       var fixedTimestepAccumulatorRatio = this.real.clock.accumulator / this.real.clock.dt;
       var oneMinusRatio = 1 - fixedTimestepAccumulatorRatio;
    
-      var x = this.state.x * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.x;
-      var y = this.state.y * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.y;
-      var a = this.state.a * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.a;
+      var x = this.state.get('x') * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.get('x');
+      var y = this.state.get('y') * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.get('y');
+      var a = this.state.get('a') * fixedTimestepAccumulatorRatio + oneMinusRatio * this.previousState.get('a');
    
-      state = new State(x, y, a);
+      state.set({x: x, y: y, a: a});
     } else {
       state = this.state;
     }
    
     var origPos = this.origPos;
    
-    this.$el.css('transform', 'translate3d(' + ~~(state.x*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.y*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + (state.a * 180 / Math.PI) + 'deg)');
-    //this.el.style.webkitTransform = 'translate3d(' + ~~(state.x*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.y*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + ~~(state.a * 180 / Math.PI) + 'deg)';
+    this.$el.css('transform', 'translate3d(' + ~~(state.get('x')*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.get('y')*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + (state.get('a') * 180 / Math.PI) + 'deg)');
   };
   Real.Element = Element;
    
-  /*function Spring(real, bodyA, bodyB, options) {
+  function Spring(real, bodyA, bodyB, options) {
     if (!bodyA || !bodyB) {
       return;
     }
@@ -1043,7 +1131,7 @@ module.exports = HomeView;
    
     return real.world.CreateJoint(springDef);
   };
-  Real.Spring = Spring;*/
+  Real.Spring = Spring;
 
   function Friction(real, bodyA, bodyB, options) {
     if (!bodyA || !bodyB) {
@@ -1104,7 +1192,7 @@ module.exports = HomeView;
   }
  
 }).call(this);
-},{"box2dweb":"box2dweb","domvertices":"domvertices","jquery":"jquery","jquery-domvertices":"jquery-domvertices","loop":"loop","three":"three","underscore":"underscore"}],3:[function(require,module,exports){
+},{"backbone":"backbone","box2dweb":"box2dweb","domvertices":"domvertices","jquery":"jquery","jquery-domvertices":"jquery-domvertices","loop":"loop","three":"three","underscore":"underscore"}],3:[function(require,module,exports){
 var THREE = require('three');
 var $ = require('jquery');
 
