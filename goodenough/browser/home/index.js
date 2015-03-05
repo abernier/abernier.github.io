@@ -495,7 +495,7 @@ var HomeView = Backbone.View.extend({
       // bondage
       //
 
-      var WEAKHZ = 4;
+      var WEAKHZ = 6;
       var STRONGHZ = 8;
 
       function Bondage(real, root, el) {

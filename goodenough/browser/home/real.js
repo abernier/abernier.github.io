@@ -330,7 +330,7 @@
     };
     bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
     bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
-    //bodyDef.fixedRotation = true;
+    bodyDef.fixedRotation = true;
    
     // Add to world
     this.body = real.world.CreateBody(bodyDef);

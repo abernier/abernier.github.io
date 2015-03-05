@@ -496,7 +496,7 @@ var HomeView = Backbone.View.extend({
       // bondage
       //
 
-      var WEAKHZ = 4;
+      var WEAKHZ = 6;
       var STRONGHZ = 8;
 
       function Bondage(real, root, el) {
@@ -1273,7 +1273,7 @@ module.exports = HomeView;
     };
     bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
     bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
-    //bodyDef.fixedRotation = true;
+    bodyDef.fixedRotation = true;
    
     // Add to world
     this.body = real.world.CreateBody(bodyDef);
