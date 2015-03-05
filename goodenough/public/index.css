@@ -10,8 +10,6 @@
   height: 100%;
   -webkit-border-radius: 8em;
   border-radius: 8em;
-  -webkit-box-shadow: 0 0 10.500000000000002em 0px rgba(0,0,0,0.3);
-  box-shadow: 0 0 10.500000000000002em 0px rgba(0,0,0,0.3);
 }
 .macbook .inner {
   width: 150em;
@@ -59,15 +57,6 @@
   -webkit-background-size: 300em 300em;
   -moz-background-size: 300em 300em;
   background-size: 300em 300em;
-  -webkit-box-shadow: inset 0 3em 7.5em rgba(255,255,255,0.5);
-  box-shadow: inset 0 3em 7.5em rgba(255,255,255,0.5);
-}
-html:not(.debug) .macbook .screen {
-  background-image: -webkit-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
-  background-image: -moz-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
-  background-image: -o-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
-  background-image: -ms-linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
-  background-image: linear-gradient(45deg, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0) 100%);
 }
 .macbook .screen .logo {
   position: absolute;
@@ -104,13 +93,6 @@ html:not(.debug) .macbook .screen {
   -ms-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-html:not(.debug) .macbook .screen .face-one {
-  background-image: -webkit-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -moz-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -o-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -ms-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-}
 .macbook .screen .face-one .camera {
   width: 3em;
   height: 3em;
@@ -132,8 +114,6 @@ html:not(.debug) .macbook .screen .face-one {
   -webkit-border-radius: 1px;
   border-radius: 1px;
   position: relative;
-  -webkit-box-shadow: inset 0 0 1.5em #000;
-  box-shadow: inset 0 0 1.5em #000;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -194,13 +174,6 @@ html:not(.debug) .macbook .screen .face-one .display .shade {
   -ms-transform-origin: 50% bottom;
   transform-origin: 50% bottom;
 }
-html:not(.debug) .macbook .body {
-  background-image: -webkit-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -moz-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -o-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -ms-linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: linear-gradient(45deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-}
 .macbook .body .face-one {
   width: 150em;
   height: 100em;
@@ -221,13 +194,6 @@ html:not(.debug) .macbook .body {
   -ms-transform: translateZ(-1px);
   transform: translateZ(-1px);
 }
-html:not(.debug) .macbook .body .face-one {
-  background-image: -webkit-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -moz-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -o-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -ms-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-}
 .macbook .body .touchpad {
   width: 41em;
   height: 32em;
@@ -243,15 +209,6 @@ html:not(.debug) .macbook .body .face-one {
   -webkit-border-radius: 2em;
   border-radius: 2em;
   background: #cdcdcd;
-  -webkit-box-shadow: inset 0 0 3em #888;
-  box-shadow: inset 0 0 3em #888;
-}
-html:not(.debug) .macbook .body .touchpad {
-  background-image: -webkit-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -moz-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -o-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -ms-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
 }
 .macbook .body .keyboard {
   width: 130em;
@@ -273,15 +230,6 @@ html:not(.debug) .macbook .body .touchpad {
   -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
   background: #cdcdcd;
-  -webkit-box-shadow: inset 0 0 3em #777;
-  box-shadow: inset 0 0 3em #777;
-}
-html:not(.debug) .macbook .body .keyboard {
-  background-image: -webkit-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -moz-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -o-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: -ms-linear-gradient(60deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
-  background-image: linear-gradient(30deg, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0) 100%);
 }
 .macbook .body .keyboard .key {
   width: 7.75em;
@@ -424,13 +372,6 @@ nav,
 section,
 summary {
   display: block;
-}
-* {
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  -webkit-border-radius: 0 !important;
-  border-radius: 0 !important;
-  background-image: none !important;
 }
 /* http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/ */
 /*font-size(x)
