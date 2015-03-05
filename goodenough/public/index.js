@@ -496,7 +496,7 @@ var HomeView = Backbone.View.extend({
       // bondage
       //
 
-      var WEAKHZ = 6;
+      var WEAKHZ = 4;
       var STRONGHZ = 8;
 
       function Bondage(real, root, el) {
@@ -518,12 +518,6 @@ var HomeView = Backbone.View.extend({
         var first = 0/10;
         var second = 10/10;
 
-        // Top springs
-        // var e1 = new THREE.Vector3().subVectors(v.b, v.a).multiplyScalar(first).add(v.a);
-        // this.springTop1 = this.createSpring({x: first*WW, y: 0}, {x: e1.x, y: e1.y});
-        // var e2 = new THREE.Vector3().subVectors(v.b, v.a).multiplyScalar(second).add(v.a);
-        // this.springTop2 = this.createSpring({x: second*WW, y: 0}, {x: e2.x, y: e2.y});
-
         // Left springs
         var h1 = new THREE.Vector3().subVectors(v.d, v.a).multiplyScalar(first).add(v.a);
         this.springLeft1 = this.createSpring({x: 0, y: first*WH}, {x: h1.x, y: h1.y});
@@ -535,13 +529,6 @@ var HomeView = Backbone.View.extend({
         this.springRight1 = this.createSpring({x: WW, y: first*WH}, {x: f1.x, y: f1.y});
         var f2 = new THREE.Vector3().subVectors(v.c, v.b).multiplyScalar(second).add(v.b);
         this.springRight2 = this.createSpring({x: WW, y: second*WH}, {x: f2.x, y: f2.y});
-
-        /*var springBottom = (function () {
-          var v = this.$pages.data('v') || this.$pages.domvertices();
-          var h = new THREE.Vector3().subVectors(v.d, v.a).length();
-
-          return this.createSpring({x: WW/2, y: WH}, {x: WW/2, y: h});
-        }).call(this);*/
 
       };
       Bondage.prototype.detach = function () {
@@ -602,65 +589,16 @@ var HomeView = Backbone.View.extend({
         var v = this.$el.domvertices({root: this.$root[0]});   // #pages vertices in #camera coordinates
         var vv = this.$snap.domvertices({root: this.$el[0]}); // closest vertices in #pages coordinates
         var vvv = this.$snap.domvertices({root: this.$root[0]}); // closest vertices in #camera coordinates
-
-        var width = new THREE.Vector3().subVectors(v.b, v.a).length();
-        var height = new THREE.Vector3().subVectors(v.d, v.a).length();
-
-        //
-        // top spring
-        //
-
-        // var e1 = new THREE.Vector3(this.springTop1.m_localAnchor1.x*this.real.SCALE, this.springTop1.m_localAnchor1.y*this.real.SCALE, 0);
-        // e1 = e1.applyMatrix4(new THREE.Matrix4().getInverse(v.matrix)); // e in #pages coordinates
-        // //console.log(e.x, e.y);
-        // var e1x = e1.x;
-        // e1x = Math.max(e1x, vv.a.x) // x >= xA
-        // e1x = Math.min(e1x, vv.b.x) // x <= xB
-        // var anchor2local = this.b2localcoordinates({
-        //   x: e1x,
-        //   y: y(vv.a, vv.b)(e1x)
-        // }, this.$el);
-        // this.springTop1.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
-        // this.springTop1.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
-        // if (vvv.a.y - this.springTop1.m_localAnchor1.y <= 0) {
-        //   this.springTop1.m_frequencyHz = 0.001;
-        //   console.log('weak top spring 1');
-        // } else {
-        //   this.springTop1.m_frequencyHz = WEAKHZ;
-        //   console.log('normal top spring 1');
-        // }
-
-        // var e2 = new THREE.Vector3(this.springTop2.m_localAnchor1.x*this.real.SCALE, this.springTop2.m_localAnchor1.y*this.real.SCALE, 0);
-        // e2 = e2.applyMatrix4(new THREE.Matrix4().getInverse(v.matrix)); // e in #pages coordinates
-        // //console.log(e.x, e.y);
-        // var e2x = e2.x;
-        // e2x = Math.max(e2x, vv.a.x) // x >= xA
-        // e2x = Math.min(e2x, vv.b.x) // x <= xB
-        // var anchor2local = this.b2localcoordinates({
-        //   x: e2x,
-        //   y: y(vv.a, vv.b)(e2x)
-        // }, this.$el);
-        // this.springTop2.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
-        // this.springTop2.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
-        // if (vvv.b.y - this.springTop2.m_localAnchor1.y <= 0) {
-        //   this.springTop2.m_frequencyHz = 0.001;
-        //   console.log('weak top spring 2');
-        // } else {
-        //   this.springTop2.m_frequencyHz = WEAKHZ;
-        //   console.log('normal top spring 2');
-        // }
-
-        var m = new THREE.Matrix4().getInverse(vvv.matrix);
-        var m2 = vv.matrix;
+        var vvv_inv = new THREE.Matrix4().getInverse(vvv.matrix);
 
         //
         // left spring
         //
 
         var h1 = new THREE.Vector3(this.springLeft1.m_localAnchor1.x*this.real.SCALE, this.springLeft1.m_localAnchor1.y*this.real.SCALE, 0);
-        h1 = h1.applyMatrix4(m); // h in #pages coordinates
+        h1 = h1.applyMatrix4(vvv_inv); // h in #pages coordinates
         h1 = new THREE.Vector3(0, h1.y, 0);
-        h1 = h1.applyMatrix4(m2);
+        h1 = h1.applyMatrix4(vv.matrix);
         h1y = h1.y;
         h1y = Math.max(h1y, vv.a.y) // y >= yA
         h1y = Math.min(h1y, vv.d.y) // y <= yD
@@ -679,9 +617,9 @@ var HomeView = Backbone.View.extend({
         // }
 
         var h2 = new THREE.Vector3(this.springLeft2.m_localAnchor1.x*this.real.SCALE, this.springLeft2.m_localAnchor1.y*this.real.SCALE, 0);
-        h2 = h2.applyMatrix4(m); // h in #pages coordinates
+        h2 = h2.applyMatrix4(vvv_inv); // h in #pages coordinates
         h2 = new THREE.Vector3(0, h2.y, 0);
-        h2 = h2.applyMatrix4(m2);
+        h2 = h2.applyMatrix4(vv.matrix);
         var h2y = h2.y;
         h2y = Math.max(h2y, vv.a.y) // y >= yA
         h2y = Math.min(h2y, vv.d.y) // y <= yD
@@ -704,9 +642,9 @@ var HomeView = Backbone.View.extend({
         //
 
         var f1 = new THREE.Vector3(this.springRight1.m_localAnchor1.x*this.real.SCALE, this.springRight1.m_localAnchor1.y*this.real.SCALE, 0);
-        f1 = f1.applyMatrix4(m); // h in #pages coordinates
+        f1 = f1.applyMatrix4(vvv_inv); // h in #pages coordinates
         f1 = new THREE.Vector3(new THREE.Vector3().subVectors(vv.b, vv.a).length(), f1.y, 0);
-        f1 = f1.applyMatrix4(m2);
+        f1 = f1.applyMatrix4(vv.matrix);
         var f1y = f1.y;
         f1y = Math.max(f1y, vv.b.y) // y >= yB
         f1y = Math.min(f1y, vv.c.y) // y <= yC
@@ -723,9 +661,9 @@ var HomeView = Backbone.View.extend({
         // }
 
         var f2 = new THREE.Vector3(this.springRight2.m_localAnchor1.x*this.real.SCALE, this.springRight2.m_localAnchor1.y*this.real.SCALE, 0);
-        f2 = f2.applyMatrix4(m); // h in #pages coordinates
+        f2 = f2.applyMatrix4(vvv_inv); // h in #pages coordinates
         f2 = new THREE.Vector3(new THREE.Vector3().subVectors(vv.b, vv.a).length(), f2.y, 0);
-        f2 = f2.applyMatrix4(m2);
+        f2 = f2.applyMatrix4(vv.matrix);
         var f2y = f2.y;
         f2y = Math.max(f2y, vv.b.y) // y >= yB
         f2y = Math.min(f2y, vv.c.y) // y <= yC
@@ -1273,7 +1211,7 @@ module.exports = HomeView;
     };
     bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
     bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
-    bodyDef.fixedRotation = true;
+    //bodyDef.fixedRotation = true;
    
     // Add to world
     this.body = real.world.CreateBody(bodyDef);
