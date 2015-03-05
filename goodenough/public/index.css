@@ -373,6 +373,13 @@ section,
 summary {
   display: block;
 }
+* {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  -webkit-border-radius: 0 !important;
+  border-radius: 0 !important;
+  background-image: none !important;
+}
 /* http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/ */
 /*font-size(x)
   if x in (inherit initial large larger medium small smaller x-large x-small xx-large xx-small)
