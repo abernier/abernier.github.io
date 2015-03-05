@@ -330,7 +330,7 @@
     };
     bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
     bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
-    bodyDef.fixedRotation = true;
+    //bodyDef.fixedRotation = true;
    
     // Add to world
     this.body = real.world.CreateBody(bodyDef);
@@ -382,8 +382,17 @@
     }
    
     var origPos = this.origPos;
+    var tx = state.get('x')*SCALE - origPos.left  - origPos.width / 2;
+    var ty = state.get('y')*SCALE - origPos.top - origPos.height / 2;
+    var a = state.get('a') * 180 / Math.PI;
+
+    this.transform = {
+      x: tx,
+      y: ty,
+      a: a
+    };
    
-    this.$el.css('transform', 'translate3d(' + ~~(state.get('x')*SCALE - origPos.left  - origPos.width / 2) + 'px, ' + ~~(state.get('y')*SCALE - origPos.top - origPos.height / 2) + 'px, 0) rotate3d(0,0,1,' + (state.get('a') * 180 / Math.PI) + 'deg)');
+    this.$el.css('transform', 'translate3d(' + ~~tx + 'px, ' + ~~ty + 'px, 0) rotate3d(0,0,1,' + a + 'deg)');
   };
   Real.Element = Element;
    

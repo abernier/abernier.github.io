@@ -17306,7 +17306,7 @@ module.exports.color = require('./vendor/dat.color')
     options || (options = {});
 
     _.defaults(options, {
-      lastParent: document.body.parentNode // <html> element by default
+      root: document.body.parentNode // <html> element by default
     });
 
     //
@@ -17332,7 +17332,7 @@ module.exports.color = require('./vendor/dat.color')
     //
 
     var matrices = [];
-    while (el.nodeType === 1 && el !== options.lastParent) {(function () {
+    while (el.nodeType === 1 && el !== options.root) {(function () {
       var nextParent = el.parentNode;
 
       var computedStyle = getComputedStyle(el, null);
@@ -17415,15 +17415,21 @@ module.exports.color = require('./vendor/dat.color')
     }())}
 
     //
-    // apply changes of basis (in reverse order)
+    // Compute the global matrix (reverse order)
     //
 
-    for (var i=0; i<matrices.length; i++) {
-      v.a = v.a.applyMatrix4(matrices[i]);
-      v.b = v.b.applyMatrix4(matrices[i]);
-      v.c = v.c.applyMatrix4(matrices[i]);
-      v.d = v.d.applyMatrix4(matrices[i]);
+    var globalMatrix = new THREE.Matrix4().identity();
+    var l = matrices.length;
+    while (l--) {
+      globalMatrix.multiply(matrices[l]);
     }
+
+    v.matrix = globalMatrix;
+
+    v.a = v.a.applyMatrix4(globalMatrix);
+    v.b = v.b.applyMatrix4(globalMatrix);
+    v.c = v.c.applyMatrix4(globalMatrix);
+    v.d = v.d.applyMatrix4(globalMatrix);
 
     return v;
   }
@@ -22837,12 +22843,13 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 		this.update();
 	}
 	V.prototype.update = function () {
-		var v = domvertices(this.el, {lastParent: this.options.lastParent});
+		var v = domvertices(this.el, {root: this.options.root});
 
 		this.a = v.a;
 		this.b = v.b;
 		this.c = v.c;
 		this.d = v.d;
+    this.matrix = v.matrix;
 
     return this;
 	};
@@ -22851,10 +22858,10 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
       display:'block',width:'0px',height:'0px', boxShadow:'0 0 0 3px lime',
       position:'absolute',left:'0px',top:'0px'
     };
-    this.$a || (this.$a = $('<div>').appendTo(this.options.traceAppendEl).css(position));
-    this.$b || (this.$b = $('<div>').appendTo(this.options.traceAppendEl).css(position));
-    this.$c || (this.$c = $('<div>').appendTo(this.options.traceAppendEl).css(position));
-    this.$d || (this.$d = $('<div>').appendTo(this.options.traceAppendEl).css(position));
+    this.$a || (this.$a = $('<div>').appendTo(this.options.append).css(position));
+    this.$b || (this.$b = $('<div>').appendTo(this.options.append).css(position));
+    this.$c || (this.$c = $('<div>').appendTo(this.options.append).css(position));
+    this.$d || (this.$d = $('<div>').appendTo(this.options.append).css(position));
 
     var v = {
       a: this.a,
@@ -22884,19 +22891,19 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 
   var arr = [];
 	$.fn.domvertices = function (options) {
-		return this.each(function (i, el) {
-			var v = new V(el, options);
-      arr.push(v);
+		var v = new V(this[0], options);
+    arr.push(v);
 
-			$(el).data('v', v);
-		});
+    this.data('v', v);
+
+    return v;
 	};
   $.fn.domvertices.v = arr;
 
 
   $.fn.domvertices.defaults = {
-    traceAppendEl: document.body,
-    lastParent: document.body.parentNode
+    append: document.body,
+    root: document.body.parentNode
   };
 }).call(this);
 },{"domvertices":undefined,"jquery":undefined}],"jquery-hammer":[function(require,module,exports){
