@@ -746,7 +746,7 @@ section h1+p {
 }
 @media (min-width: 1024px) {
   section h1+p {
-    font-size: 13rem;
+    margin-bottom: 13rem;
   }
 }
 section .macbook {
