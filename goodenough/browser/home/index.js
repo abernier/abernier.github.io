@@ -512,8 +512,10 @@ var HomeView = Backbone.View.extend({
           };
 
           function mousedown(e) {
-            console.log('mousedown');
+            //console.log('mousedown');
             this.trigger('scrollerdown');
+
+            e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
 
             pointer.x = e.clientX;
             pointer.y = e.clientY;
@@ -525,7 +527,7 @@ var HomeView = Backbone.View.extend({
           }
           mousedown = mousedown.bind(this);
           function mouseup(e) {
-            console.log('mouseup');
+            //console.log('mouseup');
             this.trigger('scrollerup');
 
             pointer.x = undefined;
@@ -536,8 +538,10 @@ var HomeView = Backbone.View.extend({
           }
           mouseup = mouseup.bind(this);
           function mousemove(e) {
-            console.log('mousemove', e);
+            //console.log('mousemove');
             e.preventDefault(); // http://stackoverflow.com/questions/11204460/the-touchmove-event-on-android-system-transformer-prime
+
+            e = ~e.type.indexOf('touch') && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0] || e;
 
             var delta = {
               x: pointer.x - e.clientX,
@@ -546,9 +550,7 @@ var HomeView = Backbone.View.extend({
 
             var FACTOR = 9;
             var impulse = new b2Vec2(-delta.x*FACTOR, -delta.y*FACTOR);
-
             var impulseOrigin = body.GetWorldCenter();
-
             body.ApplyImpulse(impulse, impulseOrigin);
 
             pointer.x = e.clientX;
