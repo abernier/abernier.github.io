@@ -291,7 +291,7 @@
         type: b2Body.b2_dynamicBody,
       },
       fixture: {
-        density: 1,
+        density: 1, // density in kilograms per meter squared
         friction: 2,
         restitution: 0,
         shape: b2PolygonShape
@@ -331,8 +331,8 @@
     bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
     bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
     //bodyDef.fixedRotation = true;
-    bodyDef.linearDamping = 6;
-    bodyDef.angularDamping = 8;
+    bodyDef.linearDamping = 4;
+    bodyDef.angularDamping = 6;
    
     // Add to world
     this.body = real.world.CreateBody(bodyDef);

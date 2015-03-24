@@ -275,7 +275,7 @@ var Router = Backbone.Router.extend({
     home: function () {
       console.log('home');
 
-      new HomeView({el: 'body'});
+      this.mainView = new HomeView({el: 'body'});
     },
     target: function (from, to, options) {
       options || (options = {});

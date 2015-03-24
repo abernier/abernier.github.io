@@ -613,9 +613,6 @@ canvas.debugDraw {
   white-space: nowrap;
   display: inline-block;
 }
-html.debug .pages {
-  border: 1px solid;
-}
 .pages >* {
   white-space: normal;
 }

@@ -201,6 +201,8 @@ var CameraView = Backbone.View.extend({
     this.$target = $el;
   },
   recenter: function () {
+    console.log('recenter camera on target', this.$target);
+
     if (this.$target && this.$target.length) {
       this.moveAndLookAtElement(this.$target, {duration: 0});
     }
@@ -331,6 +333,13 @@ var HomeView = Backbone.View.extend({
     var $scene = this.$('#scene');
     var $camera = this.$('#camera');
 
+    var gui;
+    if ($html.is('.debug')) {
+      var dat = require('dat-gui');
+      gui = new dat.GUI();
+      //gui.close();
+    }
+
     $.fn.domvertices.defaults.append = $scene;
 
     //
@@ -351,6 +360,17 @@ var HomeView = Backbone.View.extend({
       this.$pages = $('.pages');
        
       this.scrollEl = real.addElement(new Real.Element(this.$pages, real));
+
+      // GUI
+      if (gui) {(function () {
+        var body = this.$pages.data('real').body;
+
+        var f = gui.addFolder('real');
+        f.add(body.m_fixtureList, 'm_density').min(0).max(1).step(.01);
+        f.add(body.m_fixtureList, 'm_friction').min(0).max(5).step(.1);
+        f.add(body, 'm_linearDamping').min(0).max(50).step(.1);
+        f.add(body, 'm_angularDamping').min(0).max(50).step(.1);
+      }).call(this);}
        
       //
       // Friction joint
@@ -525,12 +545,124 @@ var HomeView = Backbone.View.extend({
           };
         }
 
+        function b2localcoordinates(domcoordinates, el) {
+          var $el = $(el);
+
+          var v = $el.domvertices();
+
+          var w = new THREE.Vector3().subVectors(v.b, v.a).length();
+          var h = new THREE.Vector3().subVectors(v.d, v.a).length();
+
+          return (new b2Vec2(
+            domcoordinates.x - w/2,
+            domcoordinates.y - h/2
+          ));
+        };
+        function b2domcoordinates(localcoordinates, el) {
+          var $el = $(el);
+
+          var v = $el.domvertices();
+
+          var w = new THREE.Vector3().subVectors(v.b, v.a).length();
+          var h = new THREE.Vector3().subVectors(v.d, v.a).length();
+
+          return (new b2Vec2(
+            localcoordinates.x + w/2,
+            localcoordinates.y + h/2
+          ));
+        }
+
+        var MAXHZ = 500;
+        var MINHZ = .00000001;
+
+        function Spring(real, elA, elB, bodyA, bodyB, localAnchor1, localAnchor2, hz) {
+          this.real = real;
+
+          this.$elA = $(elA);
+          this.$elB = $(elB);
+
+          var springDef = new b2DistanceJointDef();
+          springDef.bodyA = bodyA;
+          springDef.bodyB = bodyB;
+          springDef.localAnchorA = localAnchor1;
+          springDef.localAnchorB = localAnchor2;
+          springDef.dampingRatio = 1;
+          springDef.frequencyHz = MINHZ; // Spring is created soft: important for darken
+          springDef.length = 0;
+         
+          this.joint = real.world.CreateJoint(springDef);
+          this.enabled = true;
+          this.setHz(hz);
+        }
+        Spring.prototype.destroy = function () {
+          this.real.world.DestroyJoint(this.joint);
+        };
+        Spring.prototype.setHz = function (val) {
+          //val = Math.round(val);
+          val = Math.max(val, MINHZ);
+          this.hz = val;
+
+          if (!this.enabled) return this;
+
+          var length = ~~this.length().length();
+          //var round = 5;
+          //length = Math.floor(length/round)*round;
+
+          this.joint.m_frequencyHz = this.hz;
+          this.joint.m_frequencyHz *= length/1000;
+          this.joint.m_frequencyHz = Math.max(this.joint.m_frequencyHz, MINHZ);
+
+          return this;
+        };
+        Spring.prototype.enable = function () {
+          this.enabled = true;
+          this.joint.m_frequencyHz = this.hz;
+        };
+        Spring.prototype.disable = function () {
+          this.enabled = false;
+          this.joint.m_frequencyHz = MINHZ;
+        };
+        Spring.prototype.length = function (matrix) {
+          if (!matrix) {
+            var vvv = this.$elB.domvertices({root: this.$elA[0]}); // $pages vertices in $root coordinates
+            matrix = vvv.matrix
+          }
+
+          var H1 = new THREE.Vector3(
+            this.joint.m_localAnchor1.x*this.real.SCALE,
+            this.joint.m_localAnchor1.y*this.real.SCALE,
+            0
+          );
+          
+          var h1 = new THREE.Vector3(
+            this.joint.m_localAnchor2.x*this.real.SCALE,
+            this.joint.m_localAnchor2.y*this.real.SCALE,
+            0
+          );
+          var _h1 = b2domcoordinates({
+            x: h1.x,
+            y: h1.y
+          }, this.$elB);
+          h1.x = _h1.x;
+          h1.y = _h1.y;
+          h1 = h1.applyMatrix4(matrix); // h1 in $root coordinates
+          
+          //console.log('h1', h1);
+          var deltaH1 = new THREE.Vector3(
+            h1.x - H1.x,
+            h1.y - H1.y,
+            0
+          );
+
+          return deltaH1;
+        };
+
         function Bondage(real, root, el, options) {
           options || (options = {});
           _.defaults(options, {
             hz: {
-              weak: 4,
-              strong: 8
+              min: MINHZ,
+              max: MAXHZ
             }
           });
           this.options = options;
@@ -541,29 +673,36 @@ var HomeView = Backbone.View.extend({
           this.$root = $(root);
           this.$el = $(el);
 
-          this.setHz(0);
+          this.setHz(0); // initial hz
 
           _.extend(this, Backbone.Events);
         }
         Bondage.prototype.setHz = function (val) {
+          val = Math.max(val, this.options.hz.min);
+
           this.hz = val;
 
-          val = Math.max(val, 0.0001);
+          this.springLeft1 && (this.springLeft1.setHz(this.hz));
+          this.springLeft2 && (this.springLeft2.setHz(this.hz));
+          this.springRight1 && (this.springRight1.setHz(this.hz));
+          this.springRight2 && (this.springRight2.setHz(this.hz));
 
-          this.springLeft1 && (this.springLeft1.m_frequencyHz = this.hz);
-          this.springLeft2 && (this.springLeft2.m_frequencyHz = this.hz);
-          this.springRight1 && (this.springRight1.m_frequencyHz = this.hz);
-          this.springRight2 && (this.springRight2.m_frequencyHz = this.hz);
+          this.$el.data('real').body.SetAwake(true);
 
-          return this.hz;
+          return this;
         };
-        Bondage.prototype.attach = function (snap) {
+        Bondage.prototype.attach = function (snap, options) {
+          options || (options = {});
+          _.defaults(options, {
+            silent: false
+          });
+
           if (snap) {
             var $snap = $(snap);
 
             // detach if already attached
             if (this.$snap) {
-              this.detach();
+              this.detach({silent: true});
             }
 
             this.$snap = $snap;
@@ -574,7 +713,7 @@ var HomeView = Backbone.View.extend({
           var first = 0/10;
           var second = 10/10;
 
-          // Left springs
+          // Left springs (TODO: on 'resize' => update springs WW/WH)
           var h1 = new THREE.Vector3().subVectors(v.d, v.a).multiplyScalar(first).add(v.a);
           this.springLeft1 = this.createSpring({x: 0, y: first*WH}, {x: h1.x, y: h1.y});
           var h2 = new THREE.Vector3().subVectors(v.d, v.a).multiplyScalar(second).add(v.a);
@@ -586,51 +725,55 @@ var HomeView = Backbone.View.extend({
           var f2 = new THREE.Vector3().subVectors(v.c, v.b).multiplyScalar(second).add(v.b);
           this.springRight2 = this.createSpring({x: WW, y: second*WH}, {x: f2.x, y: f2.y});
 
-          this.trigger('attach');
+          this.springs = [this.springLeft1, this.springLeft2, this.springRight1, this.springRight2];
+
+          this.$el.data('real').body.SetAwake(true);
+
+          if (!options.silent) {
+            this.trigger('attach');
+          }
           this.attached = true;
         };
-        Bondage.prototype.detach = function () {
-          this.real.world.DestroyJoint(this.springLeft1);
-          this.real.world.DestroyJoint(this.springLeft2);
-          this.real.world.DestroyJoint(this.springRight1);
-          this.real.world.DestroyJoint(this.springRight2);
+        Bondage.prototype.detach = function (options) {
+          options || (options = {});
+          _.defaults(options, {
+            silent: false
+          });
+
+          this.springLeft1.destroy();
+          this.springLeft2.destroy();
+          this.springRight1.destroy();
+          this.springRight2.destroy();
 
           //this.$snap = undefined;
 
-          this.trigger('detach');
+          if (!options.silent) {
+            this.trigger('detach'); 
+          }
           this.attached = false;
         };
-        Bondage.prototype.b2localcoordinates = function (domcoordinates, el) {
-          var $el = $(el);
-
-          var v = $el.data('v') || $el.domvertices();
-
-          var w = new THREE.Vector3().subVectors(v.b, v.a).length();
-          var h = new THREE.Vector3().subVectors(v.d, v.a).length();
-
-          return (new b2Vec2(
-            domcoordinates.x - w/2,
-            domcoordinates.y - h/2
-          ));
-        };
         Bondage.prototype.createSpring = function (anchor1, anchor2) {
-          var springDef = new b2DistanceJointDef();
-          springDef.bodyA = this.real.world.GetGroundBody();
-          springDef.bodyB = this.$el.data('real').body;
-          springDef.localAnchorA = new b2Vec2(
+          var real = this.real;
+          var $elA = this.$root;
+          var $elB = this.$el;
+
+          var bodyA = this.real.world.GetGroundBody();
+          var bodyB = this.$el.data('real').body;
+
+          var localAnchor1 = new b2Vec2(
             anchor1.x / real.SCALE,
             anchor1.y / real.SCALE
           );
-          var anchor2local = this.b2localcoordinates(anchor2, this.$el);
-          springDef.localAnchorB = new b2Vec2(
+
+          var anchor2local = b2localcoordinates(anchor2, this.$el);
+          var localAnchor2 = new b2Vec2(
             anchor2local.x / real.SCALE,
             anchor2local.y / real.SCALE
           );
-          springDef.dampingRatio = 1;
-          springDef.frequencyHz = 0.0001; // Spring is created soft: important for darken
-          springDef.length = 0;
-         
-          return this.real.world.CreateJoint(springDef);
+
+          var spring = new Spring(real, $elA, $elB, bodyA, bodyB, localAnchor1, localAnchor2, this.hz);
+
+          return spring;
         };
         Bondage.prototype.shift = function () {
           if (!this.$snap) return;
@@ -643,33 +786,33 @@ var HomeView = Backbone.View.extend({
           // left spring
           //
 
-          var h1 = new THREE.Vector3(this.springLeft1.m_localAnchor1.x*this.real.SCALE, this.springLeft1.m_localAnchor1.y*this.real.SCALE, 0);
+          var h1 = new THREE.Vector3(this.springLeft1.joint.m_localAnchor1.x*this.real.SCALE, this.springLeft1.joint.m_localAnchor1.y*this.real.SCALE, 0);
           h1 = h1.applyMatrix4(vvv_inv); // h1 in $snap coordinates
           h1 = new THREE.Vector3(0, h1.y, 0); // project h1 on local y axis
           h1 = h1.applyMatrix4(vv.matrix); // proj h1 in $el coordinates
           h1y = h1.y;
           h1y = Math.max(h1y, vv.a.y) // y >= yA
           h1y = Math.min(h1y, vv.d.y) // y <= yD
-          var anchor2local = this.b2localcoordinates({
+          var anchor2local = b2localcoordinates({
             x: x(vv.a, vv.d)(h1y),
             y: h1y
           }, this.$el);
-          this.springLeft1.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
-          this.springLeft1.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
+          this.springLeft1.joint.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
+          this.springLeft1.joint.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
 
-          var h2 = new THREE.Vector3(this.springLeft2.m_localAnchor1.x*this.real.SCALE, this.springLeft2.m_localAnchor1.y*this.real.SCALE, 0);
+          var h2 = new THREE.Vector3(this.springLeft2.joint.m_localAnchor1.x*this.real.SCALE, this.springLeft2.joint.m_localAnchor1.y*this.real.SCALE, 0);
           h2 = h2.applyMatrix4(vvv_inv); // h in #pages coordinates
           h2 = new THREE.Vector3(0, h2.y, 0);
           h2 = h2.applyMatrix4(vv.matrix);
           var h2y = h2.y;
           h2y = Math.max(h2y, vv.a.y) // y >= yA
           h2y = Math.min(h2y, vv.d.y) // y <= yD
-          var anchor2local = this.b2localcoordinates({
+          var anchor2local = b2localcoordinates({
             x: x(vv.a, vv.d)(h2y),
             y: h2y
           }, this.$el);
-          this.springLeft2.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
-          this.springLeft2.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
+          this.springLeft2.joint.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
+          this.springLeft2.joint.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
 
           //
           // right spring
@@ -677,37 +820,88 @@ var HomeView = Backbone.View.extend({
 
           var w = new THREE.Vector3().subVectors(vv.b, vv.a).length();
 
-          var f1 = new THREE.Vector3(this.springRight1.m_localAnchor1.x*this.real.SCALE, this.springRight1.m_localAnchor1.y*this.real.SCALE, 0);
+          var f1 = new THREE.Vector3(this.springRight1.joint.m_localAnchor1.x*this.real.SCALE, this.springRight1.joint.m_localAnchor1.y*this.real.SCALE, 0);
           f1 = f1.applyMatrix4(vvv_inv); // h in #pages coordinates
           f1 = new THREE.Vector3(w, f1.y, 0);
           f1 = f1.applyMatrix4(vv.matrix);
           var f1y = f1.y;
           f1y = Math.max(f1y, vv.b.y) // y >= yB
           f1y = Math.min(f1y, vv.c.y) // y <= yC
-          var anchor2local = this.b2localcoordinates({
+          var anchor2local = b2localcoordinates({
             x: x(vv.b, vv.c)(f1y),
             y: f1y
           }, this.$el);
-          this.springRight1.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
-          this.springRight1.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
-          // }
+          this.springRight1.joint.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
+          this.springRight1.joint.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
 
-          var f2 = new THREE.Vector3(this.springRight2.m_localAnchor1.x*this.real.SCALE, this.springRight2.m_localAnchor1.y*this.real.SCALE, 0);
+          var f2 = new THREE.Vector3(this.springRight2.joint.m_localAnchor1.x*this.real.SCALE, this.springRight2.joint.m_localAnchor1.y*this.real.SCALE, 0);
           f2 = f2.applyMatrix4(vvv_inv); // h in #pages coordinates
           f2 = new THREE.Vector3(w, f2.y, 0);
           f2 = f2.applyMatrix4(vv.matrix);
           var f2y = f2.y;
           f2y = Math.max(f2y, vv.b.y) // y >= yB
           f2y = Math.min(f2y, vv.c.y) // y <= yC
-          var anchor2local = this.b2localcoordinates({
+          var anchor2local = b2localcoordinates({
             x: x(vv.b, vv.c)(f2y),
             y: f2y
           }, this.$el);
-          this.springRight2.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
-          this.springRight2.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
+          this.springRight2.joint.m_localAnchor2.x = anchor2local.x/this.real.SCALE;
+          this.springRight2.joint.m_localAnchor2.y = anchor2local.y/this.real.SCALE;
         };
+        Bondage.prototype.springOnOff = function () {
+          var TOLERANCE = 5;
+
+          /*var i = this.springs.length;
+          while (i--) {
+            var spring = this.springs[i];
+
+            var l = spring.length(this.$el);
+            if (l.length() > TOLERANCE) {
+              //console.log('enable l1');
+              spring.enable();
+            } else {
+              //console.log('disable l1');
+              spring.disable();
+            }
+          }*/
+          var l = this.springLeft1.length();
+          if (~~l.x >= 0 && ~~l.y >= 0/* && l.length() > TOLERANCE*/) {
+            //console.log('enable l1');
+            this.springLeft1.enable();
+          } else {
+            //console.log('disable l1');
+            this.springLeft1.disable();
+          }
+          var l = this.springLeft2.length();
+          if (~~l.x >= 0 && ~~l.y <= 0/* && l.length() > TOLERANCE*/) {
+            //console.log('enable l2');
+            this.springLeft2.enable();
+          } else {
+            //console.log('disable l2');
+            this.springLeft2.disable();
+          }
+
+          var l = this.springRight1.length();
+          if (~~l.x <= 0 && ~~l.y >= 0/* && l.length() > TOLERANCE*/) {
+            //console.log('enable r1');
+            this.springRight1.enable();
+          } else {
+            //console.log('disable r1');
+            this.springRight1.disable();
+          }
+          var l = this.springRight2.length();
+          if (~~l.x <= 0 && ~~l.y <= 0/* && l.length() > TOLERANCE*/) {
+            //console.log('enable r2');
+            this.springRight2.enable();
+          } else {
+            //console.log('disable r2');
+            this.springRight2.disable();
+          }
+        }
 
         function findClosest($els, $ref) {
+          console.log('findClosest');
+
           var $ret;
           var min_d = Infinity;
 
@@ -774,6 +968,65 @@ var HomeView = Backbone.View.extend({
         window.bondage = this.bondage;
         this.bondage.attach($closest);
 
+        // GUI
+        if (gui) {
+          var f = gui.addFolder('bondage');
+          f.open();
+          f.add(this.bondage, 'attach');
+          f.add(this.bondage, 'detach');
+
+          var o = {
+            ll1: this.bondage.springLeft1.length().length(),
+            ll2: this.bondage.springLeft2.length().length(),
+            lr1: this.bondage.springRight1.length().length(),
+            lr2: this.bondage.springRight2.length().length()
+          };
+
+          f.add(o, 'll1').listen();
+          var sl1hz = f.add(this.bondage.springLeft1, 'hz').min(this.bondage.options.hz.min).max(this.bondage.options.hz.max).step(.1).listen();
+          var sl1mhz = f.add(this.bondage.springLeft1.joint, 'm_frequencyHz').listen();
+          var sl1on = f.add(this.bondage.springLeft1, 'enabled').listen();
+
+          f.add(o, 'll2').listen();
+          var sl2hz = f.add(this.bondage.springLeft2, 'hz').min(this.bondage.options.hz.min).max(this.bondage.options.hz.max).step(.1).listen();
+          var sl2on = f.add(this.bondage.springLeft2, 'enabled').listen();
+          
+          f.add(o, 'lr1').listen();
+          var sr1hz = f.add(this.bondage.springRight1, 'hz').min(this.bondage.options.hz.min).max(this.bondage.options.hz.max).step(.1).listen();
+          var sr1on = f.add(this.bondage.springRight1, 'enabled').listen();
+          
+          f.add(o, 'lr2').listen();
+          var sr2hz = f.add(this.bondage.springRight2, 'hz').min(this.bondage.options.hz.min).max(this.bondage.options.hz.max).step(.1).listen();
+          var sr2on = f.add(this.bondage.springRight2, 'enabled').listen();
+          
+
+          this.bondage.on('attach', function () {
+            sl1hz.object = this.bondage.springLeft1;
+            sl1mhz.object = this.bondage.springLeft1.joint;
+            sl1on.object = this.bondage.springLeft1;
+
+            sl2hz.object = this.bondage.springLeft2;
+            sl2on.object = this.bondage.springLeft2;
+
+            sr1hz.object = this.bondage.springRight1;
+            sr1on.object = this.bondage.springRight1;
+
+            sr2hz.object = this.bondage.springRight2;
+            sr2on.object = this.bondage.springRight2;
+          }.bind(this));
+          
+          new Loop(function () {
+            o.ll1 = this.bondage.springLeft1.length().length() || 0;
+            o.ll2 = this.bondage.springLeft2.length().length() || 0;
+            o.lr1 = this.bondage.springRight1.length().length() || 0;
+            o.lr2 = this.bondage.springRight2.length().length() || 0;
+          }.bind(this)).start();
+        }
+
+        //
+        // Scrollerdown/up
+        //
+
         var hzTween;
         var body = this.$pages.data('real').body;
         var waitloop = new Loop(function () {
@@ -787,10 +1040,10 @@ var HomeView = Backbone.View.extend({
           }
 
           hzTween && hzTween.stop();
-          bondage.setHz(0.0001);
+          bondage.setHz(bondage.options.hz.min);
 
           var o = {hz: bondage.hz};
-          hzTween = new TWEEN.Tween(o).to({hz: 5}, 1000)
+          hzTween = new TWEEN.Tween(o).to({hz: MAXHZ}, 2000)
             .easing(TWEEN.Easing.Quadratic.In)
             .onUpdate(function () {bondage.setHz(o.hz);})
             .start()
@@ -813,8 +1066,10 @@ var HomeView = Backbone.View.extend({
         }.bind(this));
 
         bondage.on('detach', function () {
+          console.log('detachh');
+
           hzTween && hzTween.stop();
-          bondage.setHz(0.0001);
+          bondage.setHz(0);
         });
 
       }).call(this);
@@ -845,7 +1100,7 @@ var HomeView = Backbone.View.extend({
       var activeMacbook;
       this.$('.macbook').hammer().on('tap', function (e) {
         console.log('click');
-      	var $mba = $(e.currentTarget);
+        var $mba = $(e.currentTarget);
 
         var css3dobject = $mba.data('css3dobject');
 
@@ -878,11 +1133,7 @@ var HomeView = Backbone.View.extend({
       (function () {
         var camera = this.sceneView.cameraView.camera;
         
-        if ($html.is('.debug')) {
-          var dat = require('dat-gui');
-          var gui = new dat.GUI();
-          gui.close();
-
+        if (gui) {
           var f1 = gui.addFolder('camera.position');
           var px = f1.add(camera.position, 'x', -1000, 1000);
           var py = f1.add(camera.position, 'y', -1000, 3000);
@@ -921,14 +1172,17 @@ var HomeView = Backbone.View.extend({
   renderloop: function (t, t0) {
     this.sceneView.draw();
 
-    TWEEN.update(t);
-
-    this.bondage.shift();
-
     // real
     var dt = t - t0;
     this.real.step(dt);
+
+    this.bondage.shift();
+    //this.bondage.springOnOff();
+
     this.real.draw();
+    
+
+    TWEEN.update(t);
   }
 });
 
@@ -1227,7 +1481,7 @@ module.exports = HomeView;
         type: b2Body.b2_dynamicBody,
       },
       fixture: {
-        density: 1,
+        density: 1, // density in kilograms per meter squared
         friction: 2,
         restitution: 0,
         shape: b2PolygonShape
@@ -1267,8 +1521,8 @@ module.exports = HomeView;
     bodyDef.position.x = (this.origPos.left + this.origPos.width / 2) / SCALE;
     bodyDef.position.y = (this.origPos.top + this.origPos.height / 2) / SCALE;
     //bodyDef.fixedRotation = true;
-    bodyDef.linearDamping = 6;
-    bodyDef.angularDamping = 8;
+    bodyDef.linearDamping = 4;
+    bodyDef.angularDamping = 6;
    
     // Add to world
     this.body = real.world.CreateBody(bodyDef);
@@ -1965,7 +2219,7 @@ var Router = Backbone.Router.extend({
     home: function () {
       console.log('home');
 
-      new HomeView({el: 'body'});
+      this.mainView = new HomeView({el: 'body'});
     },
     target: function (from, to, options) {
       options || (options = {});
