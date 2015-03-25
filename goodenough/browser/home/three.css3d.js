@@ -235,15 +235,16 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 			domElement.style.MozPerspective = fov + "px";
 			domElement.style.oPerspective = fov + "px";
 			domElement.style.perspective = fov + "px";
-      console.log('changing camera perspective');
+      		console.log('changing camera perspective');
 
 			cache.camera.fov = fov;
-
 		}
 
 		scene.updateMatrixWorld();
 
-		if ( camera.parent === undefined ) camera.updateMatrixWorld();
+		if ( camera.parent === undefined ) {
+			camera.updateMatrixWorld();
+		}
 
 		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
 
@@ -256,10 +257,11 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 			cameraElement.style.MozTransform = style;
 			cameraElement.style.oTransform = style;
 			cameraElement.style.transform = style;
-      console.log('changing camera transform');
+      		console.log('changing camera transform')
+      		console.log(style);
+      		console.log(camera.matrixWorldInverse.elements	);
 			
 			cache.camera.style = style;
-
 		}
 
 		renderObject( scene, camera );

@@ -43,7 +43,7 @@ function setWWH() {
   $document.trigger('setwwh');
 }
 setWWH();
-$window.resize(setWWH);
+$window.resize(_.debounce(setWWH, 200));
 
 var CameraView = Backbone.View.extend({
   initialize: function (options) {
@@ -69,12 +69,16 @@ var CameraView = Backbone.View.extend({
     // Tweening
     //
 
-    // position
-    new TWEEN.Tween(camera.position).to({
-      x: dstpos.x,
-      y: dstpos.y,
-      z: dstpos.z
-    }, options.duration).start();
+    if (options.duration > 0) {
+      // position
+      new TWEEN.Tween(camera.position).to({
+        x: dstpos.x,
+        y: dstpos.y,
+        z: dstpos.z
+      }, options.duration).start();
+    } else {
+      camera.position.set(dstpos.x, dstpos.y, dstpos.z);
+    }    
   },
   panBy: function (vec, options) {
     var camera = this.camera;
@@ -89,6 +93,8 @@ var CameraView = Backbone.View.extend({
     this.panTo(dstpos, options);
   },
   moveAndLookAt: function (dstpos, dstlookat, options) {
+    console.log('moveAndLookAt');
+
     var camera = this.camera;
 
     options || (options = {});
@@ -122,14 +128,24 @@ var CameraView = Backbone.View.extend({
       var qm = new THREE.Quaternion();
       //camera.quaternion = qm;
 
-      var o = {t: 0};
-      new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
-        THREE.Quaternion.slerp(qa, qb, qm, o.t);
+      function update(t) {
+        console.log('update')
+        THREE.Quaternion.slerp(qa, qb, qm, t);
         camera.quaternion.set(qm.x, qm.y, qm.z, qm.w);
-      }).start();
+      }
+      if (options.duration > 0) {
+        var o = {t: 0};
+        new TWEEN.Tween(o).to({t: 1}, options.duration).onUpdate(function () {
+          update(o.t);
+        }).start();
+      } else {
+        update(1);
+      }
     }).call(this);
   },
   moveAndLookAtElement: function (el, options) {
+    console.log('moveAndLookAtElement');
+
     var camera = this.camera;
     var $el = $(el);
     el = $el[0];
@@ -227,7 +243,6 @@ var SceneView = Backbone.View.extend({
     });
     $.fn.domvertices.defaults.root = $camera[0];
     window.cameraView = this.cameraView;
-    this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
 
     this.renderer = new THREE.CSS3DRenderer($scene[0], this.cameraView.el);
     window.renderer = this.renderer;
@@ -245,23 +260,24 @@ var SceneView = Backbone.View.extend({
       //var offset = $el.offset();
       //obj.position.set(offset.left,offset.top,0);
 
-      console.log('obj', obj.getWorldPosition());
+      //console.log('obj', obj.getWorldPosition());
       this.scene.add(obj);
     }.bind(this));
 
     function onsetwwh(first) {
-      this.cameraView.camera.aspect = WW/WH;
-      this.cameraView.camera.updateProjectionMatrix();
-      if (first !== true) {this.cameraView.recenter();} // do NOT recenter the first-time
+      console.log('onsetwwh');
 
       this.renderer.setSize(WW, WH);
+
+      this.cameraView.camera.aspect = WW/WH;
+      this.cameraView.camera.updateProjectionMatrix();
+
+      if (first !== true) {this.cameraView.recenter();} // do NOT recenter the first-time
+      this.draw();
     }
     onsetwwh = onsetwwh.bind(this);
     onsetwwh(true);
     $document.on('setwwh', onsetwwh);
-
-    
-    this.draw();
 
     //
     // shading
@@ -278,12 +294,19 @@ var SceneView = Backbone.View.extend({
     });
     window.lightposModel = this.lightposModel;
     this.lightposModel.on('change', this.renderlight);
+
+    //
+    // init
+    //
+
+    this.cameraView.moveAndLookAtElement($scene[0], {duration: 0});
+    this.draw();
   },
   update: function () {
     this.cameraView.camera.updateProjectionMatrix();
   },
   draw: function () {
-    this.cameraView.camera.updateProjectionMatrix();
+    this.update();
     
     this.renderer.render(this.scene, this.cameraView.camera);
   },
@@ -1197,6 +1220,9 @@ var HomeView = Backbone.View.extend({
       // Page visibility to start/stop renderloop (http://www.html5rocks.com/en/tutorials/pagevisibility/intro/)
       //
       (function () {
+        console.log('starting renderLoop');
+        renderLoop.start();
+
         function getHiddenProp() {
           var prefixes = ['webkit','moz','ms','o'];
           
@@ -1218,15 +1244,15 @@ var HomeView = Backbone.View.extend({
 
         function startstop() {
           if (document[visProp]) {
+            console.log('hidden: stopping renderLoop');
             renderLoop.stop();
           } else {
+            console.log('visible: restarting renderLoop');
             renderLoop.start();
           }
         }
 
         if (visProp) {
-          renderLoop.start();  
-
           var evtName = visProp.replace(/[H|h]idden/,'') + 'visibilitychange';
           document.addEventListener(evtName, startstop);
         }
@@ -1259,10 +1285,6 @@ var HomeView = Backbone.View.extend({
           activeMacbook = undefined;
         }
         
-      }.bind(this));
-
-      this.$('.sheets').on('click', function (e) {
-        this.cameraView.moveAndLookAtElement($('#page-2')[0]);
       }.bind(this));
 
       //
@@ -1309,6 +1331,8 @@ var HomeView = Backbone.View.extend({
 
   },
   renderloop: function (t, t0) {
+    TWEEN.update(t);
+
     this.sceneView.draw();
 
     // real
@@ -1318,9 +1342,6 @@ var HomeView = Backbone.View.extend({
     this.bondage && this.bondage.update();
 
     this.real.draw();
-    
-
-    TWEEN.update(t);
   }
 });
 
@@ -2047,15 +2068,16 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 			domElement.style.MozPerspective = fov + "px";
 			domElement.style.oPerspective = fov + "px";
 			domElement.style.perspective = fov + "px";
-      console.log('changing camera perspective');
+      		console.log('changing camera perspective');
 
 			cache.camera.fov = fov;
-
 		}
 
 		scene.updateMatrixWorld();
 
-		if ( camera.parent === undefined ) camera.updateMatrixWorld();
+		if ( camera.parent === undefined ) {
+			camera.updateMatrixWorld();
+		}
 
 		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
 
@@ -2068,10 +2090,11 @@ THREE.CSS3DRenderer = function (domElement, cameraElement) {
 			cameraElement.style.MozTransform = style;
 			cameraElement.style.oTransform = style;
 			cameraElement.style.transform = style;
-      console.log('changing camera transform');
+      		console.log('changing camera transform')
+      		console.log(style);
+      		console.log(camera.matrixWorldInverse.elements	);
 			
 			cache.camera.style = style;
-
 		}
 
 		renderObject( scene, camera );
