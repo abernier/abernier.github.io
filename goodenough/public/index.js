@@ -187,7 +187,6 @@ var CameraView = Backbone.View.extend({
       var h = new THREE.Vector3().copy(ad).cross(faceNormal).length();
       //console.log(w, h);
 
-      var tolerance = 0/100;
       if (camera.aspect > w/h) { // camera larger than element
         if (w>h) {
           distance = disth(h+h*options.distanceTolerance, camera.fov, camera.aspect);
@@ -572,7 +571,7 @@ var HomeView = Backbone.View.extend({
               y: pointer.y - e.clientY
             };
 
-            var FACTOR = 9;
+            var FACTOR = 30;
             var impulse = new b2Vec2(-delta.x*FACTOR, -delta.y*FACTOR);
             var impulseOrigin = body.GetWorldCenter();
             body.ApplyImpulse(impulse, impulseOrigin);
@@ -1274,7 +1273,7 @@ var HomeView = Backbone.View.extend({
           
           //new TWEEN.Tween(css3dobject.rotation).to({z: -3*Math.PI/180}, 300).start();
         
-          this.sceneView.cameraView.moveAndLookAtElement($mba.find('.display')[0]);
+          this.sceneView.cameraView.moveAndLookAtElement($mba.find('.display')[0], {distanceTolerance: 20/100});
 
         } else {
           
