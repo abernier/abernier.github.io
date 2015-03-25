@@ -381,7 +381,10 @@ var HomeView = Backbone.View.extend({
        
       this.scrollEl = real.addElement(new Real.Element(this.$pages, real));
 
+      //
       // Prismatic joint (http://www.iforce2d.net/b2dtut/joints-prismatic)
+      //
+
       (function () {
         var prismaticJointDef = new b2PrismaticJointDef();
         prismaticJointDef.bodyA = this.real.world.GetGroundBody();
@@ -399,8 +402,6 @@ var HomeView = Backbone.View.extend({
         $document.on('setwwh', function () {
           prismaticjoint.m_lowerTranslation = -(this.$pages.outerHeight() - WH) / this.real.SCALE
         }.bind(this));
-
-
       }).call(this);
 
       // GUI
@@ -420,23 +421,12 @@ var HomeView = Backbone.View.extend({
 
       //var frictionjoint = new Real.Friction(real, real.world.GetGroundBody(), real.findElement(this.$pages).body);
 
-      //new Real.Prismatic(real, real.world.GetGroundBody(), real.findElement($('.pages')).body);
-
       //
       // MouseJoint
       //
 
-      (function () {
+      this.scrollerjoint = (function () {
         var body = this.scrollEl.body;
-
-        var mouseJointDef = new b2MouseJointDef();
-        mouseJointDef.bodyA = real.world.GetGroundBody();
-        mouseJointDef.collideConnected = true;
-        mouseJointDef.maxForce = 10000000000000000000 * body.GetMass();
-        mouseJointDef.dampingRatio = 0;
-        mouseJointDef.frequencyHz = 99999;
-         
-        var mouseJoint;
 
         function project(mouse2d) {
           //
@@ -469,6 +459,15 @@ var HomeView = Backbone.View.extend({
         //
 
         /*(function () {
+          var mouseJointDef = new b2MouseJointDef();
+          mouseJointDef.bodyA = real.world.GetGroundBody();
+          mouseJointDef.collideConnected = true;
+          mouseJointDef.maxForce = 10000000000000000000 * body.GetMass();
+          mouseJointDef.dampingRatio = 0;
+          mouseJointDef.frequencyHz = 99999;
+           
+          var mouseJoint;
+
           var mouse = new b2Vec2();
 
           function setMouse(e) {
@@ -528,13 +527,17 @@ var HomeView = Backbone.View.extend({
           }
         }).call(this);*/
 
-        (function () {
+        var pointerjoint = (function () {
+          var enabled = true;
+
           var pointer = {
             x: undefined,
             y: undefined
           };
 
           function mousedown(e) {
+            if (!enabled) return;
+
             //console.log('mousedown');
             this.trigger('scrollerdown');
 
@@ -585,18 +588,38 @@ var HomeView = Backbone.View.extend({
           document.ontouchstart = function(e){ 
             e.preventDefault(); // http://stackoverflow.com/questions/2890361/disable-scrolling-in-an-iphone-web-application#answer-2890530
           }
+
+          function enable() {
+            enabled = true;
+          }
+
+          function disable() {
+            enabled = false;
+
+            mouseup();
+          }
+
+          return {
+            enable: enable,
+            disable: disable
+          };
         }).call(this);
+        this.pointerjoint = pointerjoint;
 
         //
         // scrollwheel
         //
 
-        (function () {
+        var wheeljoint = (function () {
+          var enabled = true;
+
           $('html, body').css('overflow', 'hidden');
 
           // http://stackoverflow.com/questions/3515446/jquery-mousewheel-detecting-when-the-wheel-stops/28371047#28371047
           var wheelint;
           $window.on('mousewheel', _.throttle(function (e) {
+            if (!enabled) return;
+
             if (!wheelint) {
               //console.log('start wheeling!');
               this.trigger('scrollerdown');
@@ -625,8 +648,36 @@ var HomeView = Backbone.View.extend({
             //impulse.x = 0;
             body.ApplyImpulse(impulse, impulseOrigin);
           }.bind(this), 0));
-        }).call(this);
 
+          function enable() {
+            enabled = true;
+          }
+
+          function disable() {
+            enabled = false;
+          }
+
+          return {
+            enable: enable,
+            disable: disable
+          };
+        }).call(this);
+        this.wheeljoint = wheeljoint;
+
+        function enable() {
+          pointerjoint.enable();
+          wheeljoint.enable();
+        }
+
+        function disable() {
+          pointerjoint.disable();
+          wheeljoint.disable();
+        }
+
+        return {
+          enable: enable,
+          disable: disable
+        };
       }).call(this);
 
       //
@@ -1275,6 +1326,8 @@ var HomeView = Backbone.View.extend({
         
           this.sceneView.cameraView.moveAndLookAtElement($mba.find('.display')[0], {distanceTolerance: 20/100});
 
+          this.scrollerjoint.disable();
+
         } else {
           
           //new TWEEN.Tween(css3dobject.rotation).to({z: 3*Math.PI/180}, 300).start();
@@ -1282,6 +1335,8 @@ var HomeView = Backbone.View.extend({
           this.sceneView.cameraView.moveAndLookAtElement($scene[0]);
 
           activeMacbook = undefined;
+
+          this.scrollerjoint.enable();
         }
         
       }.bind(this));
