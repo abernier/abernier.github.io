@@ -23,7 +23,7 @@
     "parallax": "https://gist.github.com/abernier/0837661e346360b5385b/download",
     "stylus": "^0.47.3",
     "three": "^0.69.0",
-    "uglify-js": "~2.4.2",
+    "uglify-js": "~3.6.7",
     "underscore": "^1.6.0",
     "velocity-animate": "^0.10.0"
   }
