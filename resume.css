@@ -1,0 +1,53 @@
+:root {
+	--gutter:2em;
+}
+
+@media print {
+  @page {
+    size:210mm 417mm;
+  }
+
+  .experiences li {break-inside:avoid;}
+}
+
+.www {letter-spacing:-.1em;}
+
+h1 {line-height:1;}
+h1 .role {font-weight:400;}
+
+.fn-and-photo {margin-bottom:.5em;}
+
+@media (min-width:850px) {
+  .cc {
+    display:flex; flex-direction:column;
+    min-height:100vh; justify-content: space-between;
+  }
+
+  main {display:flex;}
+  .skills {
+    width:calc(5 / 8 * 100%);
+    padding-right:calc(var(--gutter) / 2);
+  }
+  .skills + * {
+    width:calc(3 / 8 * 100%);
+    padding-left:calc(var(--gutter) / 2);
+  }
+  .skills h2,
+  .experiences h2 {margin-top:0;}
+}
+
+.experiences ol {list-style:none; padding-left:0;}
+.experiences .h3 +p {margin-top:.25em;}
+.experiences .range {
+  display:inline-block; border:1px solid;padding:0 .35em;
+}
+
+.skills {counter-reset: rank;}
+.skills h3:before {
+  content:counter(rank, upper-latin) ". ";
+  counter-increment:rank;
+}
+
+.education ol {list-style-position:inside; padding-left:0;}
+
+.foot {margin-bottom:0;}

@@ -37,12 +37,12 @@ img[height] {height:auto;}*/
 
 h1 .fn-and-photo {display:block; font-size:47%;}
 
-img.avatar {display:inline-block; vertical-align:middle; width:1.5em; border-radius:99em; margin-right:.35em;}
+img.avatar {display:inline-block; vertical-align:middle; width:1.5em;height:1.5em; border-radius:99em; margin-right:.35em;}
 
 h1, h2, h3, h4, h5, h6 {font-weight:inherit;}
 h1, .h1 {font-size:270%; line-height:1.25;}
 h2, .h2 {font-size:200%; font-weight:200;}
-h3, .h3 {font-size:140%; font-weight:100;}
+h3, .h3 {font-size:150%; font-weight:100;}
 /*h3, .h3 {font-size:117%;}*/
 /* lead dots */
 h2, h3 {line-height:1.2; white-space:nowrap; overflow:hidden;}
