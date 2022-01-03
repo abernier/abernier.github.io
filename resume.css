@@ -15,22 +15,26 @@
 h1 {line-height:1;}
 h1 .role {font-weight:400;}
 
+h1 {margin-bottom:0;}
+
+.stack a {
+  border:1px solid; padding:0 .5em; border-radius:10em;
+}
+
 .fn-and-photo {margin-bottom:.5em;}
 
 @media (min-width:850px) {
   .cc {
     display:flex; flex-direction:column;
-    min-height:100vh; justify-content: space-between;
+    min-height:100vh; justify-content: space-around;
   }
 
-  main {display:flex;}
+  main {display:flex; gap:var(--gutter);}
   .skills {
     width:calc(5 / 8 * 100%);
-    padding-right:calc(var(--gutter) / 2);
   }
   .skills + * {
     width:calc(3 / 8 * 100%);
-    padding-left:calc(var(--gutter) / 2);
   }
   .skills h2,
   .experiences h2 {margin-top:0;}
