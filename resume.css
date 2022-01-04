@@ -2,6 +2,10 @@
 	--gutter:2em;
 }
 
+@media (prefers-color-scheme: dark) {
+  body {background:#191919; color:#eee;}
+}
+
 @media print {
   @page {
     size:210mm 417mm;
