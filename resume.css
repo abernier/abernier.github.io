@@ -35,10 +35,10 @@ h1 {margin-bottom:0;}
 
   main {display:flex; gap:var(--gutter);}
   .skills {
-    width:calc(5 / 8 * 100%);
+    flex:5;
   }
   .skills + * {
-    width:calc(3 / 8 * 100%);
+    flex:3;
   }
   .skills h2,
   .experiences h2 {margin-top:0;}
