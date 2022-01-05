@@ -12,6 +12,8 @@
   }
 
   .experiences li {break-inside:avoid;}
+
+  .foot p.social {display:none;}
 }
 
 .www {letter-spacing:-.1em;}
@@ -60,5 +62,5 @@ h1 {margin-bottom:0;}
 
 .foot {margin-bottom:0;}
 
-.foot p:first-of-type {margin-bottom:0;}
-.foot p:last-of-type {margin-top:0;}
+address p.contact {margin-bottom:0;}
+address p.social {margin-top:0;}
