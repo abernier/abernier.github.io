@@ -62,4 +62,3 @@ h1 {margin-bottom:0;}
 
 .foot p:first-of-type {margin-bottom:0;}
 .foot p:last-of-type {margin-top:0;}
-.foot p:last-of-type a:not(:last-of-type)::after {content:", ";}
