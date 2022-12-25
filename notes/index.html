@@ -1,0 +1,760 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="fr">
+	<head>
+		<title>Antoine BERNIER's notes</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		<meta http-equiv="Content-Language" content="fr">
+		<meta name="author" lang="fr" content="Antoine BERNIER">
+		<meta name="copyright" content="© copyright 2009 by Antoine BERNIER. All rights reserved.">
+		<link rel="alternate" type="application/atom+xml" href="http://web.archive.org/web/20110102070325/http://transformr.co.uk/?type=hatom&amp;tidy=yes&amp;url=http%3A%2F%2Fabernier.name%2Fnotes">
+		<style type="text/css">
+		/*html {display:table; width:100%; height:100%;}*/
+		body {margin:0; /*height:100%; display:table-cell; vertical-align:middle;*/ text-align:center; font-size:x-small; font-family:Helvetica; /*background:url(/web/20110102070325im_/http://abernier.name/frigidaire.png) 100% 7em no-repeat;*/background:-webkit-gradient(linear, -40% top, 15% top, from(rgba(0,0,0,.1)), to(transparent)), -webkit-gradient(linear, 140% top, 85% top, from(rgba(0,0,0,.1)), to(transparent));}
+		h1 {/*display:none;*/ text-align:right; margin:4em 0 6em;}
+		h1 img {width:60%;}
+		ul#frigo {margin:0; padding:0;}
+		.note {text-align:left; background-color:white; padding:1em; width:22em; display:inline-block; vertical-align:middle; /*border:1px outset white; */-moz-box-shadow:.1em .3em 1em #eee;-webkit-box-shadow:.1em .3em 1em #eee; -moz-transform:rotate(3deg);-webkit-transform:rotate(3deg);}
+		.note > *:last-child {margin-bottom:0;}
+		.note address {margin-bottom:1em; text-align:right;}
+		
+		.note.photo {padding-bottom:4em;}
+		.note.photo blockquote {margin:0;}
+		.note.photo img {width:100%;}
+		.note h2 {margin-top:0; text-transform:uppercase;}
+		.note h2 a {display:block; width:100%; border-bottom:.1em solid; text-decoration:none;}
+		.note:target {font-size:x-large;}
+		.note:hover {transform:rotate(0deg)!important;-moz-transform:rotate(0deg)!important;-webkit-transform:rotate(0deg)!important;}
+		.note blockquote {margin:0;}
+		
+		a:link,
+		a:visited {color:Gainsboro;}
+		a:hover {color:black;}
+		a[rel="tag"] {display:inline-block; padding:.1em .2em; background-color:Gainsboro; color:white; text-decoration:none; border-radius:.3em;-moz-border-radius:.3em;-webkit-border-radius:.3em;}
+		a[rel="tag"]:hover,
+		a[rel="tag"].active {background-color:black;}
+		
+		#license {margin-top:10em; margin-bottom:0;/* background-color:#333; color:white;*/ padding:6em 0;}
+		</style>
+		<script type="text/javascript" src="http://web.archive.org/web/20110102070325js_/http://code.jquery.com/jquery-latest.js"></script>
+		<script type="text/javascript" src="http://web.archive.org/web/20110102070325js_/http://www.appelsiini.net/download/jquery.jeditable.mini.js"></script>
+		<script type="text/javascript">
+		function rand(min,max){
+			return Math.random() * (max - min + 1) + min;
+		}
+		
+		function filter(notes, tag){
+			if (window.location.hash == tag) {
+				window.location.hash = '#';
+				notes.show();
+				$('a[rel="tag"]').removeClass('active');
+				return false;
+			} else {
+				notes.each(function(){
+					if (!$(this).find('a[rel="tag"][href="' + tag + '"]').length){
+						$(this).hide();
+					} else {
+						$(this).show();
+					}
+				});
+				return true;
+			}
+		}
+		
+		$(document).ready(function(){
+			var notes = $('.note');
+			
+			// Apply random rotation
+			notes.each(function(){
+		    	$(this).css({
+					'transform' : 'rotate(' + rand(-5, 5) + 'deg)',
+					'-moz-transform': 'rotate(' + rand(-5, 5) + 'deg)',
+					'-webkit-transform': 'rotate(' + rand(-5, 5) + 'deg)'
+				});
+			});
+			
+			// Filter the tag if is set on the requested URL
+			if(window.location.hash.length){
+				//notes.filter('a[rel="tag"][href!="' + window.location.hash + '"]').hide();
+			}
+			
+			
+			$('a[rel="tag"]').click(function(){
+				$('a[rel="tag"]').removeClass('active'); $('a[rel="tag"][href="' + $(this).attr('href') + '"]').addClass('active');
+				return filter(notes, $(this).attr('href'));
+			});
+		});
+		</script>
+		
+	</head>
+	<body>
+		<h1><img alt="Frigidaire" title="Antoine BERNIER's notes" src="/web/20110102070325im_/http://abernier.name/frigidaire.png"></h1>
+		<ul id="frigo">
+			<!-- POSH
+			<li>
+				<h2></h2>
+				<address></address>
+			</li>
+			-->
+			<!-- STYLING
+			.note
+			-->
+			<!-- HATOM
+			.hentry
+				.entry-title
+				.published|updated
+			-->
+			<!-- HTML5
+			<article id="LoremIpsum">
+				<header>
+					<h1><a rel="bookmark" href="#LoremIpsum">Lorem ipsum</a></h1>
+					<address itemscope itemtype="http://microformats.org/profile/hcard">
+						<a itemprop="url uid" href="http://abernier.name"><abbr itemprop="fn" title="Antoine BERNIER">abernier</abbr></a>
+					</address>
+					<time pubdate datetime="">3rd October, 09</time>
+				</header>
+				
+				<footer></footer>
+			</article>
+			-->
+
+
+            <li id="LoremIpsum" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#LoremIpsum">Lorem Ipsum</a></h2>
+				<address><abbr class="published" title="2010-04-30T12:20:00+01:00">30th april, 10</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<blockquote class="entry-content">
+				    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim. Suspendisse id velit vitae ligula volutpat condimentum. Aliquam erat volutpat. Sed quis velit. Nulla facilisi. Nulla libero. Vivamus pharetra posuere sapien. Nam consectetuer. Sed aliquam, nunc eget euismod ullamcorper, lectus nunc ullamcorper orci, fermentum bibendum enim nibh eget ipsum. Donec porttitor ligula eu dolor. Maecenas vitae nulla consequat libero cursus venenatis. Nam magna enim, accumsan eu, blandit sed, blandit a, eros.</p>
+				</blockquote>
+				<p><a href="http://web.archive.org/web/20110102070325/http://www.lipsum.com/">More...</p>
+				<p><a rel="tag" href="#sample">sample</a></p>
+			</li>
+			<li id="SketchingTools" class="note photo hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#SketchingTools">Sketching tools</a></h2>
+				<address><abbr class="published" title="2010-04-30T12:08:00+01:00">30th april, 10</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<blockquote class="entry-content">
+				    <img alt="sketching toolkit" src="http://web.archive.org/web/20110102070325im_/http://hosting-source.bronto.com/8317/public/sketching_toolkit.jpg">
+				</blockquote> — <cite><a href="http://web.archive.org/web/20110102070325/http://www.adaptivepath.com/ideas/newsletter/archives/031109/index.php">adaptivepath</a></cite>
+				<p>And also: <a href="http://web.archive.org/web/20110102070325/http://www.uxbooth.com/blog/tools-for-sketching-user-experiences/">UXbooth</a></p>
+			</li>
+			<li id="Shortcuts" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#Shortcuts">Shortcuts</a></h2>
+				<address><abbr class="published" title="2010-04-30T11:48:00+01:00">30th april, 10</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<dl class="entry-content">
+				    <dt><key>⌃→</key> ou <key>⌥→</key></dt>
+				    <dd>Next word</dd>
+				    <dt><key>⌃↓</key></dt>
+				    <dd>Page down</dd>
+				    <dt><key>⌘→</key></dt>
+				    <dd>End of line</dd>
+				</dl>
+			</li>
+            <li id="CSS3Selectors" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#CSS3Selectors">CSS 3 Selectors</a></h2>
+				<address><abbr class="published" title="2010-04-30T11:25:00+01:00">30th april, 10</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<dl class="entry-content">
+                    <dt>*</dt>
+                    <dd>Any element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#universal-selector">Universal selector</a></dd>
+                    <dt><code>E</code></dt>
+                    <dd>Any element of type E — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#type-selectors">Type selector</a></dd>
+                    <dt><code>E[foo]</code></dt>
+                    <dd>An E element with a "foo" attribute — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#attribute-selectors">Attribute selectors</a></dd>
+                    <dt><code>E[foo="bar"]</code></dt>
+                    <dd>An E element whose "foo" attribute value is exactly equal to "bar" — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#attribute-selectors">Attribute selectors</a></dd>
+                    <dt><code>E[foo~="bar"]</code></dt>
+                    <dd>An E element whose "foo" attribute value is a list of whitespace-separated values, one of which is exactly equal to "bar" — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#attribute-selectors">Attribute selectors</a></dd>
+                    <dt><code>E[foo^="bar"]</code></dt>
+                    <dd>An E element whose "foo" attribute value begins exactly with the string "bar" — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#attribute-selectors">Attribute selectors</a></dd>
+                    <dt><code>E[foo$="bar"]</code></dt>
+                    <dd>An E element whose "foo" attribute value ends exactly with the string "bar" — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#attribute-selectors">Attribute selectors</a></dd>
+                    <dt><code>E[foo*="bar"]</code></dt>
+                    <dd>An E element whose "foo" attribute value contains the substring "bar" — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#attribute-selectors">Attribute selectors</a></dd>
+                    <dt><code>E[foo|="en"]</code></dt>
+                    <dd>An E element whose "foo" attribute has a hyphen-separated list of values beginning (from the left) with "en" — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#attribute-selectors">Attribute selectors</a></dd>
+                    <dt><code>E:root</code></dt>
+                    <dd>An E element, root of the document — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:nth-child(n)</code></dt>
+                    <dd>An E element, the n-th child of its parent — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:nth-last-child(n)</code></dt>
+                    <dd>An E element, the n-th child of its parent, counting from the last one — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:nth-of-type(n)</code></dt>
+                    <dd>An E element, the n-th sibling of its type — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:nth-last-of-type(n)</code></dt>
+                    <dd>An E element, the n-th sibling of its type, counting from the last one — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:first-child</code></dt>
+                    <dd>An E element, first child of its parent — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:last-child</code></dt>
+                    <dd>An E element, last child of its parent — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:first-of-type</code></dt>
+                    <dd>An E element, first sibling of its type — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:last-of-type</code></dt>
+                    <dd>An E element, last sibling of its type — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:only-child</code></dt>
+                    <dd>An E element, only child of its parent — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:only-of-type</code></dt>
+                    <dd>An E element, only sibling of its type — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt><code>E:empty</code></dt>
+                    <dd>An E element that has no children (including text nodes) — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#structural-pseudos">Structural pseudo-classes</a></dd>
+                    <dt>E:link
+                    E:visited</dt>
+                    <dd>An E element being the source anchor of a hyperlink of which the target is not yet visited (:link) or already visited (:visited) — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#link">The link pseudo-classes</a></dd>
+                    <dt><code>E:active
+                    E:hover
+                    E:focus</code></dt>
+                    <dd>An E element during certain user actions — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#useraction-pseudos">The user action pseudo-classes</a></dd>
+                    <dt><code>E:target</code></dt>
+                    <dd>An E element being the target of the referring URI — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#target-pseudo">The target pseudo-class</a></dd>
+                    <dt><code>E:lang(fr)</code></dt>
+                    <dd>An element of type E in language "fr" (the document language specifies how language is determined) — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#lang-pseudo">The :lang() pseudo-class</a></dd>
+                    <dt><code>E:enabled
+                    E:disabled</code></dt>
+                    <dd>A user interface element E which is enabled or disabled — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#UIstates">The UI element states pseudo-classes</a></dd>
+                    <dt><code>E:checked</code></dt>
+                    <dd>A user interface element E which is checked (for instance a radio-button or checkbox) — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#UIstates">The UI element states pseudo-classes</a></dd>
+                    <dt><code>E::first-line</code></dt>
+                    <dd>The first formatted line of an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#first-line">The ::first-line pseudo-element</a></dd>
+                    <dt><code>E::first-letter</code></dt>
+                    <dd>The first formatted letter of an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#first-letter">The ::first-letter pseudo-element</a></dd>
+                    <dt><code>E::before</code></dt>
+                    <dd>Generated content before an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#gen-content">The ::before pseudo-element</a></dd>
+                    <dt><code>E::after</code></dt>
+                    <dd>Generated content after an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#gen-content">The ::after pseudo-element</a></dd>
+                    <dt><code>E.warning</code></dt>
+                    <dd>An E element whose class is "warning" (the document language specifies how class is determined). — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#class-html">Class selectors</a></dd>
+                    <dt><code>E#myid</code></dt>
+                    <dd>An E element with ID equal to "myid". — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#id-selectors">ID selectors</a></dd>
+                    <dt><code>E:not(s)</code></dt>
+                    <dd>An E element that does not match simple selector s — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#negation">Negation pseudo-class</a></dd>
+                    <dt><code>E F</code></dt>
+                    <dd>An F element descendant of an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#descendant-combinators">Descendant combinator</a></dd>
+                    <dt><code>E &gt; F</code></dt>
+                    <dd>An F element child of an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#child-combinators">Child combinator</a></dd>
+                    <dt><code>E + F</code></dt>
+                    <dd>An F element immediately preceded by an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#adjacent-sibling-combinators">Adjacent sibling combinator</a></dd>
+                    <dt><code>E ~ F</code></dt>
+                    <dd>An F element preceded by an E element — <a href="http://web.archive.org/web/20110102070325/http://www.w3.org/TR/css3-selectors/#general-sibling-combinators">General sibling combinator</a></dd>
+                </dl>
+				<p><a rel="tag" href="#styling">styling</a></p>
+			</li>
+			<li id="JohnDoe" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#JohnDoe">John Doe</a></h2>
+				<address><abbr class="published" title="2010-04-30T10:59:00+01:00">30th april, 10</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<div class="entry-content">
+				    <h3>Female</h3>
+				    Aimee Aleksandra Alice Alicia Allison Alyssa Amy Andrea Angel Angela 
+                    Ann Anna Anne Anne Marie Annie Ashley Barbara Beatrice Beth Betty 
+                    Brenda Brooke Candace Cara Caren Carol Caroline Carolyn Carrie 
+                    Cassandra Catherine Charlotte Chrissy Christen Christina Christine 
+                    Christy Claire Claudia Courtney Crystal Cynthia Dana Danielle Deanne 
+                    Deborah Deirdre Denise Diane Dianne Dorothy Eileen Elena Elizabeth 
+                    Emily Erica Erin Frances Gina Giulietta Heather Helen Jane Janet Janice 
+                    Jenna Jennifer Jessica Joanna Joyce Julia Juliana Julie Justine Kara 
+                    Karen Katharine Katherine Kathleen Kathryn Katrina Kelly Kerry Kim 
+                    Kimberly Kristen Kristina Kristine Laura Laurel Lauren Laurie Leah 
+                    Linda Lisa Lori Marcia Margaret Maria Marina Marisa Martha Mary Mary 
+                    Ann Maya Melanie Melissa Michelle Monica Nancy Natalie Nicole Nina 
+                    Pamela Patricia Rachel Rebecca Renee Sandra Sara Sharon Sheri Shirley 
+                    Sonia Stefanie Stephanie Susan Suzanne Sylvia Tamara Tara Tatiana Terri 
+                    Theresa Tiffany Tracy Valerie Veronica Vicky Vivian Wendy
+                    <h3>Male</h3>
+                    Aaron Adam Adrian Alan Alejandro Alex Allen Andrew Andy Anthony Art 
+                    Arthur Barry Bart Ben Benjamin Bill Bobby Brad Bradley Brendan Brett 
+                    Brian Bruce Bryan Carlos Chad Charles Chris Christopher Chuck Clay 
+                    Corey Craig Dan Daniel Darren Dave David Dean Dennis Denny Derek Don 
+                    Doug Duane Edward Eric Eugene Evan Frank Fred Gary Gene George Gordon 
+                    Greg Harry Henry Hunter Ivan Jack James Jamie Jason Jay Jeff Jeffrey 
+                    Jeremy Jim Joe Joel John Jonathan Joseph Justin Keith Ken Kevin Larry 
+                    Logan Marc Mark Matt Matthew Michael Mike Nat Nathan Patrick Paul Perry 
+                    Peter Philip Phillip Randy Raymond Ricardo Richard Rick Rob Robert Rod 
+                    Roger Ross Ruben Russell Ryan Sam Scot Scott Sean Shaun Stephen Steve 
+                    Steven Stewart Stuart Ted Thomas Tim Toby Todd Tom Troy Victor Wade 
+                    Walter Wayne William
+                    <h3>Surname</h3>
+                    Adams Adamson Adler Akers Akin Aleman Alexander Allen Allison Allwood 
+                    Anderson Andreou Anthony Appelbaum Applegate Arbore Arenson Armold 
+                    Arntzen Askew Athanas Atkinson Ausman Austin Averitt Avila-Sakar 
+                    Badders Baer Baggerly Bailliet Baird Baker Ball Ballentine Ballew Banks 
+                    Baptist-Nguyen Barbee Barber Barchas Barcio Bardsley Barkauskas Barnes 
+                    Barnett Barnwell Barrera Barreto Barroso Barrow Bart Barton Bass Bates 
+                    Bavinger Baxter Bazaldua Becker Beeghly Belforte Bellamy Bellavance 
+                    Beltran Belusar Bennett Benoit Bensley Berger Berggren Bergman Berry 
+                    Bertelson Bess Beusse Bickford Bierner Bird Birdwell Bixby Blackmon 
+                    Blackwell Blair Blankinship Blanton Block Blomkalns Bloomfield Blume 
+                    Boeckenhauer Bolding Bolt Bolton Book Boucher Boudreau Bowman Boyd 
+                    Boyes Boyles Braby Braden Bradley Brady Bragg Brandow Brantley Brauner 
+                    Braunhardt Bray Bredenberg Bremer Breyer Bricout Briggs Brittain 
+                    Brockman Brockmoller Broman Brooks Brown Brubaker Bruce Brumfield 
+                    Brumley Bruning Buck Budd Buhler Buhr Burleson Burns Burton Bush 
+                    Butterfield Byers Byon Byrd Bzostek Cabrera Caesar Caffey Caffrey 
+                    Calhoun Call Callahan Campbell Cano Capri Carey Carlisle Carlson 
+                    Carmichael Carnes Carr Carreira Carroll Carson Carswell Carter 
+                    Cartwright Cason Cates Catlett Caudle Cavallaro Cave Cazamias Chabot 
+                    Chance Chapman Characklis Cheatham Chen Chern Cheville Chong 
+                    Christensen Church Claibourn Clark Clasen Claude Close Coakley Coffey 
+                    Cohen Cole Collier Conant Connell Conte Conway Cooley Cooper Copeland 
+                    Coram Corbett Cort Cortes Cousins Cowsar Cox Coyne Crain Crankshaw 
+                    Craven Crawford Cressman Crestani Crier Crocker Cromwell Crouse Crowder 
+                    Crowe Culpepper Cummings Cunningham Currie Cusey Cutcher Cyprus 
+                    D'Ascenzo Dabak Dakoulas Daly Dana Danburg Danenhauer Darley Darrouzet 
+                    Dartt Daugherty Davila Davis Dawkins Day DeHart DeMoss DeMuth 
+                    DeVincentis Deaton Dees Degenhardt Deggeller Deigaard Delabroy Delaney 
+                    Demir Denison Denney Derr Deuel Devitt Diamond Dickinson Dietrich 
+                    Dilbeck Dobson Dodds Dodson Doherty Dooley Dorsey Dortch Doughty Dove 
+                    Dowd Dowling Drescher Drucker Dryer Dryver Duckworth Dunbar Dunham Dunn 
+                    Duston Dettweiler Dyson Eason Eaton Ebert Eckhoff Edelman Edmonds 
+                    Eichhorn Eisbach Elders Elias Elijah Elizabeth Elliott Elliston Elms 
+                    Emerson Engelberg Engle Eplett Epp Erickson Estades Etezadi Evans Ewing 
+                    Fair Farfan Fargason Farhat Farry Fawcett Faye Federle Felcher Feldman 
+                    Ferguson Fergusson Fernandez Ferrer Fine Fineman Fisher Flanagan 
+                    Flathmann Fleming Fletcher Folk Fortune Fossati Foster Foulston Fowler 
+                    Fox Francis Frantom Franz Frazer Fredericks Frey Freymann Fuentes 
+                    Fuller Fundling Furlong Gainer Galang Galeazzi Gamse Gannaway Garcia 
+                    Gardner Garneau Gartler Garverick Garza Gatt Gattis Gayman Geiger 
+                    Gelder George Gerbino Gerbode Gibson Gifford Gillespie Gillingham 
+                    Gilpin Gilyot Girgis Gjertsen Glantz Glaze Glenn Glotzbach Gobble 
+                    Gockenbach Goff Goffin Golden Goldwyn Gomez Gonzalez Good Graham Gramm 
+                    Granlund Grant Gray Grayson Greene Greenslade Greenwood Greer Griffin 
+                    Grinstein Grisham Gross Grove Guthrie Guyton Haas Hackney Haddock 
+                    Hagelstein Hagen Haggard Haines Hale Haley Hall Halladay Hamill 
+                    Hamilton Hammer Hancock Hane Hansen Harding Harless Harms Harper 
+                    Harrigan Harris Harrison Hart Harton Hartz Harvey Hastings Hauenstein 
+                    Haushalter Haven Hawes Hawkins Hawley Haygood Haylock Hazard Heath 
+                    Heidel Heins Hellums Hendricks Henry Henson Herbert Herman Hernandez 
+                    Herrera Hertzmann Hewitt Hightower Hildebrand Hill Hindman Hirasaki 
+                    Hirsh Hochman Hocker Hoffman Hoffmann Holder Holland Holloman Holstein 
+                    Holt Holzer Honeyman Hood Hooks Hopper Horne House Houston Howard 
+                    Howell Howley Huang Hudgings Huffman Hughes Humphrey Hunt Hunter Hurley 
+                    Huston Hutchinson Hyatt Irving Jacobs Jaramillo Jaranson Jarboe Jarrell 
+                    Jenkins Johnson Johnston Jones Joy Juette Julicher Jumper Kabir 
+                    Kamberova Kamen Kamine Kampe Kane Kang Kapetanovic Kargatis Karlin 
+                    Karlsson Kasbekar Kasper Kastensmidt Katz Kauffman Kavanagh Kaydos 
+                    Kearsley Keleher Kelly Kelty Kendrick Key Kicinski Kiefer Kielt Kim 
+                    Kimmel Kincaid King Kinney Kipp Kirby Kirk Kirkland Kirkpatrick 
+                    Klamczynski Klein Kopnicky Kotsonis Koutras Kramer Kremer Krohn Kuhlken 
+                    Kunitz LaLonde LaValle LaWare Lacy Lam Lamb Lampkin Lane Langston 
+                    Lanier Larsen Lassiter Latchford Lawera LeBlanc LeGrand Leatherbury 
+                    Lebron Ledman Lee Leinenbach Leslie Levy Lewis Lichtenstein Lisowski 
+                    Liston Litvak Llano-Restrepo Lloyd Lock Lodge Logan Lomonaco Long Lopez 
+                    Lopez-Bassols Loren Loughridge Love Ludtke Luers Lukes Luxemburg 
+                    MacAllister MacLeod Mackey Maddox Magee Mallinson Mann Manning Manthos 
+                    Marie Marrow Marshall Martin Martinez Martisek Massey Mathis Matt 
+                    Maxwell Mayer Mazurek McAdams McAfee McAlexander McBride McCarthy 
+                    McClure McCord McCoy McCrary McCrossin McDonald McElfresh McFarland 
+                    McGarr McGhee McGoldrick McGrath McGuire McKinley McMahan McMahon 
+                    McMath McNally Mcdonald Meade Meador Mebane Medrano Melton Merchant 
+                    Merwin Millam Millard Miller Mills Milstead Minard Miner Minkoff 
+                    Minnotte Minyard Mirza Mitchell Money Monk Montgomery Monton Moore 
+                    Moren Moreno Morris Morse Moss Moyer Mueller Mull Mullet Mullins Munn 
+                    Murdock Murphey Murphy Murray Murry Mutchler Myers Myrick Nassar Nathan 
+                    Nazzal Neal Nederveld Nelson Nguyen Nichols Nielsen Nockton Nolan 
+                    Noonan Norbury Nordlander Norris Norvell Noyes Nugent Nunn O'Brien 
+                    O'Connell O'Neill O'Steen Ober Odegard Oliver Ollmann Olson Ongley 
+                    Ordway Ortiz Ouellette Overcash Overfelt Overley Owens Page Paige 
+                    Pardue Parham Parker Parks Patterson Patton Paul Payne Peck Penisson 
+                    Percer Perez Perlioni Perrino Peterman Peters Pfeiffer Phelps Philip 
+                    Philippe Phillips Pickett Pippenger Pistole Platzek Player Poddar 
+                    Poirier Poklepovic Polk Polking Pond Popish Porter Pound Pounds Powell 
+                    Powers Prado Preston Price Prichep Priour Prischmann Pryor Puckett 
+                    Raglin Ralston Rampersad Ratner Rawles Ray Read Reddy Reed Reese Reeves 
+                    Reichenbach Reifel Rein Reiten Reiter Reitmeier Reynolds Richardson 
+                    Rider Rhinehart Ritchie Rittenbach Roberts Robinson Rodriguez Rogers 
+                    Roper Rosemblun Rosen Rosenberg Rosenblatt Ross Roth Rowatt Roy Royston 
+                    Rozendal Rubble Ruhlin Rupert Russell Ruthruff Ryan Rye Sabry Sachitano 
+                    Sachs Sammartino Sands Saunders Savely Scales Schaefer Schafer Scheer 
+                    Schild Schlitt Schmitz Schneider Schoenberger Schoppe Scott Seay Segura 
+                    Selesnick Self Seligmann Sewall Shami Shampine Sharp Shaw Shefelbine 
+                    Sheldon Sherrill Shidle Shifley Shillingsburg Shisler Shopbell Shupack 
+                    Sievert Simpson Sims Sissman Smayling Smith Snyder Solomon Solon 
+                    Soltero Sommers Sonneborn Sorensen Southworth Spear Speight Spencer 
+                    Spruell Spudich Stacy Staebel Steele Steinhour Steinke Stepp Stevens 
+                    Stewart Stickel Stine Stivers Stobb Stone Stratmann Stubbers Stuckey 
+                    Stugart Sullivan Sultan Sumrall Sunley Sunshine Sutton Swaim Swales 
+                    Sweed Swick Swift Swindell Swint Symonds Syzdek Szafranski Takimoto 
+                    Talbott Talwar Tanner Taslimi Tate Tatum Taylor Tchainikov Terk Thacker 
+                    Thomas Thompson Thomson Thornton Thurman Thurow Tilley Tolle Towns 
+                    Trafton Tran Trevas Trevino Triggs Truchard Tunison Turner Twedell 
+                    Tyler Tyree Unger Van Vanderzanden Vanlandingham Varanasi Varela Varman 
+                    Venier Verspoor Vick Visinsky Voltz Wagner Wake Walcott Waldron Walker 
+                    Wallace Walters Walton Ward Wardle Warnes Warren Washington Watson 
+                    Watters Webber Weidenfeller Weien Weimer Weiner Weinger Weinheimer 
+                    Weirich Welch Wells Wendt West Westmoreland Wex Whitaker White Whitley 
+                    Wiediger Wilburn Williams Williamson Willman Wilson Winger Wise Wisur 
+                    Witt Wong Woodbury Wooten Workman Wright Wyatt Yates Yeamans Yen York 
+                    Yotov Younan Young Zeldin Zettner Ziegler Zitterkopf Zucker 
+				</div>
+				<p><a rel="tag" href="#sample">sample</a></p>
+			</li>
+			<li id=".bash_profile" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#.bash_profile">~/.bash_profile</a></h2>
+				<address><abbr class="updated" title="2009-12-21T10:00:00+01:00">22nd February, 10</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<pre class="entry-content">
+export CLICOLOR=1
+export LSCOLORS=ExFxCxDxBxegedabagacad
+
+PATH=/usr/local/bin:${PATH}
+
+LOCAL_PATH=${HOME}/usr/local/bin:${HOME}/usr/local/sbin:${HOME}/.gem/ruby/1.8/bin
+if [ -z "$PATH" ]; then
+    PATH=${LOCAL_PATH}
+else
+    PATH=${LOCAL_PATH}:${PATH}
+fi
+export PATH
+
+LOCAL_LD_LIBRARY_PATH=${HOME}/usr/local/lib
+if [ -z "$LD_LIBRARY_PATH" ]; then
+    LD_LIBRARY_PATH=${LOCAL_LD_LIBRARY_PATH}
+else
+    LD_LIBRARY_PATH=${LOCAL_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
+fi
+export LD_LIBRARY_PATH
+
+LOCAL_MANPATH=${HOME}/usr/local/man:${HOME}/usr/local/share/man
+if [ -z "$MANPATH" ]; then
+    MANPATH=${LOCAL_MANPATH}
+else
+    MANPATH=${LOCAL_MANPATH}:${MANPATH}
+fi
+export MANPATH
+				</pre>
+				<p><a rel="tag" href="#shell">shell</a></p>
+			</li>
+			<li id="chapka" class="note hentry photo" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#chapka" lang="pl">Czapka!</a></h2>
+				<address><abbr class="updated" title="2009-12-21T20:00:00+01:00">21st December, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<img alt="Chapka" class="entry-content" src="/web/20110102070325im_/http://abernier.name/chapkas.png">
+			</li>
+			<li id="youSayGoodbyeAndISayHello" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#youSayGoodbyeAndISayHello"><q>You say Goodbye and I say Hello</q></a></h2>
+				<address><abbr class="updated" title="2009-12-21T10:00:00+01:00">21st December, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li><q lang="af">haai</q></li>
+					<li><q lang="ar">السلام عليكم</q></li>
+					<li><q lang="sq">tungjatjeta</q></li>
+					<!--<li><q lang=""></q></li>-->
+				</ul>
+				<p><a rel="tag" href="#language">language</a></p>
+			</li>
+			<li id="goodtraveldeals" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#goodtraveldeals">Good travel deals</a></h2>
+				<address><abbr class="updated" title="2009-11-19T13:53:00+01:00">19th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul>
+					<li><a href="http://web.archive.org/web/20110102070325/http://interrailnet.com/">interrailnet.com</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://couchsurfing.org/">couchsurfing.org</a></li>
+				</ul>
+				<p><a rel="tag" href="#travel">travel</a></p>
+			</li>
+			<li id="defaultstylesheetforhtml4" class="note hentry" lang="en" style="width:auto;">
+				<h2 class="entry-title"><a rel="bookmark" href="#defaultstylesheetforhtml4">Default style sheet for HTML 4</a></h2>
+				<address><abbr class="published" title="2009-11-13T01:14:14+01:00">13th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<blockquote cite="http://www.w3.org/TR/CSS2/sample.html">
+<pre>
+html, address,
+blockquote,
+body, dd, div,
+dl, dt, fieldset, form,
+frame, frameset,
+h1, h2, h3, h4,
+h5, h6, noframes,
+ol, p, ul, center,
+dir, hr, menu, pre   { display: block }
+li              { display: list-item }
+head            { display: none }
+table           { display: table }
+tr              { display: table-row }
+thead           { display: table-header-group }
+tbody           { display: table-row-group }
+tfoot           { display: table-footer-group }
+col             { display: table-column }
+colgroup        { display: table-column-group }
+td, th          { display: table-cell }
+caption         { display: table-caption }
+th              { font-weight: bolder; text-align: center }
+caption         { text-align: center }
+body            { margin: 8px }
+h1              { font-size: 2em; margin: .67em 0 }
+h2              { font-size: 1.5em; margin: .75em 0 }
+h3              { font-size: 1.17em; margin: .83em 0 }
+h4, p,
+blockquote, ul,
+fieldset, form,
+ol, dl, dir,
+menu            { margin: 1.12em 0 }
+h5              { font-size: .83em; margin: 1.5em 0 }
+h6              { font-size: .75em; margin: 1.67em 0 }
+h1, h2, h3, h4,
+h5, h6, b,
+strong          { font-weight: bolder }
+blockquote      { margin-left: 40px; margin-right: 40px }
+i, cite, em,
+var, address    { font-style: italic }
+pre, tt, code,
+kbd, samp       { font-family: monospace }
+pre             { white-space: pre }
+button, textarea,
+input, select   { display: inline-block }
+big             { font-size: 1.17em }
+small, sub, sup { font-size: .83em }
+sub             { vertical-align: sub }
+sup             { vertical-align: super }
+table           { border-spacing: 2px; }
+thead, tbody,
+tfoot           { vertical-align: middle }
+td, th, tr      { vertical-align: inherit }
+s, strike, del  { text-decoration: line-through }
+hr              { border: 1px inset }
+ol, ul, dir,
+menu, dd        { margin-left: 40px }
+ol              { list-style-type: decimal }
+ol ul, ul ol,
+ul ul, ol ol    { margin-top: 0; margin-bottom: 0 }
+u, ins          { text-decoration: underline }
+br:before       { content: "\A"; white-space: pre-line }
+center          { text-align: center }
+:link, :visited { text-decoration: underline }
+:focus          { outline: thin dotted invert }
+
+/* Begin bidirectionality settings (do not change) */
+BDO[DIR="ltr"]  { direction: ltr; unicode-bidi: bidi-override }
+BDO[DIR="rtl"]  { direction: rtl; unicode-bidi: bidi-override }
+
+*[DIR="ltr"]    { direction: ltr; unicode-bidi: embed }
+*[DIR="rtl"]    { direction: rtl; unicode-bidi: embed }
+
+@media print {
+  h1            { page-break-before: always }
+  h1, h2, h3,
+  h4, h5, h6    { page-break-after: avoid }
+  ul, ol, dl    { page-break-before: avoid }
+}
+</pre>
+				</blockquote>
+				<p><a rel="tag" href="#styling">styling</a></p>
+			</li>
+			<li id="ideasformosets" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#ideasformosets">Ideas for Mosets</a></h2>
+				<address><abbr class="updated" title="2009-11-18T06:20:00+01:00">18th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<p>Ideas to explore/think about:</p>
+				<ul class="entry-content">
+					<li><abbr title="Object Relational Mapping">ORM</abbr></li>
+					<li>RESTful API, eg: <samp>http://example.com/hotproperty/api/getProperties?type[]=26&amp;published=true</samp></li>
+					<li>turn <samp>mailto://agent@company.com?subject=hello&amp;body=lorem%20;ipsum</samp> into a contact form (plugin)</li>
+					<li>sketch/wireframe of template (with omnigraffle or XMDP/CSS?)</li>
+					<li>New demo design: real-estate agencies' photos</li>
+					<li>Mosets Map + plugin</li>
+					<li>Finish HP slideshow gallery</li>
+					<li>Cart / Selection of properties</li>
+					<li>dashboard for backend</li>
+					<li>Transform fields into plugins</li>
+					<li>Migrate to a better/more modern SCM (GIT, Mercurial?)</li>
+				</ul>
+				<p><a rel="tag" href="#mosets">mosets</a></p>
+			</li>
+			<li id="microformatstotherescueofhotproperty" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#microformatstotherescueofhotproperty">Microformats to the rescue of <abbr title="Hot Property">HP</abbr></a></h2>
+				<address><abbr class="updated" title="2009-11-19T18:19:00+01:00">19th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<p>Interesting microformats for Hot Property:</p>
+				<ul class="entry-content">
+					<li><a href="http://web.archive.org/web/20110102070325/http://microformats.org/wiki/hproduct">hproduct</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://microformats.org/wiki/hcard">hcard</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://microformats.org/wiki/adr">adr</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://microformats.org/wiki/geo">geo</a></li>
+				</ul>
+				<p><a rel="tag" href="#semantics">semantics</a>, <a rel="tag" href="#mosets">mosets</a>, <a rel="tag" href="#hotproperty">hotproperty</a></p>
+			</li>
+			<li id="microformatsspreading" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#microformatsspreading">Microformats spreading</a></h2>
+				<address><abbr class="published" title="2009-11-06T01:14:00+01:00">6th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<h3 class="entry-content">Google</h3>
+				<ul class="entry-content">
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.google.com/support/webmasters/bin/answer.py?hl=en&amp;answer=146897">rich-snippets official doc</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://microformats.org/wiki/google-rich-snippets-examples">Google rich-snippet examples</a></li>
+				</ul>
+				<p class="entry-content">Also see: <a href="http://web.archive.org/web/20110102070325/http://microformats.org/wiki/search-engines">http://microformats.org/wiki/search-engines</a></p>
+				<p><a rel="tag" href="#semantics">semantics</a></p>
+			</li>
+			<li id="realestateideas" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#realestateideas">real estate ideas</a></h2>
+				<address><abbr class="published" title="2009-11-06T01:04:00+01:00">6th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.nerjaholidayrentals.com/en/Carabeo-1-14/2009.html">nerjaholidayrentals.com</a></li>
+				</ul>
+				<p><a rel="tag" href="#mosets">mosets</a></p>
+			</li>
+			<li id="yesnowww" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#yesnowww">www [y/n]?</a></h2>
+				<address><abbr class="published" title="2009-11-05T03:57:00+01:00">5th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.yes-www.org/www-is-not-deprecated/">pro</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://no-www.org/">con</a></li>
+				</ul>
+				<p><a rel="tag" href="#norm">norm</a></p>
+			</li>
+			<li id="MosetsOrganization" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#MosetsOrganization">Mosets Organization</a></h2>
+				<address><abbr class="published" title="2009-11-05T03:13:00+01:00">5th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+<pre class="entry-content">
+dns.mosets.com
+mail.mosets.com
+scm.mosets.com
+{service}.mosets.com
+www.mosets.com
+	/help
+		/documentation
+		/support
+	/lab|dev|code
+		/tracker
+		/wiki
+	(/products)
+		/hotproperty
+		/tree
+	/news
+</pre>
+				<p><a rel="tag" href="#mosets">mosets</a>, <a rel="tag" href="#organization">organization</a></p>
+			</li>
+			<li id="GoogleOrganization" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#GoogleOrganization">Google Organization</a></h2>
+				<address><abbr class="published" title="2009-11-05T03:41:00+01:00">5th November, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+<pre class="entry-content">
+www.google.com
+	/{product}
+	/support
+		/{product}
+		/forum
+			/{product}
+</pre>
+				<p><a rel="tag" href="#organization">organization</a></p>
+			</li>
+			<li id="RFCs" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#RFCs"><abbr title="Request for Comments">RFC</abbr>s</a></h2>
+				<address><abbr class="updated" title="2010-09-02T16:28:00+01:00">16th january, 10</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.rfc-editor.org/rfc/rfc5023.txt">The Atom Publishing Protocol</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.rfc-editor.org/rfc/rfc1738.txt">Uniform Resource Locators (URL)</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.rfc-editor.org/rfc/rfc2368.txt">The mailto URL scheme</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.ietf.org/rfc/rfc3966.txt">The tel URI for Telephone Numbers</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.ietf.org/rfc/rfc1766.txt">Tags for the Identification of Languages</a> — <a rel="tag" href="#language">language</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.ietf.org/rfc/rfc2119.txt">Key words for use in RFCs to Indicate Requirement Levels</a></li>
+				</ul>
+				<p><a rel="tag" href="#norm">norm</a></p>
+			</li>
+			<li id="JQueryPlugins" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#JQueryPlugins">jQuery plugins</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.appelsiini.net/projects/jeditable">JEditable</a> — Edit in place plugin</li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://davecardwell.co.uk/javascript/jquery/plugins/jquery-em/">jQEm</a> — Interact with the base 'em' unit</li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://benalman.com/projects/jquery-hashchange-plugin/">hashchange</a> — jQuery hashchange event</li>
+					<li><a href="http://web.archive.org/web/20110102070325/http://cherne.net/brian/resources/jquery.hoverIntent.html">hoverintent</a> — Detect user's :hover intent</li>
+				</ul>
+				<p><a rel="tag" href="#javascript" lang="en">javascript</a></p>
+			</li>
+			<li id="getInspired" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#getInspired">Get Inspired</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<h3 class="entry-content">Minimalist / Typography / Art</h3>
+				<ul class="entry-content">
+					<li>http://www.palaisdetokyo.com</li>
+					<li>http://www.art-home-electrolux.com/fr/</li>
+					<li>http://www.fonshickmann.com/</li>
+				</ul>
+				<p><a rel="tag" href="#webdesign" lang="en">webdesign</a></p>
+			</li>
+			<li id="miamlemarkup" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#miamlemarkup">Miam le markup</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li>http://www.w3.org/TR/html4/</li>
+					<li>http://diveintohtml5.org</li>
+					<li>http://www.whatwg.org/specs/web-apps/current-work/multipage/</li>
+				</ul>
+				<p><a rel="tag" href="#semantics" lang="en">semantics</a></p>
+			</li>
+			<li id="NY" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#NY"><abbr title="New York">NY</abbr></a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li><a href="http://web.archive.org/web/20110102070325/http://www.office-tourisme-usa.com/formalites-etats-unis.php">Formalités d'entrée</a></li>
+					<li><a href="http://web.archive.org/web/20110102070325/https://esta.cbp.dhs.gov/esta/esta.html?language=fr"><abbr title="Electronic System for Travel Authorization">ESTA</abbr></a></li>
+				</ul>
+				<p><a rel="tag" href="#voyage">voyage</a></p>
+			</li>
+			<li id="dashes" class="note hentry" lang="en">
+				<h2 class="entry-title"><a rel="bookmark" href="#dashes">&ndash; is not -</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<blockquote class="entry-content">
+					<ul>
+						<li><strong>Em Dash (—)</strong>: Denotes a pause in thought, a parenthetical statement, or — more casually — an afterthought. In a web page, a web developer can include &amp;mdash; to represent the character. When typing, you can input a character by holding ALT and typing 0151 on the numpad.</li>
+						<li><strong>En Dash (–)</strong>: Denotes a range, especially of numbers, such as $100–150. &amp;ndash; in a web page or ALT-0150 on a keyboard.</li>
+						<li><strong>Hyphen (-)</strong>: Used for the hyphenation of words (co-ordination; able-minded; pre- and post- touring.) Just use the keyboard key for this one.</li>
+					</ul>
+				</blockquote>
+				<p class="entry-content" style="text-align:right;">source: <cite><a href="http://web.archive.org/web/20110102070325/http://www.kajhaffenden.com/articles/em-dash-en-dash-hyphen/">Kaj Haffenden</a></cite></p>
+				<p class="entry-content">More: <a href="http://web.archive.org/web/20110102070325/http://www.cs.tut.fi/~jkorpela/dashes.html">Dashes and Hyphens</a>, <a href="http://web.archive.org/web/20110102070325/http://en.wikipedia.org/wiki/Dash">wikipedia</a></p>
+				<p><a rel="tag" href="#typography">typography</a>, <a rel="tag" href="#punctuation">punctuation</a>, <a rel="tag" href="#semantics" lang="en">semantics</a></p>
+			</li>
+			<li id="adresses" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#adresses">"Adresses"</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li>
+						<cite class="vcard">"<a class="fn org url" href="http://web.archive.org/web/20110102070325/http://www.aidaparis.com/">AIDA</a>, 1, rue Pierre Leroux 75007 Paris"</cite> — <a rel="tag" href="#japonais">japonais</a>, <a rel="tag" href="#chic">chic</a>
+					</li>
+					<li>
+						<cite>"l'Homme bleu", rue Jean Pierre Timbeau, Paris XI</cite> — <a rel="tag" href="#berbere">berbère</a>
+					</li>
+					<li>
+						<cite class="vcard">"<a href="http://web.archive.org/web/20110102070325/http://www.palaisdetokyo.com/fo3/low/programme/index.php?page=../pause/restaurant.htm" class="fn org url">Tockyo Eat</a>", 13, avenue du Président Wilson, 75016 PARIS</cite> — <a rel="tag" href="#design">design</a>, <a rel="tag" href="#contemporain">contemporain</a>
+					</li>
+				</ul>
+				<p><a rel="tag" href="#gastronomie">gastronomie</a>, <a rel="tag" href="#resto">resto</a></p>
+			</li>
+			<li id="ideesdesigninterieur" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#ideesdesigninterieur">Idées de design d'intérieur</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<h3 class="entry-content">Dans la salle de bain</h3>
+				<ul class="entry-content">
+					<li>De la mosaïque à petits carreaux, dans les tons jaune-vert, très légèrement transparente, <a href="http://web.archive.org/web/20110102070325/http://www.hotel-laperouse.fr/images/_presentation/evier.jpg">comme à l'hôtel <cite>La Perouse</cite></a> à Nantes. Au sol <strong>et</strong> aux murs.</li>
+					<li>Pas d'obstacle au sol mais des pentes pour l'écoulement. Pas de <em>trou</em> mais des fentes, ex: une dalle ajourée posée au sol.</li>
+				</ul>
+				<h3 class="entry-content">Dans le salon</h3>
+				<ul class="entry-content">
+					<li>Avoir une tortue de parquet.</li>
+				</ul>
+				<p><a rel="tag" href="#design">design</a></p>
+			</li>
+			<li id="fil" class="note hentry photo">
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<img class="entry-title entry-content" alt="Fil" src="http://web.archive.org/web/20110102070325im_/http://farm3.static.flickr.com/2291/2153442250_b429861565.jpg">
+			</li>
+			<li id="hotelsdesign" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#hotelsdesign">Hôtels "design"</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<ul class="entry-content">
+					<li>
+						<cite class="vcard"><a class="fn org url" href="http://web.archive.org/web/20110102070325/http://www.hotel-laperouse.fr/">La Perouse</a></cite>, Nantes, FRANCE
+					</li>
+					<li>
+						<cite class="vcard"><a class="fn org url" href="http://web.archive.org/web/20110102070325/http://www.hotelmaya.com.my/">Maya Hotel</a></cite>, Kuala Lumpur, MALAYSIA
+					</li>
+					<li>
+						<cite class="vcard"><a class="fn org url" href="http://web.archive.org/web/20110102070325/http://www.ghotel.com.my/">G Hotel</a></cite>, Penang, MALAYSIA
+					</li>
+					<li>
+						<cite class="vcard"><a class="fn org url" href="http://web.archive.org/web/20110102070325/http://www.klapsons.com/">Klapson Hotel</a></cite>, SINGAPORE
+					</li>
+				</ul>
+				<p class="entry-content">Also see <a href="http://web.archive.org/web/20110102070325/http://www.designhotels.com/">Design Hotels</a></p>
+				<p><a rel="tag" href="#logement">logement</a>, <a rel="tag" href="#hotel">hôtel</a>, <a rel="tag" href="#design">design</a></p>
+			</li>
+			<li id="bouillonpoulet" class="note hentry">
+				<h2 class="entry-title"><a rel="bookmark" href="#bouillonpoulet">Bouillon de poulet</a></h2>
+				<address><abbr class="updated" title="2009-10-31T17:58:00+01:00">31st October, 09</abbr> &ndash; <cite class="author vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url uid"><abbr title="Antoine BERNIER" class="fn"><span class="nickname">abernier</span></abbr></a></cite></address>
+				<p class="entry-content">Donc vous jetez carcasse et/ou 2-3 cuisses crues dans une grande casserole, avec un petit oignon, 1-2 branches de céleri coupées en deux (garder les feuilles), 1 grosse carotte coupée en deux, 1 gousse d’ail entière, une feuille de laurier et une branche de persil si vous en avez, une grosse pincée de sel et finalement assez d’eau pour couvrir le tout.</p>
+				<p><a rel="tag" href="#gastronomie">gastronomie</a>, <a rel="tag" href="#cuisine">cuisine</a>, <a rel="tag" href="#recette">recette</a>, <a rel="tag" href="#poulet">poulet</a></p>
+			</li>
+		</ul>
+		<p id="license">
+			<strong>notes</strong> by <span class="vcard"><a href="http://web.archive.org/web/20110102070325/http://abernier.name/" class="url"><abbr title="Antoine BERNIER" class="fn">abernier</abbr></a></span> is licensed under a <a href="http://web.archive.org/web/20110102070325/http://creativecommons.org/licenses/by/3.0/" rel="license">Creative Commons License</a>.
+		</p>
+</html>
